@@ -125,35 +125,14 @@ namespace DiscordAstroBot.Helpers
             // Setup json payload
             var json = new { session = sessionID, allow_commercial_use = "n", allow_modifications = "n", publicly_visible = "n" };
 
-            //var webRequest = (HttpWebRequest)WebRequest.Create("http://nova.astrometry.net/api/upload");
-            //webRequest.ContentType = "application/x-www-form-urlencoded";
-            //webRequest.Method = "POST";
-            //var requestStream = webRequest.GetRequestStream();
-
-            //// Get File from url
-            //var fileReq = WebRequest.Create(fileUrl);
-
-            //// Send the json payload
-            //using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
-            //{
-            //    streamWriter.Write(string.Format("request-json={0}", WebUtility.UrlEncode(JsonConvert.SerializeObject(json))));
-            //    //streamWriter.Write(string.Format("file=");
-            //    //streamWriter.Write(fileReq.GetResponse().GetResponseStream());
-            //    streamWriter.Flush();
-            //}
-
-            var fileReq = WebRequest.Create(fileUrl);
+            var wc = new WebClient();
+            var memstream = new MemoryStream(wc.DownloadData(fileUrl));
 
             NameValueCollection nvc = new NameValueCollection();
             nvc.Add("request-json", JsonConvert.SerializeObject(json));
 
             // Get answer from server
-            //var response = (HttpWebResponse)HttpUploadFile.GetResponse();
-            string text = HttpUploadFile("http://nova.astrometry.net/api/upload", fileReq.GetResponse().GetResponseStream(), fileName, "file", "application/octet-stream", nvc);
-            //using (var sr = new StreamReader(response.GetResponseStream()))
-            //{
-            //    text = sr.ReadToEnd();
-            //}
+            string text = HttpUploadFile("http://nova.astrometry.net/api/upload", memstream, fileName, "file", "application/octet-stream", nvc);
 
             dynamic jsonResult = JsonConvert.DeserializeObject(text);
             if (jsonResult.status != "success")
