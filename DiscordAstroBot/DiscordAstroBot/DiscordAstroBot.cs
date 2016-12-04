@@ -85,8 +85,6 @@ namespace DiscordAstroBot
                         else
                         {
                             // Search for synonyms
-                            var synonymCommand = this.Commands.FirstOrDefault(x => x.CommandSynonyms.Any(y => string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()).StartsWith(y)));
-
                             bool commandExecuted = false;
 
                             foreach (var command in this.Commands)
@@ -94,7 +92,7 @@ namespace DiscordAstroBot
                                 var synonym = command.CommandSynonyms.FirstOrDefault(x => string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()).ToLower().StartsWith(x.ToLower()));
                                 if (synonym != null)
                                 {
-                                    synonymCommand.MessageRecieved(e.Message.RawText.Replace(synonym + " ", string.Empty), e);
+                                    command.MessageRecieved(e.Message.RawText.ToLower().Replace(synonym.ToLower() + " ", string.Empty), e);
                                     commandExecuted = true;
                                     break;
                                 }
