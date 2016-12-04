@@ -75,7 +75,7 @@ namespace DiscordAstroBot
                         {
                             availableCommands = string.Format("{0} {1}", availableCommands, command.CommandName);
                         }
-                        e.Channel.SendMessage(string.Format("AstroBot, at your service! Available commands: {0}", availableCommands));
+                        e.Channel.SendMessage(string.Format("Yes?", availableCommands));
                     }
                     // Else search for the command
                     else
