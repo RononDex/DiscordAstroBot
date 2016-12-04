@@ -22,6 +22,11 @@ namespace DiscordAstroBot
         /// </summary>
         public List<Command> Commands { get; set; }
 
+        /// <summary>
+        /// The prefix that this bot listens to
+        /// </summary>
+        public string ChatPrefix { get; set; }
+
         public DiscordAstroBot(string token, string chatPrefix)
         {
             // Initialize the client
@@ -33,12 +38,7 @@ namespace DiscordAstroBot
                 x.LogHandler = Log;
             });
 
-            // Setting up chat bot config
-            this.DiscordClient.UsingCommands(x =>
-            {
-                x.PrefixChar = Convert.ToChar(chatPrefix);
-                x.HelpMode = HelpMode.Public;
-            });
+            this.ChatPrefix = chatPrefix;
 
             RegisterCommands();
 
@@ -65,7 +65,7 @@ namespace DiscordAstroBot
                 if (!e.Message.IsAuthor)
                 {
                     var splitted = e.Message.RawText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (splitted.Length > 0 && splitted[0].ToLower() == "astrobot")
+                    if (splitted.Length > 0 && splitted[0].ToLower() == this.ChatPrefix)
                     {
                         Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", e.Message.Text);
 
@@ -121,7 +121,6 @@ namespace DiscordAstroBot
         private void RegisterCommands()
         {
             Log<DiscordAstroBot>.InfoFormat("Registering commands...");
-            var commandService = DiscordClient.GetService<CommandService>();
 
             Commands = new List<Command>();
 
@@ -130,6 +129,7 @@ namespace DiscordAstroBot
             Commands.Add(new Commands.TestCommand());
             Commands.Add(new Commands.AstroMetry());
             Commands.Add(new Commands.GeoLocation());
+            Commands.Add(new Commands.Weather());
 
             foreach (var command in this.Commands)
             {

@@ -21,9 +21,15 @@ namespace DiscordAstroBot
             Log<DiscordAstroBot>.InfoFormat("");
             Log<DiscordAstroBot>.InfoFormat("Settings:");
             Log<DiscordAstroBot>.InfoFormat(" - TokenFilePath: {0}", ConfigurationManager.AppSettings["TokenFilePath"]);
+            Log<DiscordAstroBot>.InfoFormat(" - AstrometryTokenFilePath: {0}", ConfigurationManager.AppSettings["AstrometryTokenFilePath"]);
             Log<DiscordAstroBot>.InfoFormat(" - ChatPrefix: {0}", ConfigurationManager.AppSettings["ChatPrefix"]);
 
             if (!File.Exists(ConfigurationManager.AppSettings["TokenFilePath"]))
+            {
+                Log<DiscordAstroBot>.FatalFormat("Could not open or access the configured token file");
+                return;
+            }
+            if (!File.Exists(ConfigurationManager.AppSettings["AstrometryTokenFilePath"]))
             {
                 Log<DiscordAstroBot>.FatalFormat("Could not open or access the configured token file");
                 return;
