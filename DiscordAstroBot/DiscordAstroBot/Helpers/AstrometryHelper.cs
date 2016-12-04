@@ -123,7 +123,7 @@ namespace DiscordAstroBot.Helpers
             Log<DiscordAstroBot>.InfoFormat("Submitting a file to astrometry (SessionID: {0}, File: {1})", sessionID, fileUrl);
 
             // Setup json payload
-            var json = new { session = sessionID, allow_commercial_use = "n", allow_modifications = "n", publicly_visible = "n" };
+            var json = new { session = sessionID, allow_commercial_use = "n", allow_modifications = "n", publicly_visible = "y" };
 
             var wc = new WebClient();
             var memstream = new MemoryStream(wc.DownloadData(fileUrl));
