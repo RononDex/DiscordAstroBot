@@ -92,7 +92,7 @@ namespace DiscordAstroBot
                                 var synonym = command.CommandSynonyms.FirstOrDefault(x => string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()).ToLower().StartsWith(x.ToLower()));
                                 if (synonym != null)
                                 {
-                                    command.MessageRecieved(e.Message.RawText.ToLower().Replace(synonym.ToLower() + " ", string.Empty), e);
+                                    command.MessageRecieved(e.Message.RawText.ToLower().Replace("astrobot " + synonym.ToLower() + " ", string.Empty), e);
                                     commandExecuted = true;
                                     break;
                                 }
