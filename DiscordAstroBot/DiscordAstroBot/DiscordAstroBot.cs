@@ -20,7 +20,7 @@ namespace DiscordAstroBot
         /// <summary>
         /// Holds all the registered Commands
         /// </summary>
-        List<Command> Commands { get; set; }
+        public List<Command> Commands { get; set; }
 
         public DiscordAstroBot(string token, string chatPrefix)
         {
@@ -59,38 +59,41 @@ namespace DiscordAstroBot
         /// <param name="e"></param>
         private void MessageReceived(object sender, MessageEventArgs e)
         {
-            // Check to make sure that the bot is not the author
-            if (!e.Message.IsAuthor)
+            try
             {
-                var splitted = e.Message.RawText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                if (splitted[0].ToLower() == "astrobot")
+                // Check to make sure that the bot is not the author
+                if (!e.Message.IsAuthor)
                 {
-                    Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", e.Message.Text);
+                    var splitted = e.Message.RawText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (splitted.Length > 0 && splitted[0].ToLower() == "astrobot")
+                    {
+                        Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", e.Message.Text);
 
-                    // If no command given, show info and available commands
-                    if (splitted.Length == 1)
-                    {
-                        string availableCommands = "";
-                        foreach (var command in Commands)
+                        // If no command given, use Smalltalk command
+                        if (splitted.Length == 1)
                         {
-                            availableCommands = string.Format("{0} {1}", availableCommands, command.CommandName);
+                            var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
+                            smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e);
                         }
-                        e.Channel.SendMessage(string.Format("Yes?", availableCommands));
-                    }
-                    // Else search for the command
-                    else
-                    {
-                        Command command = this.Commands.FirstOrDefault(x => x.CommandName == splitted[1]);
-                        if (command == null)
+                        // Execute selected command
+                        else if (splitted.Length >= 2 && this.Commands.FirstOrDefault(x => x.CommandName == splitted[1]) != null)
                         {
-                            e.Channel.SendMessage(string.Format("Uknown Command: {0}", splitted[1]));
+                            var command = this.Commands.FirstOrDefault(x => x.CommandName == splitted[1]);
+                            command.MessageRecieved(string.Join(" ", splitted.Skip(2).Take(splitted.Length - 2).ToArray()), e);
                         }
+                        // If no command found with this name, again redirect to smalltalk command
                         else
                         {
-                            command.MessageRecieved(string.Join(" ", splitted.Skip(2).Take(splitted.Length - 2).ToArray()), e);
+                            var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
+                            smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e);
                         }
                     }
                 }
+            }
+            catch(Exception ex)
+            {
+                e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);
             }
         }
 
@@ -105,6 +108,7 @@ namespace DiscordAstroBot
             Commands = new List<Command>();
 
             // Add Commands
+            Commands.Add(new Commands.SmallTalkCommand());
             Commands.Add(new Commands.TestCommand());
 
             foreach (var command in this.Commands)

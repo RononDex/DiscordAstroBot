@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DiscordAstroBot
 {
-    abstract class Command
+    public abstract class Command
     {
         public virtual string CommandName { get; set; }
 
