@@ -10,7 +10,9 @@ namespace DiscordAstroBot
 {
     public abstract class Command
     {
-        public virtual string CommandName { get; set; }
+        public virtual string CommandName { get; } = "";
+
+        public virtual string[] CommandSynonyms { get; } = new string[0];
 
         public abstract void MessageRecieved(string message, MessageEventArgs e);
     }

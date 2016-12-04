@@ -82,9 +82,11 @@
   <ItemGroup>
     <Compile Include="Command.cs" />
     <Compile Include="Commands\AstroMetry.cs" />
+    <Compile Include="Commands\GeoLocation.cs" />
     <Compile Include="Commands\SmallTalkCommand.cs" />
     <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="DiscordAstroBot.cs" />
+    <Compile Include="Helpers\GeoLocationHelper.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

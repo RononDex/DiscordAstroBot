@@ -76,16 +76,36 @@ namespace DiscordAstroBot
                             smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e);
                         }
                         // Execute selected command
-                        else if (splitted.Length >= 2 && this.Commands.FirstOrDefault(x => x.CommandName == splitted[1]) != null)
+                        else if (splitted.Length >= 2 && this.Commands.FirstOrDefault(x => x.CommandName.ToLower() == splitted[1].ToLower()) != null)
                         {
-                            var command = this.Commands.FirstOrDefault(x => x.CommandName == splitted[1]);
+                            var command = this.Commands.FirstOrDefault(x => x.CommandName.ToLower() == splitted[1].ToLower());
                             command.MessageRecieved(string.Join(" ", splitted.Skip(2).Take(splitted.Length - 2).ToArray()), e);
                         }
-                        // If no command found with this name, again redirect to smalltalk command
+                        // If no command found with this name, search for synonyms or redirect to smalltalk command
                         else
                         {
-                            var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
-                            smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e);
+                            // Search for synonyms
+                            var synonymCommand = this.Commands.FirstOrDefault(x => x.CommandSynonyms.Any(y => string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()).StartsWith(y)));
+
+                            bool commandExecuted = false;
+
+                            foreach (var command in this.Commands)
+                            {
+                                var synonym = command.CommandSynonyms.FirstOrDefault(x => string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()).ToLower().StartsWith(x.ToLower()));
+                                if (synonym != null)
+                                {
+                                    synonymCommand.MessageRecieved(e.Message.RawText.Replace(synonym + " ", string.Empty), e);
+                                    commandExecuted = true;
+                                    break;
+                                }
+                            }
+
+                            // If no synonym found execute smalltalk
+                            if (!commandExecuted)
+                            {
+                                var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
+                                smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e);
+                            }
                         }
                     }
                 }
@@ -110,6 +130,8 @@ namespace DiscordAstroBot
             // Add Commands
             Commands.Add(new Commands.SmallTalkCommand());
             Commands.Add(new Commands.TestCommand());
+            Commands.Add(new Commands.AstroMetry());
+            Commands.Add(new Commands.GeoLocation());
 
             foreach (var command in this.Commands)
             {
