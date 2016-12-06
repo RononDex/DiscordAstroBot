@@ -145,6 +145,8 @@ namespace DiscordAstroBot.Helpers
 
         public static AstrometrySubmissionStatus GetSubmissionStatus(string submissionID)
         {
+            Log<DiscordAstroBot>.InfoFormat("Getting submission status from astrometry for submission {0}", submissionID);
+
             var webRequest = (HttpWebRequest)WebRequest.Create(string.Format("http://nova.astrometry.net/api/submissions/{0}", submissionID));
             var response = (HttpWebResponse)webRequest.GetResponse();
 
@@ -177,9 +179,11 @@ namespace DiscordAstroBot.Helpers
             return status;
         }
 
-        public static AstrometrySubmissionCalibrationData GetCalibrationFromFinishedJob(string jobID)
+        public static AstrometrySubmissionResult GetCalibrationFromFinishedJob(string jobID)
         {
-            var webRequest = (HttpWebRequest)WebRequest.Create(string.Format("http://nova.astrometry.net/api/jobs/{0}/calibration/", jobID));
+            Log<DiscordAstroBot>.InfoFormat("Getting job result from astrometry for job {0}", jobID);
+
+            var webRequest = (HttpWebRequest)WebRequest.Create(string.Format("http://nova.astrometry.net/api/jobs/{0}/info/", jobID));
             var response = (HttpWebResponse)webRequest.GetResponse();
 
             // Get answer from server
@@ -190,18 +194,57 @@ namespace DiscordAstroBot.Helpers
             }
 
             dynamic jsonResult = JsonConvert.DeserializeObject(text);
+            var result = new AstrometrySubmissionResult();
             var calibrationData = new AstrometrySubmissionCalibrationData();
 
-            calibrationData.DEC = Convert.ToSingle(jsonResult.dec);
-            calibrationData.Orientation = Convert.ToSingle(jsonResult.orientation);
-            calibrationData.Parity = Convert.ToSingle(jsonResult.parity);
-            calibrationData.PixScale = Convert.ToSingle(jsonResult.pixscale);
-            calibrationData.RA = Convert.ToSingle(jsonResult.ra);
-            calibrationData.Radius = Convert.ToSingle(jsonResult.radius);
+            calibrationData.DEC = Convert.ToSingle(jsonResult.calibration.dec);
+            calibrationData.Orientation = Convert.ToSingle(jsonResult.calibration.orientation);
+            calibrationData.Parity = Convert.ToSingle(jsonResult.calibration.parity);
+            calibrationData.PixScale = Convert.ToSingle(jsonResult.calibration.pixscale);
+            calibrationData.RA = Convert.ToSingle(jsonResult.calibration.ra);
+            calibrationData.Radius = Convert.ToSingle(jsonResult.calibration.radius);
 
-            return calibrationData;
+            result.CalibrationData = calibrationData;
+
+            result.FileName = jsonResult.original_filename;
+            
+            for (var i = 0; i < jsonResult.machine_tags.Count; i++)
+                result.MachineTags.Add(Convert.ToString(jsonResult.machine_tags[i]));
+
+            for (var i = 0; i < jsonResult.machine_tags.Count; i++)
+                result.ObjectsInfField.Add(Convert.ToString(jsonResult.objects_in_field[i]));
+
+            for (var i = 0; i < jsonResult.machine_tags.Count; i++)
+                result.Tags.Add(Convert.ToString(jsonResult.tags[i]));
+
+            return result;
+        }
+
+        public static MemoryStream DownlaodAnnotatedImage(string jobID)
+        {
+            var wc = new WebClient();
+            return new MemoryStream(wc.DownloadData(GetAnnotatedImageURL(jobID)));
+        }
+
+        public static string GetAnnotatedImageURL(string jobID)
+        {
+            return string.Format("http://nova.astrometry.net/annotated_display/{0}", jobID);
         }
     }
+
+    public class AstrometrySubmissionResult
+    {
+        public AstrometrySubmissionCalibrationData CalibrationData { get; set; }
+
+        public List<string> MachineTags { get; set; } = new List<string>();
+
+        public List<string> Tags { get; set; } = new List<string>();
+
+        public string FileName { get; set; }
+
+        public List<string> ObjectsInfField { get; set; } = new List<string>();
+    }
+
 
     public class AstrometrySubmissionCalibrationData
     {

@@ -79,7 +79,17 @@ namespace DiscordAstroBot.Commands
 
             e.Channel.SendMessage(string.Format("Image analysis for submission **{0}** successfull. Here are the results:", submissionID));
             var calibrationData = Helpers.AstrometryHelper.GetCalibrationFromFinishedJob(jobId.ToString());
-            e.Channel.SendMessage(string.Format("``**RA:** {0}\r\n**DEC:** {1}\r\n**Orientation:** {2}\r\n**Radius:** {3}\r\n**PixelScale:** {4}```", calibrationData.RA, calibrationData.DEC, calibrationData.Orientation, calibrationData.Radius, calibrationData.PixScale));
+            var objectsInImage = string.Join(", ", calibrationData.ObjectsInfField);
+            e.Channel.SendMessage(string.Format("```\r\nRA: {0}\r\nDEC: {1}\r\nOrientation: up is {2} deg\r\nRadius: {3} deg\r\nPixelScale: {4} arcsec/pixel\r\nObjectsInImage: {5}\r\n```", 
+                calibrationData.CalibrationData.RA, 
+                calibrationData.CalibrationData.DEC, 
+                calibrationData.CalibrationData.Orientation, 
+                calibrationData.CalibrationData.Radius, 
+                calibrationData.CalibrationData.PixScale, 
+                objectsInImage));
+
+            e.Channel.SendFile(string.Format("annoated_{0}", calibrationData.FileName),Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString()));
+            e.Channel.SendMessage(string.Format("Link to astrometry job result: http://nova.astrometry.net/user_images/{0}", submissionID));
         }
     }
 }
