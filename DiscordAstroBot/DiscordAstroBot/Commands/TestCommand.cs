@@ -14,7 +14,7 @@ namespace DiscordAstroBot.Commands
 
         public override void MessageRecieved(string message, MessageEventArgs e)
         {
-            e.Channel.SendMessage(string.Format("IT'S WORKING!!! You entered: {0}", message));
+            e.Channel.SendMessage(string.Format("IT'S WORKING!!! You entered: {0}", message));  
         }
     }
 }

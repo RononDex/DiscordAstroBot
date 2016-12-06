@@ -142,5 +142,93 @@ namespace DiscordAstroBot.Helpers
 
             return jsonResult.subid;
         }
+
+        public static AstrometrySubmissionStatus GetSubmissionStatus(string submissionID)
+        {
+            var webRequest = (HttpWebRequest)WebRequest.Create(string.Format("http://nova.astrometry.net/api/submissions/{0}", submissionID));
+            var response = (HttpWebResponse)webRequest.GetResponse();
+
+            // Get answer from server
+            string text;
+            using (var sr = new StreamReader(response.GetResponseStream()))
+            {
+                text = sr.ReadToEnd();
+            }
+
+            dynamic jsonResult = JsonConvert.DeserializeObject(text);
+            var status = new AstrometrySubmissionStatus();
+            if (jsonResult.processing_finished.Value != "None")
+                status.FinishTime = Convert.ToDateTime(jsonResult.processing_finished.Value);
+            if (jsonResult.processing_started.Value != "None")
+                status.StartTime = Convert.ToDateTime(jsonResult.processing_started.Value);
+
+            status.SubmissionID = submissionID;
+
+            if (jsonResult.jobs.Count > 0 && jsonResult.jobs[0] != null)
+                status.JobID = Convert.ToInt32(jsonResult.jobs[0]);
+
+            if (status.JobID == null)
+                status.State = AstrometrySubmissionState.CREATED;
+            else if (jsonResult.job_calibrations.Count == 0)
+                status.State = AstrometrySubmissionState.JOB_STARTED;
+            else
+                status.State = AstrometrySubmissionState.JOB_FINISHED;
+
+            return status;
+        }
+
+        public static AstrometrySubmissionCalibrationData GetCalibrationFromFinishedJob(string jobID)
+        {
+            var webRequest = (HttpWebRequest)WebRequest.Create(string.Format("http://nova.astrometry.net/api/jobs/{0}/calibration/", jobID));
+            var response = (HttpWebResponse)webRequest.GetResponse();
+
+            // Get answer from server
+            string text;
+            using (var sr = new StreamReader(response.GetResponseStream()))
+            {
+                text = sr.ReadToEnd();
+            }
+
+            dynamic jsonResult = JsonConvert.DeserializeObject(text);
+            var calibrationData = new AstrometrySubmissionCalibrationData();
+
+            calibrationData.DEC = Convert.ToSingle(jsonResult.dec);
+            calibrationData.Orientation = Convert.ToSingle(jsonResult.orientation);
+            calibrationData.Parity = Convert.ToSingle(jsonResult.parity);
+            calibrationData.PixScale = Convert.ToSingle(jsonResult.pixscale);
+            calibrationData.RA = Convert.ToSingle(jsonResult.ra);
+            calibrationData.Radius = Convert.ToSingle(jsonResult.radius);
+
+            return calibrationData;
+        }
+    }
+
+    public class AstrometrySubmissionCalibrationData
+    {
+        public float Parity { get; set; }
+        public float Orientation { get; set; }
+        public float PixScale { get; set; }
+        public float Radius { get; set; }
+        public float RA { get; set; }
+        public float DEC { get; set; }
+    }
+
+    public class AstrometrySubmissionStatus
+    {
+        public int? JobID { get; set; }
+        public string SubmissionID { get; set; }
+
+        public DateTime? StartTime { get; set; }
+
+        public DateTime? FinishTime { get; set; }
+
+        public AstrometrySubmissionState State { get; set; }
+    }
+
+    public enum AstrometrySubmissionState
+    {
+        CREATED = 0,
+        JOB_STARTED = 1,
+        JOB_FINISHED = 2
     }
 }
