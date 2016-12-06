@@ -42,7 +42,7 @@ namespace DiscordAstroBot.Commands
             }
 
             // Login into Astrometry
-            e.Message.Channel.SendMessage("Submitting your image to astrometry for analysis and plate-solving...");
+            e.Message.Channel.SendMessage("Submitting your image to astrometry for analysis and plate-solving...\r\n(Depending on the image, this might take a few minutes, be patient...)");
             string sessionID = Helpers.AstrometryHelper.LoginIntoAstrometry(File.ReadAllText(ConfigurationManager.AppSettings["AstrometryTokenFilePath"]));
 
             string submissionID = Helpers.AstrometryHelper.UploadFile(e.Message.Attachments[0].Url, e.Message.Attachments[0].Filename, sessionID);
