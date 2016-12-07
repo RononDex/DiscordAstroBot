@@ -79,7 +79,7 @@ namespace DiscordAstroBot
                         else if (splitted.Length >= 2 && this.Commands.FirstOrDefault(x => x.CommandName.ToLower() == splitted[1].ToLower()) != null)
                         {
                             var command = this.Commands.FirstOrDefault(x => x.CommandName.ToLower() == splitted[1].ToLower());
-                            command.MessageRecieved(string.Join(" ", splitted.Skip(2).Take(splitted.Length - 2).ToArray()), e);
+                            Task.Run(() => command.MessageRecieved(string.Join(" ", splitted.Skip(2).Take(splitted.Length - 2).ToArray()), e)); 
                         }
                         // If no command found with this name, search for synonyms or redirect to smalltalk command
                         else
@@ -92,7 +92,7 @@ namespace DiscordAstroBot
                                 var synonym = command.CommandSynonyms.FirstOrDefault(x => string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()).ToLower().StartsWith(x.ToLower()));
                                 if (synonym != null)
                                 {
-                                    command.MessageRecieved(e.Message.RawText.ToLower().Replace("astrobot " + synonym.ToLower() + " ", string.Empty), e);
+                                    Task.Run(() => command.MessageRecieved(e.Message.RawText.ToLower().Replace("astrobot " + synonym.ToLower() + " ", string.Empty), e));
                                     commandExecuted = true;
                                     break;
                                 }
@@ -102,7 +102,7 @@ namespace DiscordAstroBot
                             if (!commandExecuted)
                             {
                                 var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
-                                smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e);
+                                Task.Run(() => smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e)); 
                             }
                         }
                     }
