@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using System.Text.RegularExpressions;
 
 namespace DiscordAstroBot.Commands
 {
@@ -12,9 +13,9 @@ namespace DiscordAstroBot.Commands
 
         public override string CommandName { get { return "SmallTalk"; } }
 
-        public override void MessageRecieved(string message, MessageEventArgs e)
+        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
-            var reaction =  Reactions.Reactions.GetReaction(message);
+            var reaction =  Reactions.Reactions.GetReaction(matchedMessage.Value);
             e.Channel.SendMessage(reaction);
         }
     }

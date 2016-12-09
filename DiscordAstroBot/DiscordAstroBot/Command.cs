@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DiscordAstroBot
@@ -14,6 +15,6 @@ namespace DiscordAstroBot
 
         public virtual string[] CommandSynonyms { get; } = new string[0];
 
-        public abstract void MessageRecieved(string message, MessageEventArgs e);
+        public abstract void MessageRecieved(Match matchedMessage, MessageEventArgs e);
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using System.Text.RegularExpressions;
 
 namespace DiscordAstroBot.Commands
 {
@@ -12,9 +13,9 @@ namespace DiscordAstroBot.Commands
     {
         public override string CommandName { get { return "Test"; } }
 
-        public override void MessageRecieved(string message, MessageEventArgs e)
+        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
-            e.Channel.SendMessage(string.Format("IT'S WORKING!!! You entered: {0}", message));  
+            e.Channel.SendMessage(string.Format("IT'S WORKING!!! You entered: {0}", matchedMessage.Value));  
         }
     }
 }

@@ -7,6 +7,7 @@ using Discord;
 using System.IO;
 using System.Configuration;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace DiscordAstroBot.Commands
 {
@@ -32,7 +33,7 @@ namespace DiscordAstroBot.Commands
 
         public override string CommandName { get { return "Astrometry"; } }
 
-        public override void MessageRecieved(string message, MessageEventArgs e)
+        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
             // Check if there is an image attached
             if (e.Message.Attachments.Length == 0)

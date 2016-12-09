@@ -6,6 +6,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DiscordAstroBot
@@ -69,46 +70,51 @@ namespace DiscordAstroBot
                     {
                         Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", e.Message.Text);
 
-                        // If no command given, use Smalltalk command
-                        if (splitted.Length == 1)
+                        //// If no command given, use Smalltalk command
+                        //if (splitted.Length == 1)
+                        //{
+                        //    var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
+                        //    smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e);
+                        //}
+                        //// Execute selected command
+                        //else if (splitted.Length >= 2 && this.Commands.FirstOrDefault(x => x.CommandName.ToLower() == splitted[1].ToLower()) != null)
+                        //{
+                        //    var command = this.Commands.FirstOrDefault(x => x.CommandName.ToLower() == splitted[1].ToLower());
+                        //    command.MessageRecieved(string.Join(" ", splitted.Skip(2).Take(splitted.Length - 2).ToArray()), e);
+                        //}
+                        //// If no command found with this name, search for synonyms or redirect to smalltalk command
+                        //else
+                        //{
+                        // Search for synonyms usind regex
+                        bool commandExecuted = false;
+                        var message = string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray());
+                        foreach (var command in this.Commands)
                         {
-                            var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
-                            smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e);
-                        }
-                        // Execute selected command
-                        else if (splitted.Length >= 2 && this.Commands.FirstOrDefault(x => x.CommandName.ToLower() == splitted[1].ToLower()) != null)
-                        {
-                            var command = this.Commands.FirstOrDefault(x => x.CommandName.ToLower() == splitted[1].ToLower());
-                            command.MessageRecieved(string.Join(" ", splitted.Skip(2).Take(splitted.Length - 2).ToArray()), e);
-                        }
-                        // If no command found with this name, search for synonyms or redirect to smalltalk command
-                        else
-                        {
-                            // Search for synonyms
-                            bool commandExecuted = false;
-
-                            foreach (var command in this.Commands)
+                            foreach (var synonym in command.CommandSynonyms)
                             {
-                                var synonym = command.CommandSynonyms.FirstOrDefault(x => string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()).ToLower().StartsWith(x.ToLower()));
-                                if (synonym != null)
+                                var regex = new Regex(synonym, RegexOptions.IgnoreCase);
+                                if (regex.IsMatch(message))
                                 {
-                                    command.MessageRecieved(e.Message.RawText.ToLower().Replace("astrobot " + synonym.ToLower() + " ", string.Empty), e);
+                                    var match = regex.Match(message);
+                                    Task.Run(() => command.MessageRecieved(match, e));
                                     commandExecuted = true;
                                     break;
                                 }
                             }
-
-                            // If no synonym found execute smalltalk
-                            if (!commandExecuted)
-                            {
-                                var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
-                                smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e);
-                            }
                         }
+
+                        // If no synonym found execute smalltalk
+                        if (!commandExecuted)
+                        {
+                            var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
+                            Task.Run(() => smallTalkCommand.MessageRecieved(new Regex("").Match(message), e));
+                            commandExecuted = true;
+                        }
+                        //}
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
                 Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);

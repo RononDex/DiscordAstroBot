@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace DiscordAstroBot.Commands
 {
@@ -15,32 +16,20 @@ namespace DiscordAstroBot.Commands
             get
             {
                 return new string[] {
-                    "Show me the weather for",
-                    "Show me the weather forcast for",
-                    "whats the weather in",
-                    "whats the weather like in",
-                    "what's the weather in",
-                    "what's the weather like in",
-                    "how is the weather in",
-                    "how is the weather like in",
-                    "how's the weather in",
-                    "how's the weather like in",
-                    "hows the weather in",
-                    "hows the weather like in",
-                    "how does the weather look like in",
+                    @"(whats|what's|show\sme|how is|hows|how's) the weather (like )?in (?'SearchLocation'.*)",
                 };
             }
         }
 
         public override string CommandName { get { return "Weather"; } }
 
-        public override void MessageRecieved(string message, MessageEventArgs e)
+        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
-            var location = Helpers.GeoLocationHelper.FindLocation(message);
+            var location = Helpers.GeoLocationHelper.FindLocation(matchedMessage.Groups["SearchLocation"].Value);
             e.Channel.SendMessage(string.Format("Hold on, searching a weather forcast for {0}. This might take a moment...", location));
             var forcast = Helpers.WeatherHelper.GetWeatherForcast(DateTime.Today, location);
 
-            e.Channel.SendMessage(string.Format("This is the weather forcast that I found for {0}:", message));
+            e.Channel.SendMessage(string.Format("This is the weather forcast that I found for {0}:", matchedMessage.Groups["SearchLocation"].Value));
             e.Channel.SendFile("Weather_forcast.png", new MemoryStream(forcast.Screenshot));
         }
     }
