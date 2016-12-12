@@ -19,14 +19,7 @@ namespace DiscordAstroBot.Commands
             {
                 return new string[]
                 {
-                    "analyse this image",
-                    "analyze this image",
-                    "can you analyze this image",
-                    "can you analyse this image",
-                    "platesolve this image",
-                    "can you platesolve this image",
-                    "plate solve this image",
-                    "can you plate solve this image",
+                    @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this image"
                 };
             }
         }
@@ -48,7 +41,6 @@ namespace DiscordAstroBot.Commands
 
             string submissionID = Helpers.AstrometryHelper.UploadFile(e.Message.Attachments[0].Url, e.Message.Attachments[0].Filename, sessionID);
             e.Message.Channel.SendMessage(string.Format("Submission successfull: **{0}**. Awaiting results...", submissionID));
-            //e.Message.Channel.SendMessage(string.Format("See status here: http://nova.astrometry.net/status/{0}", submissionID));
 
             var waitDelta = 5000;
             var maxWait = 300 * 1000;
@@ -91,7 +83,7 @@ namespace DiscordAstroBot.Commands
                 objectsInImage,
                 tags));
 
-            e.Channel.SendFile(string.Format("annoated_{0}", calibrationData.FileName),Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString()));
+            e.Channel.SendFile(string.Format("annoated_{0}", calibrationData.FileName),Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString())).Wait();
             e.Channel.SendMessage(string.Format("Link to astrometry job result: http://nova.astrometry.net/user_images/{0}", submissionID));
         }
     }
