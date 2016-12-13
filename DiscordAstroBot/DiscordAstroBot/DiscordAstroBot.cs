@@ -107,7 +107,7 @@ namespace DiscordAstroBot
                         if (!commandExecuted)
                         {
                             var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
-                            Task.Run(() => smallTalkCommand.MessageRecieved(new Regex("").Match(message), e));
+                            Task.Run(() => smallTalkCommand.MessageRecieved(new Regex(".*").Match(message), e));
                             commandExecuted = true; 
                         }
                         //}

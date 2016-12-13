@@ -15,7 +15,7 @@ namespace DiscordAstroBot.Commands
 
         public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
-            var reaction =  Reactions.Reactions.GetReaction(matchedMessage.Value);
+            var reaction =  Reactions.Reactions.GetReaction(matchedMessage.Value.ToLower());
             e.Channel.SendMessage(reaction);
         }
     }
