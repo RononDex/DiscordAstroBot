@@ -70,21 +70,6 @@ namespace DiscordAstroBot
                     {
                         Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", e.Message.Text);
 
-                        //// If no command given, use Smalltalk command
-                        //if (splitted.Length == 1)
-                        //{
-                        //    var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
-                        //    smallTalkCommand.MessageRecieved(string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray()), e);
-                        //}
-                        //// Execute selected command
-                        //else if (splitted.Length >= 2 && this.Commands.FirstOrDefault(x => x.CommandName.ToLower() == splitted[1].ToLower()) != null)
-                        //{
-                        //    var command = this.Commands.FirstOrDefault(x => x.CommandName.ToLower() == splitted[1].ToLower());
-                        //    command.MessageRecieved(string.Join(" ", splitted.Skip(2).Take(splitted.Length - 2).ToArray()), e);
-                        //}
-                        //// If no command found with this name, search for synonyms or redirect to smalltalk command
-                        //else
-                        //{
                         // Search for synonyms usind regex
                         bool commandExecuted = false;
                         var message = string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray());
@@ -136,6 +121,8 @@ namespace DiscordAstroBot
             Commands.Add(new Commands.AstroMetry());
             Commands.Add(new Commands.GeoLocation());
             Commands.Add(new Commands.Weather());
+            Commands.Add(new Commands.Launches());
+            Commands.Add(new Commands.Sesame());
 
             foreach (var command in this.Commands)
             {

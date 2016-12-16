@@ -93,13 +93,17 @@
   <ItemGroup>
     <Compile Include="Command.cs" />
     <Compile Include="Commands\AstroMetry.cs" />
+    <Compile Include="Commands\Sesame.cs" />
     <Compile Include="Commands\GeoLocation.cs" />
+    <Compile Include="Commands\Launches.cs" />
     <Compile Include="Commands\SmallTalkCommand.cs" />
     <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="Commands\Weather.cs" />
     <Compile Include="DiscordAstroBot.cs" />
     <Compile Include="Helpers\AstrometryHelper.cs" />
     <Compile Include="Helpers\GeoLocationHelper.cs" />
+    <Compile Include="Helpers\LaunchLibraryAPIHelper.cs" />
+    <Compile Include="Helpers\SesameHelper.cs" />
     <Compile Include="Helpers\WeatherHelper.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
