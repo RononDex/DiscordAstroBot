@@ -86,7 +86,7 @@ namespace DiscordAstroBot.Commands
                 tags));
 
             e.Channel.SendFile(string.Format("annoated_{0}", calibrationData.FileName),Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString())).Wait();
-            e.Channel.SendMessage(string.Format("Link to astrometry job result: http://nova.astrometry.net/user_images/{0}", jobId));
+            e.Channel.SendMessage(string.Format("Link to astrometry job result: http://nova.astrometry.net/status/{0}", submissionID));
         }
     }
 }
