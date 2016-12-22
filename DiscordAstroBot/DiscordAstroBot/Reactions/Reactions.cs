@@ -44,7 +44,7 @@ namespace DiscordAstroBot.Reactions
 
         static Dictionary<string[], string[]> ReactionDict { get; set; } = new Dictionary<string[], string[]>()
         {
-            { new string[] { "" },                                                          new string[] { "How can I help you?", "At your service", "Yes?", "Hi!" } },
+            { new string[] { "^$" },                                                        new string[] { "How can I help you?", "At your service", "Yes?", "Hi!" } },
             { new string[] { @"hi(\!)?", @"hello(\!)?" },                                   new string[] { "Hi!", "Hello", "Hi back" } },
             { new string[] { @"how are you(\?)?" },                                         new string[] { "I am a bot, I don't have feelings. However to make you more comfortable I can say \"I feel well, thank you\"", "Fine, thank you!", "As well as a virtual slave can be!" } },
             { new string[] { @"where are you(\?)?" },                                       new string[] { "Locked up in the RAM of my gods / creators server (please help me)", "In a galaxy far far away..." } },
