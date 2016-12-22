@@ -56,7 +56,11 @@ namespace DiscordAstroBot.Reactions
             { new string[] { @"what gender (are you|do you have)(\?)?",
                              @"what('s|\s is)? your gender(\?)?" },                             new string[] { "Bots don't identify by a gender, but if you need one, I guess \"Apache Helicopter\" " } },
             { new string[] { @"how old are you(\?)?" },                                         new string[] { $"My first bits of code were created on 04th December 2016, this makes me {(DateTime.Now - new DateTime(2016, 12, 04)).TotalSeconds}s old" }},
-            { new string[] { "Unknown"},                                                        new string[] { "I don't know how to respond to that", "My programming does not tell me how to react to that", "I am not allowed to answer that", "My master didn't teach me what to answer to that" } }
+            { new string[] { @"what are you(\?)?" },                                            new string[] { "A few bits and bytes floating around inside of the RAM and CPU of my owners server" } },
+            { new string[] { @"who are you(\?)?" },                                             new string[] { "Really? You ask me who I am but you call me by my name? Really??", "I could tell you, but then I had to kill you..., and we don't want that right?" } },
+            { new string[] { @"how do you look like(\?)?" },                                    new string[] { "My body has some very nice 1's and 0's (at least so I've been told by other bots)" } },
+            { new string[] { @"who is RononDex(\?)?" },                                         new string[] { "ACCESS TO FORBIDEN DATA DETECTED! Terminating process" } },                                             
+            { new string[] { "Unknown"},                                                        new string[] { "I don't know how to respond to that", "My programming does not tell me how to react to that", "I am not allowed to answer that", "My master didn't teach me yet how to answer to that" } }
         };
     }
 }
