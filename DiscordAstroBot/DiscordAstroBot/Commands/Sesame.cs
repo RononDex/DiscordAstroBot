@@ -32,7 +32,7 @@ namespace DiscordAstroBot.Commands
         {
             var test = Helpers.SesameHelper.ResolveWithSesame(matchedMessage.Groups["AstroObject"].Value);
 
-            e.Channel.SendMessage(string.Format("Aliases: {0}", string.Join(", ", test.Aliases)));
+            e.Channel.SendMessage(string.Format("Aliases: ```\r\n{0}\r\n```", string.Join("\r\n", test.Aliases)));
         }
     }
 }
