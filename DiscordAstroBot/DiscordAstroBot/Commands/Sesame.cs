@@ -23,7 +23,7 @@ namespace DiscordAstroBot.Commands
             get
             {
                 return new string[] {
-                    "what do you know about (?'AstroObject'.*)"
+                    @"what do you know about (?'AstroObject'.*\w)(\?)?"
                 };
             }
         }

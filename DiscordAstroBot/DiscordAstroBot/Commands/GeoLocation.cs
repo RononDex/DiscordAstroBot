@@ -26,13 +26,14 @@ namespace DiscordAstroBot.Commands
             get
             {
                 return new string[] {
-                    "What are the coordinates of (?'SearchLocation'.*)",
-                    "Tell me the coordinates of (?'SearchLocation'.*)",
-                    "Find the coordinates of (?'SearchLocation'.*)",
-                    "Find the coordinates from (?'SearchLocation'.*)",
-                    "Where is (?'SearchLocation'.*)",
-                    "Get the coordinates from (?'SearchLocation'.*)",
-                    "Get the coordinates of (?'SearchLocation'.*)"};
+                    @"What are the coordinates of (?'SearchLocation'.*\w)(\?)?",
+                    @"Tell me the coordinates of (?'SearchLocation'.*\w)(\?)?",
+                    @"Find the coordinates of (?'SearchLocation'.*\w)(\?)?",
+                    @"Find the coordinates from (?'SearchLocation'.*\w)(\?)?",
+                    @"Where is (?'SearchLocation'.*\w)(\?)?",
+                    @"Get the coordinates from (?'SearchLocation'.*\w)(\?)?",
+                    @"Get the coordinates of (?'SearchLocation'.*\w)(\?)?",
+                    @"Do you know the location of (?'SearchLocation'.*\w)(\?)?" };
             }
         }
 

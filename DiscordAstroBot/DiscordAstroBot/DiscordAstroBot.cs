@@ -66,13 +66,13 @@ namespace DiscordAstroBot
                 if (!e.Message.IsAuthor)
                 {
                     var splitted = e.Message.RawText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (splitted.Length > 0 && splitted[0].ToLower() == this.ChatPrefix)
+                    if (splitted.Length > 0 && splitted[0].ToLower() == this.ChatPrefix || e.Message.MentionedUsers.Any(x => x.Id == DiscordClient.CurrentUser.Id))
                     {
                         Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", e.Message.Text);
 
                         // Search for synonyms usind regex
                         bool commandExecuted = false;
-                        var message = string.Join(" ", splitted.Skip(1).Take(splitted.Length - 1).ToArray());
+                        var message = e.Message.Text.Replace(ChatPrefix, "").TrimStart();
                         foreach (var command in this.Commands)
                         {
                             foreach (var synonym in command.CommandSynonyms)

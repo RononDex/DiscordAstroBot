@@ -17,7 +17,7 @@ namespace DiscordAstroBot.Commands
             get
             {
                 return new string[] {
-                    "what agencies start with (?'AgencySearchName'.*)"
+                    @"what agencies start with (?'AgencySearchName'.*\w)(\?)?"
                 };
             }
         }
