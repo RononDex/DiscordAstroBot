@@ -19,7 +19,9 @@ namespace DiscordAstroBot.Commands
             {
                 return new string[]
                 {
-                    @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this image"
+                    @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this image(\?)?",
+                    @"what can you [find|figure] out [about|on|from|for] this image(\?)?",
+                    @"what (space )?[objects|DSO] [are|do you know] in this image(\?)?"
                 };
             }
         }
@@ -84,7 +86,7 @@ namespace DiscordAstroBot.Commands
                 tags));
 
             e.Channel.SendFile(string.Format("annoated_{0}", calibrationData.FileName),Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString())).Wait();
-            e.Channel.SendMessage(string.Format("Link to astrometry job result: http://nova.astrometry.net/user_images/{0}", submissionID));
+            e.Channel.SendMessage(string.Format("Link to astrometry job result: http://nova.astrometry.net/user_images/{0}", jobId));
         }
     }
 }
