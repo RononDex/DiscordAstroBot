@@ -72,7 +72,7 @@ namespace DiscordAstroBot
 
                         // Search for synonyms usind regex
                         bool commandExecuted = false;
-                        var message = e.Message.Text.Replace(ChatPrefix, "").TrimStart();
+                        var message = e.Message.Text.Replace(ChatPrefix, "").Replace(string.Format("@{0}", DiscordClient.CurrentUser.Name), "").TrimStart();
                         foreach (var command in this.Commands)
                         {
                             foreach (var synonym in command.CommandSynonyms)
