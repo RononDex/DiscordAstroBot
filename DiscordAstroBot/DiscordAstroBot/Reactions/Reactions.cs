@@ -12,8 +12,8 @@ namespace DiscordAstroBot.Reactions
     {
         public static string GetReaction(string input, MessageEventArgs e)
         {
-            string userToTroll = "tetz";
-            if (e.Message.User.Name.ToLower().Contains(userToTroll))
+            string[] usersToTroll = new string[] { "tetz", "nova" } ;
+            if (usersToTroll.Any(x => e.Message.User.Name.ToLower().Contains(x)))
             {
                 var reactionTetz = GetReactionTo(input, true);
                 return reactionTetz;

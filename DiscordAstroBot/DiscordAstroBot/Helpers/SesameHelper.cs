@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -34,8 +35,8 @@ namespace DiscordAstroBot.Helpers
             var simbadResolver = xml.Descendants("Resolver").First(x => x.FirstAttribute.Value.ToLower().Contains("simbad"));
             objectInfo.Aliases = simbadResolver.Descendants("alias").Select(x => x.Value).ToList();
             objectInfo.Name = simbadResolver.Element("oname").Value;
-            objectInfo.DECDec = Convert.ToSingle(simbadResolver.Element("jdedeg").Value);
-            objectInfo.RADec = Convert.ToSingle(simbadResolver.Element("jradeg").Value);
+            objectInfo.DECDec = Convert.ToSingle(simbadResolver.Element("jdedeg").Value, CultureInfo.InvariantCulture);
+            objectInfo.RADec = Convert.ToSingle(simbadResolver.Element("jradeg").Value, CultureInfo.InvariantCulture);
             objectInfo.PositionJ2000 = simbadResolver.Element("jpos").Value;
 
             return objectInfo;
