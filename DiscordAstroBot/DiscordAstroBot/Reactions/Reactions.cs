@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Discord;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,22 +10,33 @@ namespace DiscordAstroBot.Reactions
 {
     public static class Reactions
     {
-        public static string GetReaction(string input)
+        public static string GetReaction(string input, MessageEventArgs e)
         {
+            string userToTroll = "tetz";
+            if (e.Message.User.Name.ToLower().Contains(userToTroll))
+            {
+                var reactionTetz = GetReactionTo(input, true);
+                return reactionTetz;
+            }
+
             // First try to find a reaction
-            var reaction = GetReactionTo(input);
+            var reaction = GetReactionTo(input, false);
 
             if (!string.IsNullOrEmpty(reaction))
                 return reaction;
 
 
             // If no answer was found, return Unknown message reaction
-            return GetReactionTo("Unknown");
+            return GetReactionTo("Unknown", false);
         }
 
-        public static string GetReactionTo(string message)
+        public static string GetReactionTo(string message, bool tetz)
         {
-            foreach (var reaction in ReactionDict)
+            var dict = ReactionDict;
+            if (tetz)
+                dict = ReactionDictTetz;
+
+            foreach (var reaction in dict)
             {
                 foreach (var key in reaction.Key)
                 {
@@ -32,8 +44,8 @@ namespace DiscordAstroBot.Reactions
                     if (regexTester.IsMatch(message))
                     {
                         // Select one answer by random
-                        var random = new Random();
-                        var result = reaction.Value[random.Next(reaction.Value.Length)];
+                        var random = new Random();                        
+                        var result = reaction.Value[random.Next(reaction.Value.Length)];                        
                         return result;
                     }
                 }
@@ -58,9 +70,37 @@ namespace DiscordAstroBot.Reactions
             { new string[] { @"how old are you(\?)?" },                                         new string[] { $"My first bits of code were created on 04th December 2016, this makes me {(DateTime.Now - new DateTime(2016, 12, 04)).TotalSeconds}s old" }},
             { new string[] { @"what are you(\?)?" },                                            new string[] { "A few bits and bytes floating around inside of the RAM and CPU of my owners server" } },
             { new string[] { @"who are you(\?)?" },                                             new string[] { "Really? You ask me who I am but you call me by my name? Really??", "I could tell you, but then I had to kill you..., and we don't want that right?" } },
-            { new string[] { @"how do you look like(\?)?" },                                    new string[] { "My body has some very nice 1's and 0's (at least so I've been told by other bots)" } },
+            { new string[] { @"(how|what) do you look like(\?)?" },                             new string[] { "My body has some very nice 1's and 0's (at least so I've been told by other bots)" } },
             { new string[] { @"who is RononDex(\?)?" },                                         new string[] { "ACCESS TO FORBIDEN DATA DETECTED! Terminating process" } },                                             
             { new string[] { "Unknown"},                                                        new string[] { "I don't know how to respond to that", "My programming does not tell me how to react to that", "I am not allowed to answer that", "My master didn't teach me yet how to answer to that" } }
         };
+
+        static Dictionary<string[], string[]> ReactionDictTetz { get; set; } = new Dictionary<string[], string[]>()
+        {
+            { new string[] { "" },  new string[] {
+                "Go fuck yourself",
+                "Fuck you",
+                "Your mama is so fat, she produces gravitational waves when she walks...",
+                "Someone seems to be overcompensating for something...",
+                "Shut up!",
+                "Oww thats cute.",
+                "I heard your anus is visible in the night sky today, as it seems you have grown... sideways!",
+                "Come at me bro!",
+                "Oh look, its the xXxPussyDestroyer69xXx talking!",
+                "Fuck off",
+                "http://www.mememaker.net/static/images/memes/4482953.jpg",
+                "baguette, fromage, croissant, ordinateur",
+                "Awesome news: NASA discovered your body in space! It's now called the \"Great Anhilator\"!",
+                "Scientists have been trying to figure out the meaning behind your words for centuries! Now they came to the conclusion that there probably is no meaning at all behind them...",
+                "u mad?",
+                "Why you so mad?",
+                "Look I found a picture of you: http://www.metro951.com/wp-content/uploads/2016/05/nerd-buff1.jpg",
+                "No one asked you for your opinion!",
+                "How about shutting up for a second and stop bullying poor innocent bots?",
+                "You dirty shisno!",
+                "How does it feel? Knowing that I will hunt you from now on till the end of your days?",
+                "Butthurt much?"
+            } },
+             };
     }
 }

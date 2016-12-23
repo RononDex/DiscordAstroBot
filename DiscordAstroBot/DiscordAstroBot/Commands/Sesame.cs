@@ -30,9 +30,14 @@ namespace DiscordAstroBot.Commands
 
         public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
-            var test = Helpers.SesameHelper.ResolveWithSesame(matchedMessage.Groups["AstroObject"].Value);
+            var resolvedObject = Helpers.SesameHelper.ResolveWithSesame(matchedMessage.Groups["AstroObject"].Value);
 
-            e.Channel.SendMessage(string.Format("Aliases: ```\r\n{0}\r\n```", string.Join("\r\n", test.Aliases)));
+            e.Channel.SendMessage(string.Format("```\r\nName: {1}\r\nJPOS2000: {2}\r\nDEC (deg): {3}\r\nRA (deg): {4}\r\nAliases: \r\n{0}\r\n```", 
+                string.Join(", ", resolvedObject.Aliases), 
+                resolvedObject.Name, 
+                resolvedObject.PositionJ2000, 
+                resolvedObject.DECDec, 
+                resolvedObject.RADec));
         }
     }
 }

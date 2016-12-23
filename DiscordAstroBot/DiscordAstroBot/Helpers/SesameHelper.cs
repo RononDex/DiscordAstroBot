@@ -31,8 +31,12 @@ namespace DiscordAstroBot.Helpers
             var xml = XDocument.Parse(text);
 
             var objectInfo = new AstronomicalObjectInfo();
-
-            objectInfo.Aliases = xml.Descendants("alias").Select(x => x.Value).ToList();
+            var simbadResolver = xml.Descendants("Resolver").First(x => x.FirstAttribute.Value.ToLower().Contains("simbad"));
+            objectInfo.Aliases = simbadResolver.Descendants("alias").Select(x => x.Value).ToList();
+            objectInfo.Name = simbadResolver.Element("oname").Value;
+            objectInfo.DECDec = Convert.ToSingle(simbadResolver.Element("jdedeg").Value);
+            objectInfo.RADec = Convert.ToSingle(simbadResolver.Element("jradeg").Value);
+            objectInfo.PositionJ2000 = simbadResolver.Element("jpos").Value;
 
             return objectInfo;
         }
