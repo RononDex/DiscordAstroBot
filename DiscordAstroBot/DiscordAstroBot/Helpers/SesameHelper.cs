@@ -55,4 +55,15 @@ namespace DiscordAstroBot.Helpers
 
         public List<string> Aliases { get; set; }
     }
+
+    public class Magnitude
+    {
+        public float Value { get; set; }
+
+        public float Error { get; set; }
+
+        public string Reference { get; set; }
+
+
+    }
 }

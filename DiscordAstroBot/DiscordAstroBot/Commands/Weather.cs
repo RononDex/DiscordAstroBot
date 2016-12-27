@@ -16,7 +16,7 @@ namespace DiscordAstroBot.Commands
             get
             {
                 return new string[] {
-                    @"(whats|what's|show\sme|how is|hows|how's) the weather (like )?(in|for) (?'SearchLocation'.*\w)(\?)?",
+                    @"(whats|what's|show\sme|how is|hows|how's|what is) the weather (like )?(in|for) (?'SearchLocation'.*\w)(\?)?",
                 };
             }
         }
