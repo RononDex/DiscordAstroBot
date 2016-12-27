@@ -32,12 +32,13 @@ namespace DiscordAstroBot.Commands
         {
             var resolvedObject = Helpers.SesameHelper.ResolveWithSesame(matchedMessage.Groups["AstroObject"].Value);
 
-            e.Channel.SendMessage(string.Format("```\r\nName: {1}\r\nJPOS2000: {2}\r\nDEC (deg): {3}\r\nRA (deg): {4}\r\nAliases: \r\n{0}\r\n```", 
-                string.Join(", ", resolvedObject.Aliases), 
-                resolvedObject.Name, 
-                resolvedObject.PositionJ2000, 
-                resolvedObject.DECDec, 
-                resolvedObject.RADec));
+            e.Channel.SendMessage(string.Format("```\r\nName: {1}\r\nJPOS2000: {2}\r\nDEC (deg): {3}\r\nRA (deg): {4}\r\n\r\nMagnitudes:\r\n{5}\r\n\r\nAliases: \r\n{0}\r\n```",
+                string.Join(", ", resolvedObject.Aliases),
+                resolvedObject.Name,
+                resolvedObject.PositionJ2000,
+                resolvedObject.DECDec,
+                resolvedObject.RADec,
+                string.Join("\r\n\r\n", resolvedObject.Fluxes.Select(x => x.ToString()))));
         }
     }
 }

@@ -39,6 +39,17 @@ namespace DiscordAstroBot.Helpers
             objectInfo.RADec = Convert.ToSingle(simbadResolver.Element("jradeg").Value, CultureInfo.InvariantCulture);
             objectInfo.PositionJ2000 = simbadResolver.Element("jpos").Value;
 
+            foreach (var flux in simbadResolver.Elements("mag"))
+            {
+                objectInfo.Fluxes.Add(new Magnitude()
+                {
+                    Type = flux.Attribute("band").Value,
+                    Value = Convert.ToSingle(flux.Element("v").Value, CultureInfo.InvariantCulture),
+                    Error = Convert.ToSingle(flux.Element("e").Value, CultureInfo.InvariantCulture),
+                    Reference = flux.Element("r").Value
+                });
+            }
+
             return objectInfo;
         }
     }
@@ -53,7 +64,9 @@ namespace DiscordAstroBot.Helpers
 
         public string Name { get; set; }
 
-        public List<string> Aliases { get; set; }
+        public List<string> Aliases { get; set; } = new List<string>();
+
+        public List<Magnitude> Fluxes { get; set; } = new List<Magnitude>();
     }
 
     public class Magnitude
@@ -64,6 +77,11 @@ namespace DiscordAstroBot.Helpers
 
         public string Reference { get; set; }
 
+        public string Type { get; set; }
 
+        public override string ToString()
+        {
+            return string.Format("    Type: {1}    Value: {0}    Error: {2}\r\n    Reference: {3}", this.Value, this.Type, this.Error, this.Reference);
+        }
     }
 }

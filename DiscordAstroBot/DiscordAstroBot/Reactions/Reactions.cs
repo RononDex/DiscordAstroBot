@@ -12,7 +12,7 @@ namespace DiscordAstroBot.Reactions
     {
         public static string GetReaction(string input, MessageEventArgs e)
         {
-            string[] usersToTroll = new string[] { "tetz", "nova" } ;
+            string[] usersToTroll = new string[] {  } ;
             if (usersToTroll.Any(x => e.Message.User.Name.ToLower().Contains(x)))
             {
                 var reactionTetz = GetReactionTo(input, true);
@@ -30,6 +30,12 @@ namespace DiscordAstroBot.Reactions
             return GetReactionTo("Unknown", false);
         }
 
+        /// <summary>
+        /// Gets a reaction to a given message
+        /// </summary>
+        /// <param name="message">message</param>
+        /// <param name="tetz">Mad mode?</param>
+        /// <returns></returns>
         public static string GetReactionTo(string message, bool tetz)
         {
             var dict = ReactionDict;
@@ -54,6 +60,9 @@ namespace DiscordAstroBot.Reactions
             return null;            
         }
 
+        /// <summary>
+        /// Some predefined reactions (TODO: Move to a xml file)
+        /// </summary>
         static Dictionary<string[], string[]> ReactionDict { get; set; } = new Dictionary<string[], string[]>()
         {
             { new string[] { "^$" },                                                            new string[] { "How can I help you?", "At your service", "Yes?", "Hi!", "Hi there!", "Hello there!" } },
@@ -75,6 +84,10 @@ namespace DiscordAstroBot.Reactions
             { new string[] { "Unknown"},                                                        new string[] { "I don't know how to respond to that", "My programming does not tell me how to react to that", "I am not allowed to answer that", "My master didn't teach me yet how to answer to that" } }
         };
 
+
+        /// <summary>
+        /// Reactions for mad mode
+        /// </summary>
         static Dictionary<string[], string[]> ReactionDictTetz { get; set; } = new Dictionary<string[], string[]>()
         {
             { new string[] { "" },  new string[] {
