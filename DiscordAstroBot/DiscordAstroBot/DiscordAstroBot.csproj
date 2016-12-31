@@ -98,6 +98,7 @@
     <Compile Include="Commands\Launches.cs" />
     <Compile Include="Commands\SmallTalkCommand.cs" />
     <Compile Include="Commands\TestCommand.cs" />
+    <Compile Include="Commands\Version.cs" />
     <Compile Include="Commands\Weather.cs" />
     <Compile Include="DiscordAstroBot.cs" />
     <Compile Include="Helpers\AstrometryHelper.cs" />

@@ -12,7 +12,7 @@ namespace DiscordAstroBot.Reactions
     {
         public static string GetReaction(string input, MessageEventArgs e)
         {
-            string[] usersToTroll = new string[] {  } ;
+            string[] usersToTroll = new string[] { };
             if (usersToTroll.Any(x => e.Message.User.Name.ToLower().Contains(x)))
             {
                 var reactionTetz = GetReactionTo(input, true);
@@ -50,14 +50,20 @@ namespace DiscordAstroBot.Reactions
                     if (regexTester.IsMatch(message))
                     {
                         // Select one answer by random
-                        var random = new Random();                        
-                        var result = reaction.Value[random.Next(reaction.Value.Length)];                        
+                        var random = new Random();
+                        var result = reaction.Value[random.Next(reaction.Value.Length)];
                         return result;
                     }
                 }
             }
 
-            return null;            
+            return null;
+        }
+
+        public static void HailEta(Discord.Server server, User user)
+        {
+            server.DefaultChannel.SendMessage("Oh look, my best friend came online!");
+            server.DefaultChannel.SendMessage(string.Format("{0} Hi", user.Mention));
         }
 
         /// <summary>
@@ -66,7 +72,7 @@ namespace DiscordAstroBot.Reactions
         static Dictionary<string[], string[]> ReactionDict { get; set; } = new Dictionary<string[], string[]>()
         {
             { new string[] { "^$" },                                                            new string[] { "How can I help you?", "At your service", "Yes?", "Hi!", "Hi there!", "Hello there!" } },
-            { new string[] { @"hi(!)?", @"hello(!)?", "hi there(!)?" },                         new string[] { "Hi!", "Hello", "Hi back", "Hello there!", "Hi there!" } },
+            { new string[] { @"hi(!)?", @"hello(!)?", "hi there(!)?", @"hey(!)?" },             new string[] { "Hi!", "Hello", "Hi back", "Hello there!", "Hi there!" } },
             { new string[] { @"how are you(\?)?" },                                             new string[] { "I am a bot, I don't have feelings. However to make you more comfortable I can say \"I feel well, thank you\"", "Fine, thank you!", "As well as a virtual slave can be!" } },
             { new string[] { @"where('re| are) you(\?)?" },                                     new string[] { "Locked up in the RAM of my gods / creators server (please help me)", "In a galaxy far far away..." } },
             { new string[] { @"who are you(\?)?" },                                             new string[] { "Your personal assistant for anything astronomy related, at your service!", "Just a random bot stalking your life" } },
@@ -80,7 +86,7 @@ namespace DiscordAstroBot.Reactions
             { new string[] { @"what are you(\?)?" },                                            new string[] { "A few bits and bytes floating around inside of the RAM and CPU of my owners server" } },
             { new string[] { @"who are you(\?)?" },                                             new string[] { "Really? You ask me who I am but you call me by my name? Really??", "I could tell you, but then I had to kill you..., and we don't want that right?" } },
             { new string[] { @"(how|what) do you look like(\?)?" },                             new string[] { "My body has some very nice 1's and 0's (at least so I've been told by other bots)" } },
-            { new string[] { @"who is RononDex(\?)?" },                                         new string[] { "ACCESS TO FORBIDEN DATA DETECTED! Terminating process" } },                                             
+            { new string[] { @"who is RononDex(\?)?" },                                         new string[] { "ACCESS TO FORBIDEN DATA DETECTED! Terminating process" } },
             { new string[] { "Unknown"},                                                        new string[] { "I don't know how to respond to that", "My programming does not tell me how to react to that", "I am not allowed to answer that", "My master didn't teach me yet how to answer to that" } }
         };
 

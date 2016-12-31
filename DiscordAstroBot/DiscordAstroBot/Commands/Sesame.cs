@@ -31,14 +31,20 @@ namespace DiscordAstroBot.Commands
         public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
             var resolvedObject = Helpers.SesameHelper.ResolveWithSesame(matchedMessage.Groups["AstroObject"].Value);
+            if (resolvedObject == null)
+            {
+                e.Channel.SendMessage(string.Format("Could not find any object in the SIMBAD database matching your search \"{0}\"", matchedMessage.Groups["AstroObject"].Value));
+                return;
+            }
 
-            e.Channel.SendMessage(string.Format("```\r\nName: {1}\r\nJPOS2000: {2}\r\nDEC (deg): {3}\r\nRA (deg): {4}\r\n\r\nMagnitudes:\r\n{5}\r\n\r\nAliases: \r\n{0}\r\n```",
+            e.Channel.SendMessage(string.Format("```\r\nName: {1}\r\nJPOS2000: {2}\r\nDEC (deg): {3}\r\nRA (deg): {4}\r\n\r\nVelocity:\r\n{6}\r\n\r\nMagnitudes:\r\n{5}\r\n\r\nAliases: \r\n{0}\r\n```",
                 string.Join(", ", resolvedObject.Aliases),
                 resolvedObject.Name,
                 resolvedObject.PositionJ2000,
                 resolvedObject.DECDec,
                 resolvedObject.RADec,
-                string.Join("\r\n\r\n", resolvedObject.Fluxes.Select(x => x.ToString()))));
+                string.Join("\r\n\r\n", resolvedObject.Fluxes.Select(x => x.ToString())),
+                resolvedObject.Velocity));
         }
     }
 }

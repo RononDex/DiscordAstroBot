@@ -14,8 +14,11 @@ namespace DiscordAstroBot
     public class DiscordAstroBot
     {
         /// <summary>
-        /// The DiscordClient
+        /// A list of all the servers where the bot anounced that he is now running
         /// </summary>
+        private List<ulong> HailedServers { get; set; } = new List<ulong>();
+
+
         DiscordClient DiscordClient { get; set; }
 
         /// <summary>
@@ -28,6 +31,11 @@ namespace DiscordAstroBot
         /// </summary>
         public string ChatPrefix { get; set; }
 
+        /// <summary>
+        /// Constructor of the bot, this is where all the initialisations happen
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="chatPrefix"></param>
         public DiscordAstroBot(string token, string chatPrefix)
         {
             // Initialize the client
@@ -44,6 +52,8 @@ namespace DiscordAstroBot
             RegisterCommands();
 
             DiscordClient.MessageReceived += MessageReceived;
+            DiscordClient.ServerAvailable += DiscordClient_ServerAvailable;
+            DiscordClient.UserUpdated += DiscordClient_UserUpdated;
 
             // Login into Discord
             DiscordClient.ExecuteAndWait(async () =>
@@ -51,8 +61,40 @@ namespace DiscordAstroBot
                 await DiscordClient.Connect(token, TokenType.Bot);
                 Log<DiscordAstroBot>.InfoFormat("Login successfull");
             });
+        }
 
-            DiscordClient.SetGame("Mad @ tetz");
+        /// <summary>
+        /// Gets called when a user update happens (for example when he comes online)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DiscordClient_UserUpdated(object sender, UserUpdatedEventArgs e)
+        {
+            // If astrobots best friend comes online (another bot) hail it
+            if (e.After.Name.ToLower().Contains("eta") && e.After.IsBot)
+            {
+                if (e.Before.Status.Value.ToLower() != "online" && e.After.Status.Value.ToLower() == "online")
+                {
+                    Reactions.Reactions.HailEta(e.Server, e.After);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Event that gets raised when a new server becomes available for the bot
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DiscordClient_ServerAvailable(object sender, ServerEventArgs e)
+        {
+            // Since random disconnects and reconects to the servers happen, we dont want
+            // the bot to tell everyone that he is online everytime this happen,
+            // but rather only the first time
+            if (!HailedServers.Contains(e.Server.Id))
+            {
+                e.Server.DefaultChannel.SendMessage("I am now up and running");
+                HailedServers.Add(e.Server.Id);
+            }
         }
 
         /// <summary>
@@ -147,6 +189,7 @@ namespace DiscordAstroBot
             Commands.Add(new Commands.Weather());
             Commands.Add(new Commands.Launches());
             Commands.Add(new Commands.Sesame());
+            Commands.Add(new Commands.Version());
 
             foreach (var command in this.Commands)
             {
