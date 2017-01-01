@@ -96,6 +96,7 @@
     <Compile Include="Commands\Sesame.cs" />
     <Compile Include="Commands\GeoLocation.cs" />
     <Compile Include="Commands\Launches.cs" />
+    <Compile Include="Commands\Simbad.cs" />
     <Compile Include="Commands\SmallTalkCommand.cs" />
     <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="Commands\Version.cs" />
@@ -107,13 +108,25 @@
     <Compile Include="Helpers\SesameHelper.cs" />
     <Compile Include="Helpers\WeatherHelper.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Objects\AstronomicalObjectInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reactions\Reactions.cs" />
+    <Compile Include="Simbad\SimbadQuery.cs" />
+    <Compile Include="Simbad\SimbadResult.cs" />
+    <Compile Include="Simbad\SIMBADSettings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>SIMBADSettings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Simbad\SIMBADSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>SIMBADSettings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\packages\PhantomJS.2.1.1\tools\phantomjs\phantomjs.exe">

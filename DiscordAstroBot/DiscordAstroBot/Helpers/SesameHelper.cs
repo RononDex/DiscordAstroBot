@@ -55,13 +55,16 @@ namespace DiscordAstroBot.Helpers
                 });
             }
 
-            var velocityTag = simbadResolver.Element("Vel");
-            objectInfo.Velocity = new Velocity()
+            var velocityTag = simbadResolver.Elements("Vel").FirstOrDefault();
+            if (velocityTag != null)
             {
-                VelocityError =Convert.ToSingle(velocityTag.Element("e").Value),
-                Reference = velocityTag.Element("r").Value,
-                RelVelocity = Convert.ToSingle(velocityTag.Element("v").Value)
-            };
+                objectInfo.Velocity = new Velocity()
+                {
+                    VelocityError = Convert.ToSingle(velocityTag.Element("e").Value),
+                    Reference = velocityTag.Element("r").Value,
+                    RelVelocity = Convert.ToSingle(velocityTag.Element("v").Value)
+                };
+            }
 
             return objectInfo;
         }
@@ -98,19 +101,29 @@ namespace DiscordAstroBot.Helpers
         {
             switch (filter.ToUpper())
             {
-                case "U": return "Ultra-Violet";
-                case "B": return "Blue";
-                case "V": return "Visible";
-                case "G": return "Green";
-                case "R": return "Red";
-                case "I": return "Infra-Red";
+                case "U": return "Ultra-Violet (365nm, FWHM 66nm)";
+                case "B": return "Blue (445nm, FWHM 94nm)";
+                case "V": return "Visible (551nm, FWHM 88nm)";
+                case "G": return "Green ";
+                case "R": return "Red (658nm, FWHM 138nm)";
+                case "I": return "Infra-Red (806nm, FWHM 149nm)";
+                case "Z": return "Z (900nm)";
+                case "Y": return "Y (1020nm, FWHM 120nm)";
+                case "J": return "J (1220nm, FWHM 213nm)";
+                case "H": return "H (1630nm, FWHM 307nm)";
+                case "K": return "K (2190nm, FWHM 390nm)";
+                case "L": return "L (3450nm, FWHM 472nm)";
+                case "M": return "M (4750nm, FWHM 460nm)";
+                case "N": return "N (10500nm, FWHM 2500nm)";
+                case "Q": return "Q (21000nm, FWHM 5800nm)";
                 default: return filter;
             }
         }
 
+
         public override string ToString()
         {
-            return string.Format("    Filter: {1}    Value: {0} ± {2}\r\n    Reference: {3}", this.Value, this.Filter, this.Error, this.Reference);
+            return string.Format("    Filter: {1}\r\n    Value: {0} ± {2}\r\n    Reference: {3}", this.Value, this.Filter, this.Error, this.Reference);
         }
     }
 
