@@ -3,7 +3,10 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,6 +43,14 @@ namespace DiscordAstroBot.Helpers
                     Screenshot = screenshotAsByteArray
                 };
             }
+        }
+
+        public static MemoryStream GetWeatherForecastImgUrl(GeoLocation location)
+        {
+            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            var url = string.Format("https://clearoutside.com/forecast_image_large/{0:0.00}/{1:0.00}/forecast.png", location.Lat, location.Long);
+            var wc = new WebClient();
+            return new MemoryStream(wc.DownloadData(url));
         }
     }
 

@@ -62,7 +62,7 @@ namespace DiscordAstroBot.Helpers
 
         public override string ToString()
         {
-            return string.Format("Name: {2}    Lat: {0:0.000}    Lng: {1:0.000}", Lat, Long, LocationName);
+            return string.Format("Name: {2}    Lat: {0:0.00}    Lng: {1:0.00}", Lat, Long, LocationName);
         }
     }
 }

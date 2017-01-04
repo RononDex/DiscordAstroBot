@@ -27,10 +27,17 @@ namespace DiscordAstroBot.Commands
         {
             var location = Helpers.GeoLocationHelper.FindLocation(matchedMessage.Groups["SearchLocation"].Value);
             e.Channel.SendMessage(string.Format("Hold on, searching a weather forcast for {0}. This might take a moment...", location));
-            var forcast = Helpers.WeatherHelper.GetWeatherForcast(DateTime.Today, location);
+            //var forcast = Helpers.WeatherHelper.GetWeatherForcast(DateTime.Today, location);
 
+            var forcast = Helpers.WeatherHelper.GetWeatherForecastImgUrl(location);
             e.Channel.SendMessage(string.Format("This is the weather forcast that I found for {0}:", matchedMessage.Groups["SearchLocation"].Value));
-            e.Channel.SendFile("Weather_forcast.png", new MemoryStream(forcast.Screenshot));
+            e.Channel.SendFile("Weather_forcast.png", forcast);
+
+
+            //e.Channel.SendMessage(string.Format("This is the weather forcast that I found for {0}:", matchedMessage.Groups["SearchLocation"].Value));
+            //e.Channel.SendFile("Weather_forcast.png", new MemoryStream(forcast.Screenshot));
+
+
         }
     }
 }

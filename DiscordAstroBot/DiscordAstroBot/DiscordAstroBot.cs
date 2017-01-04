@@ -90,7 +90,7 @@ namespace DiscordAstroBot
             // Since random disconnects and reconects to the servers happen, we dont want
             // the bot to tell everyone that he is online everytime this happen,
             // but rather only the first time
-            if (/*!HailedServers.Contains(e.Server.Id)*/ false)
+            if (!HailedServers.Contains(e.Server.Id /*false*/))
             {
                 e.Server.DefaultChannel.SendMessage("I am now up and running");
                 HailedServers.Add(e.Server.Id);
