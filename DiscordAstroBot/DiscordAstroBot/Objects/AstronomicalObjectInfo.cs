@@ -21,6 +21,11 @@ namespace DiscordAstroBot.Objects
             var obj = new AstronomicalObjectInfo();
             if (result.Sections.ContainsKey("Main_id"))
                 obj.Name = result.Sections["Main_id"];
+            if (result.Sections.ContainsKey("ObjectType"))
+                obj.ObjectType = result.Sections["ObjectType"];
+            if (result.Sections.ContainsKey("Coordinates"))
+                obj.Coordinates = result.Sections["Coordinates"];
+
 
             return obj;
         }
@@ -29,5 +34,15 @@ namespace DiscordAstroBot.Objects
         /// The main name of the object (main identifier)
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// The main type of the object
+        /// </summary>
+        public string ObjectType { get; set; }
+
+        /// <summary>
+        /// Coordinates (RA, DEC)
+        /// </summary>
+        public string Coordinates { get; set; }
     }
 }
