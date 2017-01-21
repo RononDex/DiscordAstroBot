@@ -24,8 +24,20 @@ namespace DiscordAstroBot.Objects
             if (result.Sections.ContainsKey("ObjectType"))
                 obj.ObjectType = result.Sections["ObjectType"];
             if (result.Sections.ContainsKey("Coordinates"))
-                obj.Coordinates = result.Sections["Coordinates"];
+            {
+                var dec = result.Sections["Coordinates"].Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault( x => x.ToLower().StartsWith("dec:"));
+                var ra = result.Sections["Coordinates"].Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault( x => x.ToLower().StartsWith("ra:"));
+                obj.Coordinates = new AstroSkyCoordinates()
+                {
+                    DEC = dec.ToLower().Replace("DEC: ", "").Replace("\n", "").Replace("\r", ""),
+                    RA = ra.ToLower().Replace("RA: ", "").Replace("\n", "").Replace("\r", "")
+                };
+            }
 
+            if (result.Sections.ContainsKey("OtherTypes"))
+            {
+                obj.SecondaryTypes.AddRange(result.Sections["OtherTypes"].Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
+            }
 
             return obj;
         }
@@ -43,6 +55,32 @@ namespace DiscordAstroBot.Objects
         /// <summary>
         /// Coordinates (RA, DEC)
         /// </summary>
-        public string Coordinates { get; set; }
+        public AstroSkyCoordinates Coordinates { get; set; }
+
+        /// <summary>
+        /// Secondary object types (also classified as...)
+        /// </summary>
+        public List<string> SecondaryTypes { get; set; } = new List<string>();
+    }
+
+    /// <summary>
+    /// Represents the coordinates of a DSO
+    /// </summary>
+    public class AstroSkyCoordinates
+    {
+        /// <summary>
+        /// Right-ascension angle
+        /// </summary>
+        public string RA { get; set; }
+
+        /// <summary>
+        /// Declenation angle
+        /// </summary>
+        public string DEC { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("RA: {0}\tDEC: {1}", this.RA, this.DEC);
+        }
     }
 }

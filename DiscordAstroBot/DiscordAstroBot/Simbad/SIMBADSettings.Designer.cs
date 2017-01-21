@@ -25,9 +25,14 @@ namespace DiscordAstroBot.Simbad {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("output console=off script=off\r\nformat object f1 \"[[Main_id]]\\n%IDLIST(1)\\n\" +\r\n\"[" +
-            "[ObjectType]]\\n%OTYPE(V)\\n\" +\r\n\"[[Coordinates]]\\nRA: %COO(A)\\nDEC: %COO(D)\\n\" +\r" +
-            "\n\"[[Identifiers]]\\n%IDLIST[%-20*\\n]\"+\r\n\"\"\r\nquery id {0}\r\n")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"output console=off script=off
+format object f1 ""[[Main_id]]\n%IDLIST(1)\n"" +
+""[[ObjectType]]\n%OTYPE(V)\n"" +
+""[[Coordinates]]\nRA: %COO(A)\nDEC: %COO(D)\n"" +
+""[[Identifiers]]\n%IDLIST[%-20*\n]\n""+
+""[[OtherTypes]]\n%OTYPELIST(V\n)\n""+
+""[[end]]""
+query id {0}")]
         public string ObjectQuery {
             get {
                 return ((string)(this["ObjectQuery"]));

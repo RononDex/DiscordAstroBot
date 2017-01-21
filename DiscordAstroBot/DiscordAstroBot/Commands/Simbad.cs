@@ -37,10 +37,11 @@ namespace DiscordAstroBot.Commands
                 }
 
                 var obj = Objects.AstronomicalObjectInfo.FromSimbadResult(info);
-                e.Channel.SendMessage(string.Format("This is what I found in the SIMBAD databse:\r\n```\r\nMain Identifier: {0}\r\nMainType: {1}\r\nCoordinates: {2}\r\n```\r\n",
+                e.Channel.SendMessage(string.Format("This is what I found in the SIMBAD database:\r\n```\r\nMain Identifier: {0}\r\nMainType: {1}\r\nSecondaryTypes: {3}\r\nCoordinates: {2}\r\n```\r\n",
                     obj.Name,
                     obj.ObjectType,
-                    obj.Coordinates));
+                    obj.Coordinates,
+                    string.Join(" ", obj.SecondaryTypes.Select( x => x.Replace("\n", "").Replace("\r", "")))));
             }
         }
     }
