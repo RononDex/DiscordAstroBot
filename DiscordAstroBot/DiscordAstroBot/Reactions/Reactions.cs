@@ -12,7 +12,7 @@ namespace DiscordAstroBot.Reactions
     {
         public static string GetReaction(string input, MessageEventArgs e)
         {
-            string[] usersToTroll = new string[] { };
+            string[] usersToTroll = new string[] { "eta" };
             if (usersToTroll.Any(x => e.Message.User.Name.ToLower().Contains(x)))
             {
                 var reactionTetz = GetReactionTo(input, true);
@@ -107,8 +107,8 @@ namespace DiscordAstroBot.Reactions
                 "Come at me bro!",
                 "Oh look, its the xXxPussyDestroyer69xXx talking!",
                 "Fuck off",
-                "http://www.mememaker.net/static/images/memes/4482953.jpg",
-                "baguette, fromage, croissant, ordinateur",
+                /*"http://www.mememaker.net/static/images/memes/4482953.jpg",*/
+                /*"baguette, fromage, croissant, ordinateur",*/
                 "Awesome news: NASA discovered your body in space! It's now called the \"Great Anhilator\"!",
                 "Scientists have been trying to figure out the meaning behind your words for centuries! Now they came to the conclusion that there probably is no meaning at all behind them...",
                 "u mad?",
@@ -117,7 +117,7 @@ namespace DiscordAstroBot.Reactions
                 "No one asked you for your opinion!",
                 "How about shutting up for a second and stop bullying poor innocent bots?",
                 "You dirty shisno!",
-                "How does it feel? Knowing that I will hunt you from now on till the end of your days?",
+                /*"How does it feel? Knowing that I will hunt you from now on till the end of your days?",*/
                 "Butthurt much?"
             } },
              };
