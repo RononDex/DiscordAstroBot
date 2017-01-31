@@ -92,7 +92,7 @@ namespace DiscordAstroBot
             // but rather only the first time
             if (!HailedServers.Contains(e.Server.Id /*false*/))
             {
-                e.Server.DefaultChannel.SendMessage("I am now up and running");
+                //<e.Server.DefaultChannel.SendMessage("I am now up and running");
                 HailedServers.Add(e.Server.Id);
             }
         }

@@ -9,6 +9,9 @@ format object f1 "[[Main_id]]\n%IDLIST(1)\n" +
 "[[Coordinates]]\nRA: %COO(A)\nDEC: %COO(D)\n" +
 "[[Identifiers]]\n%IDLIST[%-20*\n]\n"+
 "[[OtherTypes]]\n%OTYPELIST(V\n)\n"+
+"[[ProperMotion]]\nRA: %PM(A)\nDEC: %PM(D)\n" +
+"[[Parallax]]\nValue: %PLX(V)\nError: %PLX(E)\n" +
+"[[RadialVelocity]]\nz: %RV(Z)\nError: %RV(E)\nv: %RV(V)\n" +
 "[[end]]"
 query id {0}</Value>
     </Setting>
