@@ -27,8 +27,10 @@ namespace DiscordAstroBot.Objects
                 obj.Coordinates = RADECCoords.FromSimbadString(result.Sections["Coordinates"]);
             
             if (result.Sections.ContainsKey("ProperMotion"))            
-                obj.Coordinates = RADECCoords.FromSimbadString(result.Sections["ProperMotion"]);
-            
+                obj.ProperMotion = RADECCoords.FromSimbadString(result.Sections["ProperMotion"]);
+
+            if (result.Sections.ContainsKey("Identifiers"))
+                obj.AlsoKnownAs.AddRange(result.Sections["Identifiers"].Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Replace("\n", "")));
 
             if (result.Sections.ContainsKey("Parallax"))
                 obj.Parallax = ValueWithError.FromSimbadString(result.Sections["Parallax"]);
@@ -75,6 +77,11 @@ namespace DiscordAstroBot.Objects
         public ValueWithError Parallax { get; set; }
 
         public RadialVelocity RadialVelocity { get; set; }
+
+        /// <summary>
+        /// A list of synonyms for this object
+        /// </summary>
+        public List<string> AlsoKnownAs { get; set; } = new List<string>();
     }
 
     /// <summary>
@@ -84,8 +91,8 @@ namespace DiscordAstroBot.Objects
     {
         public static RADECCoords FromSimbadString(string result)
         {
-            var dec = result.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.ToLower().StartsWith("dec:")).Replace("dec: ", "").Replace("\n", "").Replace("\r", "");
-            var ra = result.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.ToLower().StartsWith("ra:")).Replace("ra: ", "").Replace("\n", "").Replace("\r", "");
+            var dec = result.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.ToLower().StartsWith("dec:")).Replace("DEC: ", "").Replace("\n", "").Replace("\r", "");
+            var ra = result.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.ToLower().StartsWith("ra:")).Replace("RA: ", "").Replace("\n", "").Replace("\r", "");
 
             return new RADECCoords() { DEC = dec, RA = ra };
         }
@@ -136,7 +143,7 @@ namespace DiscordAstroBot.Objects
         public static RadialVelocity FromSimbadString(string result)
         {
             var z = result.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.ToLower().StartsWith("z:")).Trim().Replace("\n", "").Replace("\r", "").Replace("z: ", "");
-            var err = result.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.ToLower().StartsWith("error:")).Trim().Replace("\n", "").Replace("\r", "").Replace("error: ", "");
+            var err = result.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.ToLower().StartsWith("error:")).Trim().Replace("\n", "").Replace("\r", "").Replace("Error: ", "");
             var v = result.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.ToLower().StartsWith("v:")).Trim().Replace("\n", "").Replace("\r", "").Replace("v: ", "");
 
             return new RadialVelocity() { Redshift = z, Error = err, Velocity = v };
