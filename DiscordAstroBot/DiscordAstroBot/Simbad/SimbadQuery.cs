@@ -25,12 +25,13 @@ namespace DiscordAstroBot.Simbad
             var url = string.Format("http://simbad.u-strasbg.fr/simbad/sim-script?script={0}", WebUtility.UrlEncode(query));
 
             var webRequest = WebRequest.Create(url);
-            var response = (HttpWebResponse)webRequest.GetResponse();
-
             string text;
-            using (var sr = new StreamReader(response.GetResponseStream()))
-            {
-                text = sr.ReadToEnd();
+            using (var response = (HttpWebResponse)webRequest.GetResponse())
+            {                
+                using (var sr = new StreamReader(response.GetResponseStream()))
+                {
+                    text = sr.ReadToEnd();
+                }
             }
 
             if (text.Contains(SIMBADSettings.Default.IdentifierNotFoundMessage))

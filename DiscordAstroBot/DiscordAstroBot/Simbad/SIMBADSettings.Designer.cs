@@ -12,7 +12,7 @@ namespace DiscordAstroBot.Simbad {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.0.0.0")]
     internal sealed partial class SIMBADSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static SIMBADSettings defaultInstance = ((SIMBADSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SIMBADSettings())));
@@ -34,8 +34,10 @@ format object f1 ""[[Main_id]]\n%IDLIST(1)\n"" +
 ""[[ProperMotion]]\nRA: %PM(A)\nDEC: %PM(D)\n"" +
 ""[[Parallax]]\nValue: %PLX(V)\nError: %PLX(E)\n"" +
 ""[[RadialVelocity]]\nz: %RV(Z)\nError: %RV(E)\nv: %RV(V)\n"" +
+""[[Distances]]\n%MEASLIST(distance)\n"" +
 ""[[end]]""
-query id {0}")]
+query id {0}
+")]
         public string ObjectQuery {
             get {
                 return ((string)(this["ObjectQuery"]));

@@ -23,14 +23,14 @@ namespace DiscordAstroBot.Objects
                 obj.Name = result.Sections["Main_id"];
             if (result.Sections.ContainsKey("ObjectType"))
                 obj.ObjectType = result.Sections["ObjectType"];
-            if (result.Sections.ContainsKey("Coordinates"))            
+            if (result.Sections.ContainsKey("Coordinates"))
                 obj.Coordinates = RADECCoords.FromSimbadString(result.Sections["Coordinates"]);
-            
-            if (result.Sections.ContainsKey("ProperMotion"))            
+
+            if (result.Sections.ContainsKey("ProperMotion"))
                 obj.ProperMotion = RADECCoords.FromSimbadString(result.Sections["ProperMotion"]);
 
             if (result.Sections.ContainsKey("Identifiers"))
-                obj.AlsoKnownAs.AddRange(result.Sections["Identifiers"].Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Replace("\n", "")));
+                obj.AlsoKnownAs.AddRange(result.Sections["Identifiers"].Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Replace("\n", "").Replace("\r", "").Trim()));
 
             if (result.Sections.ContainsKey("Parallax"))
                 obj.Parallax = ValueWithError.FromSimbadString(result.Sections["Parallax"]);
@@ -41,6 +41,19 @@ namespace DiscordAstroBot.Objects
             if (result.Sections.ContainsKey("OtherTypes"))
             {
                 obj.SecondaryTypes.AddRange(result.Sections["OtherTypes"].Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
+            }
+
+            if (result.Sections.ContainsKey("Distances"))
+            {
+                var lines = result.Sections["Distances"].Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Replace("\n", "").Replace("\r", "")).ToList();
+                lines.RemoveAt(0);
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrEmpty(line))
+                        continue;
+
+                    obj.DistanceMeasurements.Add(DistanceMeasurement.FromSimbadString(line));
+                }
             }
 
             return obj;
@@ -82,6 +95,81 @@ namespace DiscordAstroBot.Objects
         /// A list of synonyms for this object
         /// </summary>
         public List<string> AlsoKnownAs { get; set; } = new List<string>();
+
+        /// <summary>
+        /// The distance measurements for this object
+        /// </summary>
+        public List<DistanceMeasurement> DistanceMeasurements { get; set; } = new List<DistanceMeasurement>();
+    }
+
+    /// <summary>
+    /// Represents a distance measurement for an astronomical object
+    /// </summary>
+    public class DistanceMeasurement
+    {
+        public static DistanceMeasurement FromSimbadString(string result)
+        {
+            var segments = result.Split(new string[] { "|" }, StringSplitOptions.None);
+            var dist = segments[1].Substring(0, 8);
+            var unit = segments[1].Substring(10, 4);
+            var errMinus = segments[2].Substring(0, 11);
+            var errPlus = segments[2].Substring(10, 8);
+            var method = segments[3];
+            var reference = segments[4];
+
+            return new DistanceMeasurement()
+            {
+                Distance = dist,
+                ErrMinus = errMinus,
+                ErrPlus = errPlus,
+                Method = method,
+                Reference = reference,
+                Unit = unit
+            };
+        }
+
+        /// <summary>
+        /// Measured distance
+        /// </summary>
+        public string Distance { get; set; }
+
+        /// <summary>
+        /// Unit of the given measurement
+        /// </summary>
+        public string Unit { get; set; }
+
+        /// <summary>
+        /// Error-
+        /// </summary>
+        public string ErrMinus { get; set; }
+
+        /// <summary>
+        /// Error+
+        /// </summary>
+        public string ErrPlus { get; set; }
+
+        /// <summary>
+        /// Measurement method
+        /// </summary>
+        public string Method { get; set; }
+
+        /// <summary>
+        /// Reference
+        /// </summary>
+        public string Reference { get; set; }
+
+        public override string ToString()
+        {
+            var method = "";
+            if (!string.IsNullOrEmpty(this.Method))
+                method = $"    Method: {Method}";
+
+            var error = "";
+            if (!string.IsNullOrEmpty(this.ErrMinus))
+                error = $"    Error: {ErrPlus} {ErrMinus}";
+
+            return $"{Distance} {Unit}{error}{method}";
+        }
     }
 
     /// <summary>
