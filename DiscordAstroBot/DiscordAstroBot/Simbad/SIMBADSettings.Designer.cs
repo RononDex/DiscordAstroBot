@@ -26,6 +26,7 @@ namespace DiscordAstroBot.Simbad {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"output console=off script=off
+set row limit 1
 format object f1 ""[[Main_id]]\n%IDLIST(1)\n"" +
 ""[[ObjectType]]\n%OTYPE(V)\n"" +
 ""[[Coordinates]]\nRA: %COO(A)\nDEC: %COO(D)\n"" +
@@ -37,8 +38,7 @@ format object f1 ""[[Main_id]]\n%IDLIST(1)\n"" +
 ""[[Distances]]\n%MEASLIST(distance)\n"" +
 ""[[Fluxes]]\n%FLUXLIST()[%*(N=F)\n]\n"" +
 ""[[end]]""
-query id {0}
-")]
+query id {0}")]
         public string ObjectQuery {
             get {
                 return ((string)(this["ObjectQuery"]));
