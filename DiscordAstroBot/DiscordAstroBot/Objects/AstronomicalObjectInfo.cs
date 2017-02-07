@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,6 +57,20 @@ namespace DiscordAstroBot.Objects
                 }
             }
 
+            if (result.Sections.ContainsKey("Fluxes"))
+            {
+                var lines = result.Sections["Fluxes"].Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Replace("\n", "").Replace("\r", "")).ToList();
+                foreach (var line in lines)
+                {
+                    var trimmed = line.Replace("\n", "").Replace("\r", "");
+
+                    if (string.IsNullOrEmpty(trimmed))
+                        continue;
+
+                    obj.Magntiudes.Add(Magnitude.FromSimbadString(trimmed));
+                }
+            }
+
             return obj;
         }
 
@@ -100,6 +115,11 @@ namespace DiscordAstroBot.Objects
         /// The distance measurements for this object
         /// </summary>
         public List<DistanceMeasurement> DistanceMeasurements { get; set; } = new List<DistanceMeasurement>();
+
+        /// <summary>
+        /// THe known magnitudes for this object
+        /// </summary>
+        public List<Magnitude> Magntiudes { get; set; } = new List<Magnitude>();
     }
 
     /// <summary>
@@ -220,6 +240,56 @@ namespace DiscordAstroBot.Objects
         public override string ToString()
         {
             return string.Format("{0} ± {1}", this.Value, this.Error);
+        }
+    }
+
+    /// <summary>
+    /// Respresents the magnitude of an object for a given wavelength (filter) 
+    /// </summary>
+    public class Magnitude
+    {
+        public static Magnitude FromSimbadString(string result)
+        {
+            var values = result.Split(new[] { "=" }, StringSplitOptions.None);
+            var filter = values[0].Replace("\n", "").Replace("\r", "");
+            var value = values[1].Replace("\n", "").Replace("\r", "");
+
+            return new Magnitude() { Filter = filter, Value = value };
+        }
+
+        public string Filter { get; set; }
+
+        public string FilterDesc
+        {
+            get
+            {
+                switch (this.Filter.ToUpper())
+                {
+                    case "U": return "   365nm -    66nm, Ultraviolet";
+                    case "B": return "   445nm -    94nm, Visible / Blue";
+                    case "V": return "   551nm -    88nm, Visible / Visual";
+                    case "G": return " UNKNOWN - UNKNOWN, Visible / Green";
+                    case "R": return "   658nm -   138nm, Visible / Red";
+                    case "I": return "   806nm -   149nm, Near-Infrared";
+                    case "Z": return "   900nm - UNKNOWN, Near-Infrared";
+                    case "Y": return "  1020nm -   120nm, Near-Infrared";
+                    case "J": return "  1220nm -   213nm, Near-Infrared";
+                    case "H": return "  1630nm -   307nm, Near-Infrared";
+                    case "K": return "  2190nm -   390nm, Near-Infrared";
+                    case "L": return "  3450nm -   472nm, Near-Infrared";
+                    case "M": return "  4750nm -   460nm, Mid-Infrared";
+                    case "N": return " 10500nm -  2500nm, Mid-Infrared";
+                    case "Q": return " 21000nm -  5800nm, Mid-Infrared";
+                    default: return "UNKNOWN FILTER";
+                }
+            }
+        }
+
+        public string Value { get; set; }
+
+        public override string ToString()
+        {
+            return $"{this.Filter}: {this.Value}    ({this.FilterDesc})";
         }
     }
 

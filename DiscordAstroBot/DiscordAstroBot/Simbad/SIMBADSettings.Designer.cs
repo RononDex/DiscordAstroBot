@@ -35,6 +35,7 @@ format object f1 ""[[Main_id]]\n%IDLIST(1)\n"" +
 ""[[Parallax]]\nValue: %PLX(V)\nError: %PLX(E)\n"" +
 ""[[RadialVelocity]]\nz: %RV(Z)\nError: %RV(E)\nv: %RV(V)\n"" +
 ""[[Distances]]\n%MEASLIST(distance)\n"" +
+""[[Fluxes]]\n%FLUXLIST()[%*(N=F)\n]\n"" +
 ""[[end]]""
 query id {0}
 ")]
