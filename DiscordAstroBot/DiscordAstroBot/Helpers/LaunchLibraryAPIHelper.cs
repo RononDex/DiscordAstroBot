@@ -124,17 +124,17 @@ namespace DiscordAstroBot.Helpers
             }
 
             dynamic result = JsonConvert.DeserializeObject(text);
-            if (result.agencies.Count == 0)
+            if (result.launches.Count == 0)
                 return null;
 
-            if (result.agencies == null || result.agencies.Count == 0)
+            if (result.launches == null || result.launches.Count == 0)
                 return null;
 
             var launches = new List<SpaceLaunch>();
 
-            for (var i = 0; i < result.agencies.Count; i++)
+            for (var i = 0; i < result.launches.Count; i++)
             {
-                launches.Add(new SpaceLaunch(result.agencies[i]));
+                launches.Add(new SpaceLaunch(result.launches[i]));
             }
 
             return launches;

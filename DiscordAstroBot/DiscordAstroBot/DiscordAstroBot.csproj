@@ -109,6 +109,7 @@
     <Compile Include="Log.cs" />
     <Compile Include="Objects\AstronomicalObjectInfo.cs" />
     <Compile Include="Objects\LaunchLocation.cs" />
+    <Compile Include="Objects\LaunchPad.cs" />
     <Compile Include="Objects\Rocket.cs" />
     <Compile Include="Objects\SpaceAgency.cs" />
     <Compile Include="Objects\SpaceLaunch.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace DiscordAstroBot.Objects
 
         public string InfoURL { get; set; }
 
-        public string[] InfoURLs { get; set; }
+        public List<string> InfoURLs { get; set; } = new List<string>();
 
         public bool InHold { get; set; }
 
@@ -32,7 +33,7 @@ namespace DiscordAstroBot.Objects
 
         public string VidURL { get; set; }
 
-        public string[] VidURLs { get; set; }
+        public List<string> VidURLs { get; set; } = new List<string>();
 
         public DateTime WindowEnd { get; set; }
 
@@ -42,6 +43,9 @@ namespace DiscordAstroBot.Objects
 
         public float Probability { get; set; }
 
+        public bool TBDDate { get; set; }
+
+        public bool TBDTime { get; set; }
 
         public SpaceLaunch(dynamic item)
         {
@@ -50,15 +54,33 @@ namespace DiscordAstroBot.Objects
             this.Holdreason = item.holdreason;
             this.ID = item.id;
             this.InfoURL = item.infoURL;
-            this.InfoURLs = item.infoURLs;
             this.InHold = Convert.ToBoolean(item.inhold);
             this.Name = item.name;
             this.Probability = Convert.ToSingle(item.probability);
             this.Status = (LaunchStatus)item.status;
             this.VidURL = item.vidURL;
-            this.VidURLs = item.vidURLs;
-            this.WindowEnd = Convert.ToDateTime(item.windowend);
-            this.WindowStart = Convert.ToDateTime(item.windowend);
+            this.WindowEnd = DateTime.ParseExact(Convert.ToString(item.windowend), "MMMM dd, yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture);
+            this.WindowStart = DateTime.ParseExact(Convert.ToString(item.windowstart), "MMMM dd, yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture); ;
+            this.TBDDate = Convert.ToBoolean(item.tbddate);
+            this.TBDTime = Convert.ToBoolean(item.tbdtime);
+
+            this.Location = new LaunchLocation(item.location);
+
+            if (item.vidURLs != null)
+            {
+                for (var i = 0; i < item.vidURLs.Count; i++)
+                {
+                    this.VidURLs.Add(Convert.ToString(item.vidURLs[i]));
+                }
+            }
+
+            if (item.infoURLs != null)
+            {
+                for (var i = 0; i < item.infoURLs.Count; i++)
+                {
+                    this.InfoURLs.Add(Convert.ToString(item.infoURLs[i]));
+                }
+            }
         }
     }
 

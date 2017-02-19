@@ -21,7 +21,7 @@ namespace DiscordAstroBot.Commands
                 return new string[] {
                     @"what do you know about (?'AgencySearchName'.*\w)(\?)?",
                     @"what is (?'AgencySearchName'.*\w)(\?)?",
-                    @"what launches are scheduled for (?'LaunchSearch'.*\w)(\?)?"
+                    @"what are the upcoming launches (?'NextLaunches'.*\w)(\?)?"
                 };
             }
         }
@@ -29,7 +29,7 @@ namespace DiscordAstroBot.Commands
         public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
             // When searching for a specific agency
-            if (matchedMessage.Groups["AgencySearchName"] != null)
+            if (matchedMessage.Groups["AgencySearchName"] != null && matchedMessage.Groups["AgencySearchName"].Success)
             {
                 var agency = LaunchLibraryAPIHelper.GetSpaceAgency(matchedMessage.Groups["AgencySearchName"].Value);
 
@@ -44,9 +44,9 @@ namespace DiscordAstroBot.Commands
             }
 
             // When searching for launches
-            if (matchedMessage.Groups["LaunchSearch"] != null)
+            if (matchedMessage.Groups["NextLaunches"] != null && matchedMessage.Groups["NextLaunches"].Success)
             {
-
+                var launches = LaunchLibraryAPIHelper.GetNextLaunches();
 
                 return true;
             }
