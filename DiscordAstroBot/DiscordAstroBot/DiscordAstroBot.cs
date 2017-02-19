@@ -54,6 +54,7 @@ namespace DiscordAstroBot
             DiscordClient.MessageReceived += MessageReceived;
             DiscordClient.ServerAvailable += DiscordClient_ServerAvailable;
             DiscordClient.UserUpdated += DiscordClient_UserUpdated;
+            DiscordClient.UserJoined += DiscordClient_UserJoined;
 
             // Login into Discord
             DiscordClient.ExecuteAndWait(async () =>
@@ -61,6 +62,26 @@ namespace DiscordAstroBot
                 await DiscordClient.Connect(token, TokenType.Bot);
                 Log<DiscordAstroBot>.InfoFormat("Login successfull");
             });
+        }
+        /// <summary>
+        /// Gets called when a user joins the server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DiscordClient_UserJoined(object sender, UserEventArgs e)
+        {
+            Log<DiscordAstroBot>.InfoFormat($"New user {e.User.Name} joined on server {e.Server.Name}");
+
+            // Send a welcome message in the default channel
+            var rulesChannel = e.Server.AllChannels.FirstOrDefault(x => x.Name.ToLower() == "rules");
+            if (rulesChannel != null)
+            {
+                e.Server.DefaultChannel.SendMessage($"A new user joined! Say hi to {e.User.Mention}\r\nMake sure to check out the {rulesChannel.Mention} channel!");
+            }
+            else
+            {
+                e.Server.DefaultChannel.SendMessage($"A new user joined! Say hi to {e.User.Mention}");
+            }
         }
 
         /// <summary>
