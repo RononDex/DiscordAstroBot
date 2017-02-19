@@ -172,18 +172,16 @@ namespace DiscordAstroBot
                             if (!commandExecuted)
                             {
                                 var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
-                                Task.Run(() =>
+
+                                try
                                 {
-                                    try
-                                    {
-                                        smallTalkCommand.MessageRecieved(new Regex(".*").Match(message), e);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
-                                        Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);
-                                    }
-                                });
+                                    smallTalkCommand.MessageRecieved(new Regex(".*").Match(message), e);
+                                }
+                                catch (Exception ex)
+                                {
+                                    e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                                    Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);
+                                }
                                 commandExecuted = true;
                             }
                         });

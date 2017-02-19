@@ -102,7 +102,7 @@ namespace DiscordAstroBot.Helpers
                 StreamReader reader2 = new StreamReader(stream2);
                 return reader2.ReadToEnd();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 if (wresp != null)
                 {
