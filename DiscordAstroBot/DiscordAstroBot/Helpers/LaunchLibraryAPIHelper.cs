@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DiscordAstroBot.Objects;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,15 +12,20 @@ namespace DiscordAstroBot.Helpers
 {
     public static class LaunchLibraryAPIHelper
     {
+        /// <summary>
+        /// Gets all the agencies, that match the given name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static List<LaunchLibraryAgency> FindAgenciesByName(string name)
         {
             Log<DiscordAstroBot>.InfoFormat("Requesting agencies by name {0}", name);
 
             var webRequest = WebRequest.CreateHttp(string.Format("http://launchlibrary.net/1.2/agency?name={0}&mode=verbose", WebUtility.UrlEncode(name)));
             webRequest.Accept = "application/json";
-            //webRequest.ContentType = "application/json";
             webRequest.Headers["X-Requested-With"] = "DiscordAstroBot";
-            //webRequest.KeepAlive = true;
+            webRequest.UserAgent = "DiscordAstroBot";
+
             var response = (HttpWebResponse)webRequest.GetResponse();
 
             string text;
@@ -29,9 +35,9 @@ namespace DiscordAstroBot.Helpers
             }
 
             dynamic result = JsonConvert.DeserializeObject(text);
-            if (result.results.Count == 0)
+            if (result.agencies.Count == 0)
                 return null;
-                
+
             if (result.agencies == null || result.agencies.Count == 0)
                 return null;
 
@@ -44,42 +50,94 @@ namespace DiscordAstroBot.Helpers
 
             return agencies;
         }
-    }
 
-    public class LaunchLibraryAgency 
-    {
-        public LaunchLibraryAgency() { }
-        
-        public LaunchLibraryAgency(dynamic item)
+        /// <summary>
+        /// Gets only one agency, matching the name, priorising short name matches
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static LaunchLibraryAgency GetSpaceAgency(string name)
         {
-            this.CountryCode = item.countryCode;
-            this.ID = item.id;
-            this.InfoUrl = item.infoURL;
-            this.Name = item.name;
-            this.Type = (LaunchLibraryAgencyType)item.type;
-            this.WikiUrl = item.wikiURL;
+            var agencies = Helpers.LaunchLibraryAPIHelper.FindAgenciesByName(name);
+            var byShortName = Helpers.LaunchLibraryAPIHelper.FindByShortName(name);
+
+            LaunchLibraryAgency agency = null;
+
+            if (byShortName != null)
+                agency = byShortName;
+            else if (agencies != null && agencies.Count > 0)
+                agency = agencies.First();
+
+            return agency;
         }
 
-        public int ID { get; set; }
+        /// <summary>
+        /// Finds a agency by its short name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static LaunchLibraryAgency FindByShortName(string name)
+        {
 
-        public string CountryCode { get; set; }
+            Log<DiscordAstroBot>.InfoFormat("Requesting agencies by shortname {0}", name);
 
-        public string Name { get; set; }
+            var webRequest = WebRequest.CreateHttp(string.Format("http://launchlibrary.net/1.2/agency/{0}", WebUtility.UrlEncode(name)));
+            webRequest.Accept = "application/json";
+            webRequest.Headers["X-Requested-With"] = "DiscordAstroBot";
+            webRequest.UserAgent = "DiscordAstroBot";
 
-        public LaunchLibraryAgencyType Type { get; set; }
+            var response = (HttpWebResponse)webRequest.GetResponse();
 
-        public string InfoUrl { get; set; }
+            string text;
+            using (var sr = new StreamReader(response.GetResponseStream()))
+            {
+                text = sr.ReadToEnd();
+            }
 
-        public string WikiUrl { get; set; }
-    }
+            dynamic result = JsonConvert.DeserializeObject(text);
 
-    public enum LaunchLibraryAgencyType
-    {
-        GOVERMENT = 1,
-        MULTINATIONAL = 2,
-        COMMERSCIAL = 3,
-        EDUCATIONAL = 4,
-        PRIVATE = 5,
-        UNKNOWN = 6
+            if (result.agencies.Count == 0)
+                return null;
+
+            if (result.agencies == null || result.agencies.Count == 0)
+                return null;
+
+
+            return new LaunchLibraryAgency(result.agencies[0]);
+        }
+
+        public static List<SpaceLaunch> GetNextLaunches()
+        {
+            Log<DiscordAstroBot>.InfoFormat("Requesting the next 5 upcoming launches");
+
+            var webRequest = WebRequest.CreateHttp("http://launchlibrary.net/1.2/launch/next/5");
+            webRequest.Accept = "application/json";
+            webRequest.Headers["X-Requested-With"] = "DiscordAstroBot";
+            webRequest.UserAgent = "DiscordAstroBot";
+
+            var response = (HttpWebResponse)webRequest.GetResponse();
+
+            string text;
+            using (var sr = new StreamReader(response.GetResponseStream()))
+            {
+                text = sr.ReadToEnd();
+            }
+
+            dynamic result = JsonConvert.DeserializeObject(text);
+            if (result.agencies.Count == 0)
+                return null;
+
+            if (result.agencies == null || result.agencies.Count == 0)
+                return null;
+
+            var launches = new List<SpaceLaunch>();
+
+            for (var i = 0; i < result.agencies.Count; i++)
+            {
+                launches.Add(new SpaceLaunch(result.agencies[i]));
+            }
+
+            return launches;
+        }
     }
 }

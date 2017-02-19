@@ -33,7 +33,7 @@ namespace DiscordAstroBot.Commands
         }
 
 
-        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
             // Get last modified date of the assembly
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
@@ -41,6 +41,8 @@ namespace DiscordAstroBot.Commands
             DateTime lastModified = fileInfo.LastWriteTime;
 
             e.Channel.SendMessage(string.Format("{0}, Last update: {1}", Assembly.GetExecutingAssembly().GetName().Version, lastModified.ToString()));
+
+            return true;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace DiscordAstroBot.Commands
             }
         }
 
-        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
             e.Channel.SendMessage("Querying the SIMBAD database, please wait...");
 
@@ -41,7 +41,7 @@ namespace DiscordAstroBot.Commands
                 if (info == null)
                 {
                     e.Channel.SendMessage(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["AstroObject"].Value));
-                    return;
+                    return true;
                 }
 
                 var obj = Objects.AstronomicalObjectInfo.FromSimbadResult(info);
@@ -71,14 +71,14 @@ namespace DiscordAstroBot.Commands
                 if (info == null)
                 {
                     e.Channel.SendMessage(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["MagAstroObject"].Value));
-                    return;
+                    return true;
                 }
 
                 var obj = Objects.AstronomicalObjectInfo.FromSimbadResult(info);
                 if (obj.Magntiudes.Count == 0)
                 {
                     e.Channel.SendMessage($"The object {matchedMessage.Groups["MagAstroObject"].Value} was found in the database, but no fluxes are known");
-                    return;
+                    return true;
                 }
 
                 e.Channel.SendMessage($"These are the magnitudes I found for {matchedMessage.Groups["MagAstroObject"].Value}" +
@@ -95,18 +95,20 @@ namespace DiscordAstroBot.Commands
                 if (info == null)
                 {
                     e.Channel.SendMessage(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["DistAstroObject"].Value));
-                    return;
+                    return true;
                 }
 
                 var obj = Objects.AstronomicalObjectInfo.FromSimbadResult(info);
                 if (obj.DistanceMeasurements.Count == 0)
                 {
                     e.Channel.SendMessage($"The object {matchedMessage.Groups["DistAstroObject"].Value} was found in the database, but no distance measurements were found");
-                    return;
+                    return true;
                 }
 
                 e.Channel.SendMessage($"The object {matchedMessage.Groups["DistAstroObject"].Value} is approximatly `{obj.DistanceMeasurements[0].Distance} {obj.DistanceMeasurements[0].Unit} ± {obj.DistanceMeasurements[0].ErrPlus.Replace("+", "")}` away from earth.");
             }
+
+            return true;
         }
     }
 }

@@ -13,9 +13,11 @@ namespace DiscordAstroBot.Commands
     {
         public override string CommandName { get { return "Test"; } }
 
-        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
-            e.Channel.SendMessage(string.Format("IT'S WORKING!!! You entered: {0}", matchedMessage.Value));  
+            e.Channel.SendMessage(string.Format("IT'S WORKING!!! You entered: {0}", matchedMessage.Value));
+
+            return true;
         }
     }
 }

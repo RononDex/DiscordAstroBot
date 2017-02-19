@@ -13,10 +13,12 @@ namespace DiscordAstroBot.Commands
 
         public override string CommandName { get { return "SmallTalk"; } }
 
-        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
             var reaction =  Reactions.Reactions.GetReaction(matchedMessage.Value.ToLower(), e);
             e.Channel.SendMessage(reaction);
+
+            return true;
         }
     }
 }

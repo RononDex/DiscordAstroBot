@@ -135,54 +135,58 @@ namespace DiscordAstroBot
                     {
                         Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", e.Message.Text);
 
-                        // Search for synonyms usind regex
-                        bool commandExecuted = false;
+                        // Search for synonyms usind regex                       
                         var message = e.Message.RawText.Replace(ChatPrefix, "").Replace(DiscordClient.CurrentUser.Mention, "").Trim();
-                        foreach (var command in this.Commands)
+                        Task.Run(() =>
                         {
-                            foreach (var synonym in command.CommandSynonyms)
+                            bool commandExecuted = false;
+
+                            foreach (var command in this.Commands)
                             {
-                                var regex = new Regex(synonym, RegexOptions.IgnoreCase);
-                                if (regex.IsMatch(message))
+                                foreach (var synonym in command.CommandSynonyms)
                                 {
-                                    var match = regex.Match(message);
-                                    Task.Run(() =>
+                                    var regex = new Regex(synonym, RegexOptions.IgnoreCase);
+                                    if (regex.IsMatch(message))
                                     {
+                                        var match = regex.Match(message);
+
                                         try
                                         {
-                                            command.MessageRecieved(match, e);
+                                            commandExecuted = command.MessageRecieved(match, e);
                                         }
                                         catch (Exception ex)
                                         {
                                             e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
                                             Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);
                                         }
-                                    });
-                                    commandExecuted = true;
-                                    break;
-                                }
-                            }
-                        }
 
-                        // If no synonym found execute smalltalk
-                        if (!commandExecuted)
-                        {
-                            var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
-                            Task.Run(() =>
+                                        if (commandExecuted)
+                                            break;
+                                    }
+                                }
+                                if (commandExecuted)
+                                    break;
+                            }
+
+                            // If no synonym found execute smalltalk
+                            if (!commandExecuted)
                             {
-                                try
+                                var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
+                                Task.Run(() =>
                                 {
-                                    smallTalkCommand.MessageRecieved(new Regex(".*").Match(message), e);
-                                }
-                                catch (Exception ex)
-                                {
-                                    e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
-                                    Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);
-                                }
-                            });
-                            commandExecuted = true;
-                        }
-                        //}
+                                    try
+                                    {
+                                        smallTalkCommand.MessageRecieved(new Regex(".*").Match(message), e);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                                        Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);
+                                    }
+                                });
+                                commandExecuted = true;
+                            }
+                        });
                     }
                 }
             }

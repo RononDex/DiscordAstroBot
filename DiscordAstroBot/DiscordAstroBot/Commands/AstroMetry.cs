@@ -28,13 +28,13 @@ namespace DiscordAstroBot.Commands
 
         public override string CommandName { get { return "Astrometry"; } }
 
-        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
             // Check if there is an image attached
             if (e.Message.Attachments.Length == 0)
             {
                 e.Channel.SendMessage("No file attached, please attach a file");
-                return;
+                return true;
             }
 
             // Login into Astrometry
@@ -68,8 +68,8 @@ namespace DiscordAstroBot.Commands
 
             if (!finished)
             {
-                e.Channel.SendMessage(string.Format("__**WARNING:**__ Astrometry could not finish the image analysis within {0} minutes for your submission **{1}**. Please check the result yourself on the provided submission link", maxWait / 1000 / 60, submissionID));
-                return;
+                e.Channel.SendMessage(string.Format("__**WARNING:**__ Astrometry could not finish the image analysis within {0} minutes for your submission **{1}**. Please check the result yourself on the provided submission link\r\n http://nova.astrometry.net/status/{1}", maxWait / 1000 / 60, submissionID));
+                return true;
             }
 
             e.Channel.SendMessage(string.Format("Image analysis for submission **{0}** successfull. Here are the results:", submissionID));
@@ -87,6 +87,8 @@ namespace DiscordAstroBot.Commands
 
             e.Channel.SendFile(string.Format("annoated_{0}", calibrationData.FileName),Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString())).Wait();
             e.Channel.SendMessage(string.Format("Link to astrometry job result: http://nova.astrometry.net/status/{0}", submissionID));
+
+            return true;
         }
     }
 }

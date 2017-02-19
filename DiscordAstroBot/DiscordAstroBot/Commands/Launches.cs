@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
+using DiscordAstroBot.Objects;
+using DiscordAstroBot.Helpers;
 
 namespace DiscordAstroBot.Commands
 {
@@ -17,26 +19,39 @@ namespace DiscordAstroBot.Commands
             get
             {
                 return new string[] {
-                    @"what agencies start with (?'AgencySearchName'.*\w)(\?)?"
+                    @"what do you know about (?'AgencySearchName'.*\w)(\?)?",
+                    @"what is (?'AgencySearchName'.*\w)(\?)?",
+                    @"what launches are scheduled for (?'LaunchSearch'.*\w)(\?)?"
                 };
             }
         }
 
-        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
+            // When searching for a specific agency
             if (matchedMessage.Groups["AgencySearchName"] != null)
             {
-                var agencies = Helpers.LaunchLibraryAPIHelper.FindAgenciesByName(matchedMessage.Groups["AgencySearchName"].Value);
-                var answer = string.Format("Following agencies are known to me, that match your search:\r\n```");
-                foreach (var agency in agencies)
-                {
-                    answer = string.Format("{0}\r\n{1}", answer, agency);
-                }
+                var agency = LaunchLibraryAPIHelper.GetSpaceAgency(matchedMessage.Groups["AgencySearchName"].Value);
 
-                answer = string.Format("{0}\r\n```", answer);
+                if (agency == null)
+                    return false;
 
-                e.Channel.SendMessage(answer);
+                e.Channel.SendMessage($"I found the following space agency matching your search:\r\n```\r\n" +
+                                      $"{agency}\r\n" +
+                                      $"```");
+
+                return true;
             }
+
+            // When searching for launches
+            if (matchedMessage.Groups["LaunchSearch"] != null)
+            {
+
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

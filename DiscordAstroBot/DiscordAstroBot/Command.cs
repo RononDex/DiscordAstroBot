@@ -15,6 +15,12 @@ namespace DiscordAstroBot
 
         public virtual string[] CommandSynonyms { get; } = new string[0];
 
-        public abstract void MessageRecieved(Match matchedMessage, MessageEventArgs e);
+        /// <summary>
+        /// Returns true when handeld, false when not
+        /// </summary>
+        /// <param name="matchedMessage"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public abstract bool MessageRecieved(Match matchedMessage, MessageEventArgs e);
     }
 }

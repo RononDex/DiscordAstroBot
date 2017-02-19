@@ -37,7 +37,7 @@ namespace DiscordAstroBot.Commands
             }
         }
 
-        public override void MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
             // Search for the given address
             var foundLocation = Helpers.GeoLocationHelper.FindLocation(matchedMessage.Groups["SearchLocation"].Value);
@@ -49,6 +49,8 @@ namespace DiscordAstroBot.Commands
             {
                 e.Channel.SendMessage(foundLocation.ToString());
             }
+
+            return true;
         }
     }
 }
