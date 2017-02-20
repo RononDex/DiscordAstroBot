@@ -7,48 +7,109 @@ using System.Threading.Tasks;
 
 namespace DiscordAstroBot.Objects
 {
+    /// <summary>
+    /// Represents a space launch event
+    /// </summary>
     public class SpaceLaunch
     {
+        /// <summary>
+        /// The reason for its failure
+        /// </summary>
         public string FailReason { get; set; }
 
+        /// <summary>
+        /// Hashtag used on social media
+        /// </summary>
         public string Hashtag { get; set; }
 
+        /// <summary>
+        /// Reason for countdown hold
+        /// </summary>
         public string Holdreason { get; set; }
 
+        /// <summary>
+        /// An unique ID for the space launch event
+        /// </summary>
         public int ID { get; set; }
 
+        /// <summary>
+        /// An URL where one can get further information
+        /// </summary>
         public string InfoURL { get; set; }
 
+        /// <summary>
+        /// Further informations on the event
+        /// </summary>
         public List<string> InfoURLs { get; set; } = new List<string>();
 
+        /// <summary>
+        /// Is the launch countdown on hold?
+        /// </summary>
         public bool InHold { get; set; }
 
+        /// <summary>
+        /// The location of the launch
+        /// </summary>
         public LaunchLocation Location { get; set; }
 
+        /// <summary>
+        /// The missions of this launch
+        /// </summary>
         public List<SpaceMission> Missions { get; set; }
 
+        /// <summary>
+        /// The rocket used for the launch
+        /// </summary>
         public Rocket Rocket { get; set; }
 
+        /// <summary>
+        /// Current LaunchStatus
+        /// </summary>
         public LaunchStatus Status { get; set; }
 
+        /// <summary>
+        /// URL to Livestream
+        /// </summary>
         public string VidURL { get; set; }
 
+        /// <summary>
+        /// Alternative livestreams
+        /// </summary>
         public List<string> VidURLs { get; set; } = new List<string>();
 
+        /// <summary>
+        /// The end of the launch Window (UTC)
+        /// </summary>
         public DateTime WindowEnd { get; set; }
 
+        /// <summary>
+        /// The start of the launch window (UTC)
+        /// </summary>
         public DateTime WindowStart { get; set; }
 
+        /// <summary>
+        /// The name of the launch
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Success probability, -1 if unknown
+        /// </summary>
         public float Probability { get; set; }
 
+        /// <summary>
+        /// Date to be announced
+        /// </summary>
         public bool TBDDate { get; set; }
 
+        /// <summary>
+        /// Time to be announced
+        /// </summary>
         public bool TBDTime { get; set; }
 
         public SpaceLaunch(dynamic item)
         {
+            // Initialize the object from the json object
             this.FailReason = item.failreason;
             this.Hashtag = item.hashtag;
             this.Holdreason = item.holdreason;
@@ -65,6 +126,15 @@ namespace DiscordAstroBot.Objects
             this.TBDTime = Convert.ToBoolean(item.tbdtime);
 
             this.Location = new LaunchLocation(item.location);
+            this.Rocket = new Rocket(item.rocket);
+
+            if (item.missions != null)
+            {
+                for (var i = 0; i < item.missions.Count; i++)
+                {
+                    Missions.Add(new SpaceMission(item.missions[i]));
+                }
+            }
 
             if (item.vidURLs != null)
             {
@@ -84,6 +154,9 @@ namespace DiscordAstroBot.Objects
         }
     }
 
+    /// <summary>
+    /// An enumeration representing the launch status
+    /// </summary>
     public enum LaunchStatus
     {
         GREEN = 1,
