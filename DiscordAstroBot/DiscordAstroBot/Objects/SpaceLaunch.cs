@@ -55,7 +55,7 @@ namespace DiscordAstroBot.Objects
         /// <summary>
         /// The missions of this launch
         /// </summary>
-        public List<SpaceMission> Missions { get; set; }
+        public List<SpaceMission> Missions { get; set; } = new List<SpaceMission>();
 
         /// <summary>
         /// The rocket used for the launch
@@ -120,8 +120,8 @@ namespace DiscordAstroBot.Objects
             this.Probability = Convert.ToSingle(item.probability);
             this.Status = (LaunchStatus)item.status;
             this.VidURL = item.vidURL;
-            this.WindowEnd = DateTime.ParseExact(Convert.ToString(item.windowend), "MMMM dd, yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture);
-            this.WindowStart = DateTime.ParseExact(Convert.ToString(item.windowstart), "MMMM dd, yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture); ;
+            this.WindowEnd = DateTime.ParseExact(Convert.ToString(item.windowend), "MMMM d, yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture);
+            this.WindowStart = DateTime.ParseExact(Convert.ToString(item.windowstart), "MMMM d, yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture); ;
             this.TBDDate = Convert.ToBoolean(item.tbddate);
             this.TBDTime = Convert.ToBoolean(item.tbdtime);
 

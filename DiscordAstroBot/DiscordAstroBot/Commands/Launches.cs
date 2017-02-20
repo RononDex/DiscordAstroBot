@@ -21,7 +21,7 @@ namespace DiscordAstroBot.Commands
                 return new string[] {
                     @"what do you know about (?'AgencySearchName'.*\w)(\?)?",
                     @"what is (?'AgencySearchName'.*\w)(\?)?",
-                    @"what are the upcoming launches (?'NextLaunches'.*\w)(\?)?"
+                    @"what are the upcoming launches(?'NextLaunches')(\?)?"
                 };
             }
         }
@@ -47,6 +47,29 @@ namespace DiscordAstroBot.Commands
             if (matchedMessage.Groups["NextLaunches"] != null && matchedMessage.Groups["NextLaunches"].Success)
             {
                 var launches = LaunchLibraryAPIHelper.GetNextLaunches();
+                var msg = "";
+                foreach (var launch in launches)
+                {
+                    if (launch.TBDDate)
+                    {
+                        msg = $"{msg}\r\n\r\n" +
+                                $"{launch.WindowStart.ToString("yyyy MMMM ")} (to be done): - {launch.Name}\r\n" +
+                                $"Launching from: {launch.Location.Name} - {launch.Location.LaunchPads.FirstOrDefault()?.Name}\r\n" +
+                                $"Rocket: {launch.Rocket.Name}\r\n" +
+                                $"Mission Description:\r\n{launch.Missions.FirstOrDefault()?.Description}";
+                    }
+                    else
+                    {
+                        msg = $"{msg}\r\n\r\n" +
+                                $"{launch.WindowStart.ToString("yyyy MMMM dd: ")} - {launch.Name}\r\n" +
+                                $"Launch window: {launch.WindowStart.ToString("yyyy-MM-dd hh:mm:ss")} - {launch.WindowEnd.ToString("yyyy-MM-dd hh:mm:ss")}\r\n" +
+                                $"Launching from: {launch.Location.Name} - {launch.Location.LaunchPads.FirstOrDefault()?.Name}\r\n" +
+                                $"Rocket: {launch.Rocket.Name}\r\n" +
+                                $"Mission Description:\r\n{launch.Missions.FirstOrDefault()?.Description}";
+                    }
+                }
+
+                e.Channel.SendMessage($"These are the next upcoming launches: \r\n```\r\n{msg}\r\n```");
 
                 return true;
             }

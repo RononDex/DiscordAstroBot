@@ -9,7 +9,7 @@ namespace DiscordAstroBot.Objects
 {
     public class Rocket
     {
-        public List<LaunchLibraryAgency> Agencies { get; set; }
+        public List<LaunchLibraryAgency> Agencies { get; set; } = new List<LaunchLibraryAgency>();
 
         public string Configuration { get; set; }
 
@@ -17,11 +17,11 @@ namespace DiscordAstroBot.Objects
 
         public int ID { get; set; }
 
-        public List<int>  ImageSizes { get; set; }
+        public List<int> ImageSizes { get; set; } = new List<int>();
 
         public string ImageUrl { get; set; }
 
-        public List<string> InfoUrls { get; set; }
+        public List<string> InfoUrls { get; set; } = new List<string>();
 
         public string Name { get; set; }
 
