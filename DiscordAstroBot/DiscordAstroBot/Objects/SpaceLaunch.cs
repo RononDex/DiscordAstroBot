@@ -80,12 +80,17 @@ namespace DiscordAstroBot.Objects
         /// <summary>
         /// The end of the launch Window (UTC)
         /// </summary>
-        public DateTime WindowEnd { get; set; }
+        public DateTime? WindowEnd { get; set; }
 
         /// <summary>
         /// The start of the launch window (UTC)
         /// </summary>
-        public DateTime WindowStart { get; set; }
+        public DateTime? WindowStart { get; set; }
+
+        /// <summary>
+        /// Planned date
+        /// </summary>
+        public DateTime Net { get; set; }
 
         /// <summary>
         /// The name of the launch
@@ -118,15 +123,24 @@ namespace DiscordAstroBot.Objects
             this.InHold = Convert.ToBoolean(item.inhold);
             this.Name = item.name;
             this.Probability = Convert.ToSingle(item.probability);
-            this.Status = (LaunchStatus)item.status;
+            if (item.status != null)
+                this.Status = (LaunchStatus)item.status;
             this.VidURL = item.vidURL;
-            this.WindowEnd = DateTime.ParseExact(Convert.ToString(item.windowend), "MMMM d, yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture);
-            this.WindowStart = DateTime.ParseExact(Convert.ToString(item.windowstart), "MMMM d, yyyy hh:mm:ss UTC", CultureInfo.InvariantCulture); ;
+            if (item.isoend != null)
+            {
+                this.WindowEnd = DateTime.ParseExact(Convert.ToString(item.isoend), "yyyyMMdd\\THHmmss\\Z", CultureInfo.InvariantCulture);
+                this.WindowStart = DateTime.ParseExact(Convert.ToString(item.isostart), "yyyyMMdd\\THHmmss\\Z", CultureInfo.InvariantCulture);
+            }
+
+            this.Net = DateTime.ParseExact(Convert.ToString(item.net), "MMMM d, yyyy HH:mm:ss UTC", CultureInfo.InvariantCulture);
             this.TBDDate = Convert.ToBoolean(item.tbddate);
             this.TBDTime = Convert.ToBoolean(item.tbdtime);
 
-            this.Location = new LaunchLocation(item.location);
-            this.Rocket = new Rocket(item.rocket);
+            if (item.location != null)
+                this.Location = new LaunchLocation(item.location);
+
+            if (item.rocket != null)
+                this.Rocket = new Rocket(item.rocket);
 
             if (item.missions != null)
             {

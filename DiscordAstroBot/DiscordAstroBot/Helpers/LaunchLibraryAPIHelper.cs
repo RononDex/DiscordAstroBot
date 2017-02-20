@@ -108,9 +108,9 @@ namespace DiscordAstroBot.Helpers
 
         public static List<SpaceLaunch> GetNextLaunches()
         {
-            Log<DiscordAstroBot>.InfoFormat("Requesting the next 5 upcoming launches");
+            Log<DiscordAstroBot>.InfoFormat("Requesting the next upcoming launches");
 
-            var webRequest = WebRequest.CreateHttp("http://launchlibrary.net/1.2/launch/next/5");
+            var webRequest = WebRequest.CreateHttp("http://launchlibrary.net/1.2/launch/next/3");
             webRequest.Accept = "application/json";
             webRequest.Headers["X-Requested-With"] = "DiscordAstroBot";
             webRequest.UserAgent = "DiscordAstroBot";
@@ -135,6 +135,41 @@ namespace DiscordAstroBot.Helpers
             for (var i = 0; i < result.launches.Count; i++)
             {
                 launches.Add(new SpaceLaunch(result.launches[i]));
+            }
+
+            return launches;
+        }
+
+        public static List<SpaceLaunch> GetNextLaunchesQuery(string query)
+        {
+            Log<DiscordAstroBot>.InfoFormat("Requesting the next upcoming launches");
+
+            var webRequest = WebRequest.CreateHttp($"http://launchlibrary.net/1.2/launch?name={query}&startdate={DateTime.Today.ToString("yyyy-MM-dd")}");
+            webRequest.Accept = "application/json";
+            webRequest.Headers["X-Requested-With"] = "DiscordAstroBot";
+            webRequest.UserAgent = "DiscordAstroBot";
+
+            var response = (HttpWebResponse)webRequest.GetResponse();
+
+            string text;
+            using (var sr = new StreamReader(response.GetResponseStream()))
+            {
+                text = sr.ReadToEnd();
+            }
+
+            dynamic result = JsonConvert.DeserializeObject(text);
+            if (result.launches.Count == 0)
+                return null;
+
+            if (result.launches == null || result.launches.Count == 0)
+                return null;
+
+            var launches = new List<SpaceLaunch>();
+
+            for (var i = 0; i < result.launches.Count; i++)
+            {
+                var launch = new SpaceLaunch(result.launches[i]);
+                launches.Add(launch);
             }
 
             return launches;
