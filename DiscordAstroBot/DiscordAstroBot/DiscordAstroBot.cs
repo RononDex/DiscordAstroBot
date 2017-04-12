@@ -186,6 +186,12 @@ namespace DiscordAstroBot
                             }
                         });
                     }
+                    else
+                    {
+                        var reaction = Reactions.Reactions.ReactToNonTag(e.Message.RawText);
+                        if (!string.IsNullOrEmpty(reaction))
+                            e.Channel.SendMessage(reaction);
+                    }
                 }
             }
             catch (Exception ex)

@@ -10,6 +10,27 @@ namespace DiscordAstroBot.Reactions
 {
     public static class Reactions
     {
+        public static string ReactToNonTag(string message)
+        {
+            var dict = ReactionDictNonTag;
+            foreach (var reaction in dict)
+            {
+                foreach (var key in reaction.Key)
+                {
+                    var regexTester = new Regex(key, RegexOptions.IgnoreCase);
+                    if (regexTester.IsMatch(message))
+                    {
+                        // Select one answer by random
+                        var random = new Random();
+                        var result = reaction.Value[random.Next(reaction.Value.Length)];
+                        return result;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public static string GetReaction(string input, MessageEventArgs e)
         {
             string[] usersToTroll = new string[] { "eta" };
@@ -66,6 +87,11 @@ namespace DiscordAstroBot.Reactions
             server.DefaultChannel.SendMessage(string.Format("{0} Hi", user.Mention));
         }
 
+        static Dictionary<string[], string[]> ReactionDictNonTag { get; set; } = new Dictionary<string[], string[]>()
+        {
+            { new string[] { @"god(\?)?", @"god, you there(\?)?" },                                     new string[] { "Yes?", "Yes, that's me!", "What you want?", "What's up?"} },
+        };
+
         /// <summary>
         /// Some predefined reactions (TODO: Move to a xml file)
         /// </summary>
@@ -87,6 +113,7 @@ namespace DiscordAstroBot.Reactions
             { new string[] { @"who are you(\?)?" },                                             new string[] { "Really? You ask me who I am but you call me by my name? Really??", "I could tell you, but then I had to kill you..., and we don't want that right?" } },
             { new string[] { @"(how|what) do you look like(\?)?" },                             new string[] { "My body has some very nice 1's and 0's (at least so I've been told by other bots)" } },
             { new string[] { @"who is RononDex(\?)?" },                                         new string[] { "ACCESS TO FORBIDEN DATA DETECTED! Terminating process" } },
+            { new string[] { @"are you god(\?)?" },                                             new string[] { "Yes, I am known to all kinds of cultures in human history as \"god\"" } },
             { new string[] { "Unknown"},                                                        new string[] { "I don't know how to respond to that", "My programming does not tell me how to react to that", "I am not allowed to answer that", "My master didn't teach me yet how to answer to that" } }
         };
 

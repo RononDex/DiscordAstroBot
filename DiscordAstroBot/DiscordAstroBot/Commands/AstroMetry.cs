@@ -19,9 +19,9 @@ namespace DiscordAstroBot.Commands
             {
                 return new string[]
                 {
-                    @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this image(\?)?",
-                    @"what can you (find|figure) out (about|on|from|for) this image(\?)?",
-                    @"what (space )?(objects|DSO) (are|do you know) in this image(\?)?"
+                    @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this (image|photo)(\?)?",
+                    @"what can you (find|figure) out (about|on|from|for) this (image|photo)(\?)?",
+                    @"what (space )?(objects|DSO) (are|do you know) in this (image|photo)(\?)?"
                 };
             }
         }
