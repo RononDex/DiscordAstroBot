@@ -126,6 +126,13 @@ namespace DiscordAstroBot.Reactions
             { new string[] { "" },  new string[] {
                 "Go fuck yourself",
                 "Fuck you",
+                "k",
+                "Erm... ok?",
+                "Wow, you should go see a psychiatrist",
+                "I am not talking to you",
+                "I am not answering your stupid statement",
+                "If you say so",
+                "Yeah yeah whatever...",
                 "Your mama is so fat, she produces gravitational waves when she walks...",
                 "Someone seems to be overcompensating for something...",
                 "Shut up!",

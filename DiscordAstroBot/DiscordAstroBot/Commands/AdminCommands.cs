@@ -23,7 +23,11 @@ namespace DiscordAstroBot.Commands
 
         public override string[] CommandSynonyms
         {
-            get { return new[] { "toggle mad mode for (?'MadUser'.*)" }; }
+            get { return new[] 
+            {
+                @"toggle mad mode for (?'MadUser'.*)",
+                @"who are you mad at(?'MadUserList')(\?)?"
+            }; }
         }
 
         public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
@@ -31,6 +35,7 @@ namespace DiscordAstroBot.Commands
             // Make sure user is admin
             if (e.User.Roles.Any(x => x.Permissions.Administrator))
             {
+                // Toggle mad user
                 if (matchedMessage.Groups["MadUser"].Success)
                 {
                     var user = matchedMessage.Groups["MadUser"].Value;
@@ -62,11 +67,18 @@ namespace DiscordAstroBot.Commands
                     // Save config
                     Config.MadUsers.SaveConfig();
                 }
+
+                // List mad users
+                if (matchedMessage.Groups["MadUserList"].Success)
+                {
+                    var users = Config.MadUsers.Users.Where(x => x.Server == e.Server.Id.ToString()).Select(y => e.Server.Users.FirstOrDefault(x => x.Id.ToString() == y.User).Name);
+                    e.Channel.SendMessage($"I am currently mad at these fellow users:\r\n```\r\n{string.Join("\r\n", users)}\r\n```");
+                }
                 return true;
             }
             else
             {
-                e.Channel.SendMessage("UNAUTHORIZED ACCESS DETECTED!\r\nBut seriously, this command is only for admins! Not for noobs!");
+                e.Channel.SendMessage("UNAUTHORIZED ACCESS DETECTED!\r\nBut seriously, this command is only for admins (and you are not one of them, so...)!");
                 return true;
             }
         }
