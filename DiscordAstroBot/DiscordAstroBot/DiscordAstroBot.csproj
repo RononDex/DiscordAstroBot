@@ -101,6 +101,7 @@
     <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="Commands\Version.cs" />
     <Compile Include="Commands\Weather.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="DiscordAstroBot.cs" />
     <Compile Include="Helpers\AstrometryHelper.cs" />
     <Compile Include="Helpers\GeoLocationHelper.cs" />

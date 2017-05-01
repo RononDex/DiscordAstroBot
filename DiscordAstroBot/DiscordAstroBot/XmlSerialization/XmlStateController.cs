@@ -16,12 +16,14 @@ namespace DiscordAstroBot.XmlSerialization
     {
         public static T LoadObject<T>(string xmlFile)
         {
+            Log<DiscordAstroBot>.Info($"Loading xml file {xmlFile}");
             var serializer = new XmlSerializer(typeof(T));
             return (T)serializer.Deserialize(new StringReader(File.ReadAllText(xmlFile)));
         }
 
         public static void SaveObject<T>(T obj, string xmlFile)
         {
+            Log<DiscordAstroBot>.Info($"Saving xml file {xmlFile}");
             var serializer = new XmlSerializer(typeof(T));
             serializer.Serialize(new FileStream(xmlFile, FileMode.OpenOrCreate), obj);
         }

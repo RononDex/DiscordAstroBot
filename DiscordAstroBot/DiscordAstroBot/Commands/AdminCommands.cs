@@ -13,11 +13,27 @@ namespace DiscordAstroBot.Commands
     /// </summary>
     public class AdminCommands : Command
     {
-        public override string[] CommandSynonyms { get; }
+        public override string[] CommandSynonyms
+        {
+            get { return new[] { "^|(go|be|) mad at (?'MadUser'.*)" }; }
+        }
 
         public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
-            throw new NotImplementedException();
+            // Make sure user is admin
+            if (e.User.Roles.Any(x => x.Permissions.Administrator))
+            {
+                if (matchedMessage.Groups["MadUser"].Success)
+                {
+                    
+                }
+                return true;
+            }
+            else
+            {
+                e.Channel.SendMessage("UNAUTHORIZED ACCESS DETECTED!\r\nSThis command is only for admins!");
+                return true;
+            }
         }
     }
 }

@@ -38,6 +38,9 @@ namespace DiscordAstroBot
         /// <param name="chatPrefix"></param>
         public DiscordAstroBot(string token, string chatPrefix)
         {
+            // Initialize config store
+            Config.Initialize();
+
             // Initialize the client
             Log<DiscordAstroBot>.InfoFormat("Loging into Discord");
             DiscordClient = new DiscordClient(x =>
@@ -211,6 +214,7 @@ namespace DiscordAstroBot
             Commands = new List<Command>();
 
             // Add Commands
+            Commands.Add(new Commands.AdminCommands());
             Commands.Add(new Commands.SmallTalkCommand());
             Commands.Add(new Commands.TestCommand());
             Commands.Add(new Commands.AstroMetry());
