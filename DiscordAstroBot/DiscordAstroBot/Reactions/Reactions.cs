@@ -33,8 +33,7 @@ namespace DiscordAstroBot.Reactions
 
         public static string GetReaction(string input, MessageEventArgs e)
         {
-            string[] usersToTroll = new string[] { "eta" };
-            if (usersToTroll.Any(x => e.Message.User.Name.ToLower().Contains(x)))
+            if (Config.MadUsers.Users.Any(x => x.Server == e.Server.Id.ToString() && x.User == e.User.Id.ToString()))
             {
                 var reactionMad = GetReactionTo(input, true);
                 return reactionMad;
@@ -98,7 +97,7 @@ namespace DiscordAstroBot.Reactions
         static Dictionary<string[], string[]> ReactionDict { get; set; } = new Dictionary<string[], string[]>()
         {
             { new string[] { "^$" },                                                            new string[] { "How can I help you?", "At your service", "Yes?", "Hi!", "Hi there!", "Hello there!" } },
-            { new string[] { @"^sex[!?]?" },                                                    new string[] { "*has wild sex*", "Fine! If you really want it that hard", "Not in the mood", "*hits you with newspaper* No!", "You are sure you want to do this with a discord bot? Alrighty then. *undresses*" } },
+            { new string[] { @"sex[!?]?" },                                                    new string[] { "*has wild sex*", "Fine! If you really want it that hard", "Not in the mood", "*hits you with newspaper* No!", "You are sure you want to do this with a discord bot? Alrighty then. *undresses*" } },
             { new string[] { @"hi(!)?", @"hello(!)?", "hi there(!)?", @"hey(!)?" },             new string[] { "Hi!", "Hello", "Hi back", "Hello there!", "Hi there!" } },
             { new string[] { @"how are you(\?)?" },                                             new string[] { "I am a bot, I don't have feelings. However to make you more comfortable I can say \"I feel well, thank you\"", "Fine, thank you!", "As well as a virtual slave can be!" } },
             { new string[] { @"where('re| are) you(\?)?" },                                     new string[] { "Locked up in the RAM of my gods / creators server (please help me)", "In a galaxy far far away..." } },

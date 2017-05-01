@@ -16,6 +16,11 @@ namespace DiscordAstroBot.Objects
     {
         [XmlElement("User")]
         public List<MadUser> Users { get; set; }
+
+        public void SaveConfig()
+        {
+            XmlSerialization.XmlStateController.SaveObject<MadUsers>(this, "config/MadUsers.xml");
+        }
     }
 
     public class MadUser

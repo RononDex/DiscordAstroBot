@@ -11,7 +11,15 @@ namespace DiscordAstroBot.Commands
 {
     public class TestCommand : Command
     {
-        public override string CommandName { get { return "Test"; } }
+        public override string CommandName { get { return "test"; } }
+
+        public override string[] CommandSynonyms
+        {
+            get
+            {
+                return new[] { "test" };
+            }
+        }
 
         public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {

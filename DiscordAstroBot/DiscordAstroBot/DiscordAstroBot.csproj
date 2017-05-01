@@ -127,6 +127,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>SIMBADSettings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\DiscordUtilities.cs" />
     <Compile Include="XmlSerialization\XmlStateController.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -142,7 +143,7 @@
       <Link>phantomjs.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="configs\MadUsers.xml">
+    <Content Include="config\MadUsers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="phantomjs-license.txt">

@@ -17,7 +17,7 @@ namespace DiscordAstroBot
         {
             Log<DiscordAstroBot>.Info($"Loading config files...");
 
-            MadUsers = XmlSerialization.XmlStateController.LoadObject<MadUsers>("configs/MadUsers.xml");
+            MadUsers = XmlSerialization.XmlStateController.LoadObject<MadUsers>("config/MadUsers.xml");
 
             Log<DiscordAstroBot>.Info($"Config loaded");
         }
