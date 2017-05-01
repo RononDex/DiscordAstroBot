@@ -13,6 +13,14 @@ namespace DiscordAstroBot.Commands
     /// </summary>
     public class AdminCommands : Command
     {
+        public override string CommandName
+        {
+            get
+            {
+                return "AdminCommands";
+            }
+        }
+
         public override string[] CommandSynonyms
         {
             get { return new[] { "toggle mad mode for (?'MadUser'.*)" }; }
@@ -58,7 +66,7 @@ namespace DiscordAstroBot.Commands
             }
             else
             {
-                e.Channel.SendMessage("UNAUTHORIZED ACCESS DETECTED!\r\nThis command is only for admins!");
+                e.Channel.SendMessage("UNAUTHORIZED ACCESS DETECTED!\r\nBut seriously, this command is only for admins! Not for noobs!");
                 return true;
             }
         }
