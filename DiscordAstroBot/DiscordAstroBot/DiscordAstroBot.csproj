@@ -124,6 +124,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>SIMBADSettings.settings</DependentUpon>
     </Compile>
+    <Compile Include="StateController\State.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

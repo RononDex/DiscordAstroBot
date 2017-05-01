@@ -36,8 +36,8 @@ namespace DiscordAstroBot.Reactions
             string[] usersToTroll = new string[] { "eta" };
             if (usersToTroll.Any(x => e.Message.User.Name.ToLower().Contains(x)))
             {
-                var reactionTetz = GetReactionTo(input, true);
-                return reactionTetz;
+                var reactionMad = GetReactionTo(input, true);
+                return reactionMad;
             }
 
             // First try to find a reaction
@@ -61,7 +61,7 @@ namespace DiscordAstroBot.Reactions
         {
             var dict = ReactionDict;
             if (tetz)
-                dict = ReactionDictTetz;
+                dict = ReactionDictMad;
 
             foreach (var reaction in dict)
             {
@@ -89,7 +89,7 @@ namespace DiscordAstroBot.Reactions
 
         static Dictionary<string[], string[]> ReactionDictNonTag { get; set; } = new Dictionary<string[], string[]>()
         {
-            { new string[] { @"god(\?)?", @"god, you there(\?)?" },                                     new string[] { "Yes?", "Yes, that's me!", "What you want?", "What's up?"} },
+            { new string[] { @"^god(\?)?", @"^god, you there(\?)?" },                           new string[] { "Yes?", "Yes, that's me!", "What you want?", "What's up?"} },
         };
 
         /// <summary>
@@ -98,6 +98,7 @@ namespace DiscordAstroBot.Reactions
         static Dictionary<string[], string[]> ReactionDict { get; set; } = new Dictionary<string[], string[]>()
         {
             { new string[] { "^$" },                                                            new string[] { "How can I help you?", "At your service", "Yes?", "Hi!", "Hi there!", "Hello there!" } },
+            { new string[] { @"^sex[!?]?" },                                                    new string[] { "*has wild sex*", "Fine! If you really want it that hard", "Not in the mood", "*hits you with newspaper* No!", "You are sure you want to do this with a discord bot? Alrighty then. *undresses*" } },
             { new string[] { @"hi(!)?", @"hello(!)?", "hi there(!)?", @"hey(!)?" },             new string[] { "Hi!", "Hello", "Hi back", "Hello there!", "Hi there!" } },
             { new string[] { @"how are you(\?)?" },                                             new string[] { "I am a bot, I don't have feelings. However to make you more comfortable I can say \"I feel well, thank you\"", "Fine, thank you!", "As well as a virtual slave can be!" } },
             { new string[] { @"where('re| are) you(\?)?" },                                     new string[] { "Locked up in the RAM of my gods / creators server (please help me)", "In a galaxy far far away..." } },
@@ -121,7 +122,7 @@ namespace DiscordAstroBot.Reactions
         /// <summary>
         /// Reactions for mad mode
         /// </summary>
-        static Dictionary<string[], string[]> ReactionDictTetz { get; set; } = new Dictionary<string[], string[]>()
+        static Dictionary<string[], string[]> ReactionDictMad { get; set; } = new Dictionary<string[], string[]>()
         {
             { new string[] { "" },  new string[] {
                 "Go fuck yourself",
