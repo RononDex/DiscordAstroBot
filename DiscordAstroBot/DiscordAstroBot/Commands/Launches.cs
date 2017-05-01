@@ -22,6 +22,7 @@ namespace DiscordAstroBot.Commands
                 return new string[] {
                     @"what do you know about (?'AgencySearchName'.*\w)(\?)?",
                     @"what are the (next|upcoming) (launches|missions) for (?'NextLaunchesQuery'(\w*\s*)*)(\?)?",
+                    @"what are the (next|upcoming) (?'NextLaunchesQuery'(\w*\s*)*) (launches|missions) (\?)?",
                     @"what (launches|missions) are planned (for|by) (?'NextLaunchesQuery'(\w*\s*)*)(\?)?",
                     @"what are the upcoming launches(?'NextLaunches')(\?)?",
                     @"what is (?'AgencySearchName'.*\w)(\?)?",
