@@ -23,11 +23,15 @@ namespace DiscordAstroBot.Commands
 
         public override string[] CommandSynonyms
         {
-            get { return new[] 
+            get
             {
-                @"toggle mad mode for (?'MadUser'.*)",
-                @"who are you mad at(?'MadUserList')(\?)?"
-            }; }
+                return new[]
+                {
+                    @"toggle mad mode for (?'MadUser'.*)",
+                    @"who are you mad at(?'MadUserList')(\?)?",
+                    @"(what|which) commands are enabled(?'EnabledCommandsList')(\?)?"
+                };
+            }
         }
 
         public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
@@ -73,6 +77,12 @@ namespace DiscordAstroBot.Commands
                 {
                     var users = Config.MadUsers.Users.Where(x => x.Server == e.Server.Id.ToString()).Select(y => e.Server.Users.FirstOrDefault(x => x.Id.ToString() == y.User).Name);
                     e.Channel.SendMessage($"I am currently mad at these fellow users:\r\n```\r\n{string.Join("\r\n", users)}\r\n```");
+                }
+
+                // List enabled commands on this server
+                if (matchedMessage.Groups["EnabledCommandsList"].Success)
+                {
+
                 }
                 return true;
             }

@@ -94,6 +94,7 @@
     <Compile Include="Command.cs" />
     <Compile Include="Commands\AstroMetry.cs" />
     <Compile Include="Commands\GeoLocation.cs" />
+    <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\Launches.cs" />
     <Compile Include="Commands\AdminCommands.cs" />
     <Compile Include="Commands\Simbad.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="Helpers\WeatherHelper.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Objects\AstronomicalObjectInfo.cs" />
+    <Compile Include="Objects\CommandsConfig.cs" />
     <Compile Include="Objects\LaunchLocation.cs" />
     <Compile Include="Objects\LaunchPad.cs" />
     <Compile Include="Objects\MadUsers.cs" />
@@ -143,6 +145,7 @@
       <Link>phantomjs.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="config\Commands.xml" />
     <Content Include="config\MadUsers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
