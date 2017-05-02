@@ -26,7 +26,7 @@ namespace DiscordAstroBot
         /// <summary>
         /// Holds all the registered Commands
         /// </summary>
-        public List<Command> Commands { get; set; }
+        public static List<Command> Commands { get; set; }
 
         /// <summary>
         /// The prefix that this bot listens to
@@ -149,7 +149,7 @@ namespace DiscordAstroBot
 
                             bool commandExecuted = false;
 
-                            foreach (var command in this.Commands)
+                            foreach (var command in Commands)
                             {
                                 foreach (var synonym in command.CommandSynonyms)
                                 {
@@ -179,7 +179,7 @@ namespace DiscordAstroBot
                             // If no synonym found execute smalltalk
                             if (!commandExecuted)
                             {
-                                var smallTalkCommand = this.Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
+                                var smallTalkCommand = Commands.FirstOrDefault(x => x.CommandName == "SmallTalk");
 
                                 try
                                 {
@@ -229,7 +229,7 @@ namespace DiscordAstroBot
             Commands.Add(new Commands.Simbad());
             Commands.Add(new Commands.Version());
 
-            foreach (var command in this.Commands)
+            foreach (var command in Commands)
             {
                 Log<DiscordAstroBot>.InfoFormat("Command registered \"{0}\"", command.CommandName);
             }
