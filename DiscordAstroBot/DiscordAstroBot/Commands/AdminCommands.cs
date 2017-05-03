@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
-using DiscordAstroBot.Objects;
+using DiscordAstroBot.Objects.Config;
 
 namespace DiscordAstroBot.Commands
 {
@@ -66,7 +66,7 @@ namespace DiscordAstroBot.Commands
                     }
                     else
                     {
-                        entry = new Objects.MadUser();
+                        entry = new MadUser();
                         entry.Server = Convert.ToString(e.Server.Id);
                         entry.User = Convert.ToString(resolvedUser.Id);
                         Config.MadUsers.Users.Add(entry);

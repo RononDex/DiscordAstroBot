@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace DiscordAstroBot.Objects
+namespace DiscordAstroBot.Objects.Config
 {
     /// <summary>
     /// Who is the bot mad at?

@@ -60,6 +60,7 @@ namespace DiscordAstroBot
             DiscordClient.ServerAvailable += DiscordClient_ServerAvailable;
             DiscordClient.UserUpdated += DiscordClient_UserUpdated;
             DiscordClient.UserJoined += DiscordClient_UserJoined;
+            DiscordClient.JoinedServer += DiscordClient_JoinedServer;
 
             // Login into Discord
             DiscordClient.ExecuteAndWait(async () =>
@@ -68,6 +69,18 @@ namespace DiscordAstroBot
                 Log<DiscordAstroBot>.InfoFormat("Login successfull");
             });
         }
+
+        /// <summary>
+        /// When the bot joins a new server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DiscordClient_JoinedServer(object sender, ServerEventArgs e)
+        {
+            e.Server.DefaultChannel.SendMessage("Yay! I got invited to a new server.\r\nHello everyone!");
+            Utilities.CommandsUtility.SetupServerConfig(e.Server);
+        }
+
         /// <summary>
         /// Gets called when a user joins the server
         /// </summary>

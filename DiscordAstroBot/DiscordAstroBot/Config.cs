@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.API.Status.Rest;
-using DiscordAstroBot.Objects;
+using DiscordAstroBot.Objects.Config;
 
 namespace DiscordAstroBot
 {

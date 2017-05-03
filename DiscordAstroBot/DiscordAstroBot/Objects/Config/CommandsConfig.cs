@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace DiscordAstroBot.Objects
+namespace DiscordAstroBot.Objects.Config
 {
     [Serializable, XmlRoot("Commands"), XmlType("Commands")]
     public class CommandsConfig

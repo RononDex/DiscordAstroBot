@@ -111,10 +111,10 @@
     <Compile Include="Helpers\WeatherHelper.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Objects\AstronomicalObjectInfo.cs" />
-    <Compile Include="Objects\CommandsConfig.cs" />
+    <Compile Include="Objects\Config\CommandsConfig.cs" />
     <Compile Include="Objects\LaunchLocation.cs" />
     <Compile Include="Objects\LaunchPad.cs" />
-    <Compile Include="Objects\MadUsers.cs" />
+    <Compile Include="Objects\Config\MadUsers.cs" />
     <Compile Include="Objects\Rocket.cs" />
     <Compile Include="Objects\SpaceAgency.cs" />
     <Compile Include="Objects\SpaceLaunch.cs" />
@@ -129,7 +129,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>SIMBADSettings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\CommandsUtil.cs" />
+    <Compile Include="Utilities\CommandsUtility.cs" />
     <Compile Include="Utilities\DiscordUtilities.cs" />
     <Compile Include="XmlSerialization\XmlStateController.cs" />
   </ItemGroup>
