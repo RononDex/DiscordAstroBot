@@ -91,111 +91,57 @@ namespace DiscordAstroBot.Commands
                 if (matchedMessage.Groups["EnabledCommandsList"].Success)
                 {
                     var server = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == e.Server.Id);
-                    List<CommandConfigServerCommand> commands = new List<CommandConfigServerCommand>();
-                    if (server != null)
-                        commands = server.Commands;
-                    else
+                    if (server == null)
                     {
-                        Config.CommandsConfig.CommandsConfigServer.Add(new CommandsConfigServer() { ServerID = e.Server.Id, Commands = commands });
-                        Config.CommandsConfig.SaveConfig();
+                        server = Utilities.CommandsUtility.SetupServerConfig(e.Server);
                     }
-                    
-                    if (commands.Count == 0)
-                        e.Channel.SendMessage("There are currently no enabled commands :(");
-                    else
-                        e.Channel.SendMessage($"These commands are currently enabled:\r\n```\r\n{string.Join("\r\n", commands.Select(x => x.CommandName))}\r\n```");
+
+                    var commands = server.Commands;
+                    e.Channel.SendMessage($"The following commands are currently enabled on this server:\r\n```\r\n{string.Join("\r\n", commands.Select(x => x.CommandName))}\r\n```");
                 }
 
                 // List enabled commands on this server
                 if (matchedMessage.Groups["AvailableCommandList"].Success)
                 {
-                    var commands = DiscordAstroBot.Commands;
+                    var commands = Utilities.CommandsUtility.GetAllRegisteredCommands();
                     e.Channel.SendMessage($"The following commands are currently registered and can be used on this server:\r\n```\r\n{string.Join("\r\n", commands.Select(x => x.CommandName))}\r\n```");
                 }
 
                 // Enable a command
                 if (matchedMessage.Groups["EnableCommandName"].Success)
                 {
-                    var server = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == e.Server.Id);
-                    List<CommandConfigServerCommand> commands = new List<CommandConfigServerCommand>();
-                    if (server != null)
-                        commands = server.Commands;
-                    else
+                    var resolvedCmd = Utilities.CommandsUtility.ResolveCommand(matchedMessage.Groups["EnableCommandName"].Value);
+                    if (resolvedCmd != null)
                     {
-                        Config.CommandsConfig.CommandsConfigServer.Add(new CommandsConfigServer() { ServerID = e.Server.Id, Commands = commands });
-                        Config.CommandsConfig.SaveConfig();
+                        Utilities.CommandsUtility.EnableCommand(e.Server, resolvedCmd);
+                        e.Channel.SendMessage($"Command {resolvedCmd.CommandName} is now enabled");
                     }
-
-                    if (commands.Any(x => x.CommandName.ToLower() == matchedMessage.Groups["EnableCommandName"].Value.ToLower() && x.Enabled))
-                        e.Channel.SendMessage("Command is already enabled");
                     else
                     {
-                        if (!commands.Any(x => x.CommandName.ToLower() == matchedMessage.Groups["EnableCommandName"].Value.ToLower()))
-                            commands.Add(new CommandConfigServerCommand() { CommandName = matchedMessage.Groups["EnableCommandName"].Value.ToLower(), Enabled = true });
-                        else
-                            commands.First(x => x.CommandName.ToLower() == matchedMessage.Groups["EnableCommandName"].Value.ToLower()).Enabled = true;
-
-                        Config.CommandsConfig.SaveConfig();
-                        e.Channel.SendMessage($"Command {matchedMessage.Groups["EnableCommandName"].Value} is now enabled");
+                        e.Channel.SendMessage($"Could not find any command called {matchedMessage.Groups["EnableCommandName"].Value}");
                     }
                 }
 
                 // Disables a command
                 if (matchedMessage.Groups["DisableCommandName"].Success)
                 {
-                    if (matchedMessage.Groups["DisableCommandName"].Value.ToLower() == "admincommands")
+                    var resolvedCmd = Utilities.CommandsUtility.ResolveCommand(matchedMessage.Groups["DisableCommandName"].Value);
+                    if (resolvedCmd != null)
                     {
-                        e.Channel.SendMessage("You can't disable the AdminCommands, that would render me on this server unmanagable!");
-                        return true;
+                        Utilities.CommandsUtility.DisableCommand(e.Server, resolvedCmd);
+                        e.Channel.SendMessage($"Command {resolvedCmd.CommandName} is now disabled");
                     }
-
-                    var server = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == e.Server.Id);
-                    List<CommandConfigServerCommand> commands = new List<CommandConfigServerCommand>();
-                    if (server != null)
-                        commands = server.Commands;
                     else
                     {
-                        Config.CommandsConfig.CommandsConfigServer.Add(new CommandsConfigServer() { ServerID = e.Server.Id, Commands = commands });
-                        Config.CommandsConfig.SaveConfig();
-                    }
-
-                    if (commands.Any(x => x.CommandName.ToLower() == matchedMessage.Groups["DisableCommandName"].Value.ToLower() && !x.Enabled))
-                        e.Channel.SendMessage("Command is already disabled");
-                    else
-                    {
-                        if (!commands.Any(x => x.CommandName.ToLower() == matchedMessage.Groups["DisableCommandName"].Value.ToLower()))
-                            commands.Add(new CommandConfigServerCommand() { CommandName = matchedMessage.Groups["DisableCommandName"].Value.ToLower(), Enabled = false });
-                        else
-                            commands.First(x => x.CommandName.ToLower() == matchedMessage.Groups["DisableCommandName"].Value.ToLower()).Enabled = false;
-
-                        Config.CommandsConfig.SaveConfig();
-                        e.Channel.SendMessage($"Command {matchedMessage.Groups["DisableCommandName"].Value} is now disabled");
+                        e.Channel.SendMessage($"Could not find any command called {matchedMessage.Groups["DisableCommandName"].Value}");
                     }
                 }
 
                 // Enable all the commands
                 if (matchedMessage.Groups["EnableAllCommands"].Success)
                 {
-                    var server = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == e.Server.Id);
-                    List<CommandConfigServerCommand> commands = new List<CommandConfigServerCommand>();
-                    if (server != null)
-                        commands = server.Commands;
-                    else
-                    {
-                        Config.CommandsConfig.CommandsConfigServer.Add(new CommandsConfigServer() { ServerID = e.Server.Id, Commands = commands });
-                        Config.CommandsConfig.SaveConfig();
-                    }
-
-                    foreach (var command in DiscordAstroBot.Commands)
-                    {
-                        if (!commands.Any(x => x.CommandName.ToLower() == command.CommandName.ToLower()))
-                            commands.Add(new CommandConfigServerCommand() { CommandName = command.CommandName.ToLower(), Enabled = true });
-                        else
-                            commands.First(x => x.CommandName.ToLower() == command.CommandName.ToLower()).Enabled = true;
-
-                        Config.CommandsConfig.SaveConfig();
-                        e.Channel.SendMessage($"All the commands are now enabled on this server!");
-                    }
+                    Utilities.CommandsUtility.EnableAllCommands(e.Server);
+                    e.Channel.SendMessage("All Commands are now enabled!");
                 }
 
                 return true;
