@@ -20,7 +20,12 @@ namespace DiscordAstroBot.Utilities
 
             // Get the server commands config
             var server = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == discordServer.Id);
-            List<CommandConfigServerCommand> commands = new List<CommandConfigServerCommand>();
+
+            // Setup config if none exists for this server yet
+            if (server == null)
+                server = SetupServerConfig(discordServer);
+
+            List<CommandConfigServerCommand> commands = server.Commands;
 
             if (commands.Any(x => x.CommandName == command.CommandName && x.Enabled))
                 return;
@@ -46,7 +51,12 @@ namespace DiscordAstroBot.Utilities
 
             // Get the server commands config
             var server = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == discordServer.Id);
-            List<CommandConfigServerCommand> commands = new List<CommandConfigServerCommand>();
+
+            // Setup config if none exists for this server yet
+            if (server == null)
+                server = SetupServerConfig(discordServer);
+
+            List<CommandConfigServerCommand> commands = server.Commands;
 
             if (commands.Any(x => x.CommandName == command.CommandName && !x.Enabled))
                 return;

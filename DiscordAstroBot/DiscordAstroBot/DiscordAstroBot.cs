@@ -157,6 +157,7 @@ namespace DiscordAstroBot
                         var message = e.Message.RawText.Replace(ChatPrefix, "").Replace(DiscordClient.CurrentUser.Mention, "").Trim();
                         Task.Run(() =>
                         {
+                            // Set threading culture for parsing floating numbers
                             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
                             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
@@ -164,6 +165,10 @@ namespace DiscordAstroBot
 
                             foreach (var command in Commands)
                             {
+                                // if Command is disabled on this server, ignore it
+                                if (!Config.CommandsConfig.CommandsConfigServer.First(x => x.ServerID == e.Server.Id).Commands.Any(x => x.CommandName.ToLower() == command.CommandName.ToLower() && x.Enabled))
+                                    continue;
+
                                 foreach (var synonym in command.CommandSynonyms)
                                 {
                                     var regex = new Regex(synonym, RegexOptions.IgnoreCase);

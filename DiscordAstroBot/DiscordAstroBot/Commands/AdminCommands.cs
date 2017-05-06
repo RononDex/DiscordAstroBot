@@ -32,7 +32,7 @@ namespace DiscordAstroBot.Commands
                     @"who are you mad at(?'MadUserList')(\?)?",
                     @"(what|which) commands are enabled(?'EnabledCommandsList')( on this server)?(\?)?",
                     @"(what|which) commands are (available|registered)(?'AvailableCommandList')( on this server)?(\?)?",
-                    @"enable all commands(?'EnableAllCommands'[^\s]+)",
+                    @"enable all commands(?'EnableAllCommands')",
                     @"enable( command)? (?'EnableCommandName'[^\s]+)",
                     @"disable( command)? (?'DisableCommandName'[^\s]+)",
                 };
