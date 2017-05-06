@@ -131,6 +131,7 @@ namespace DiscordAstroBot.Commands
                     if (resolvedCmd.CommandName.ToLower() == "admincommands")
                     {
                         e.Channel.SendMessage($"AdminCommands can not be disabled, or else how are you going to configure me on your server?");
+                        return true;
                     }
 
                     if (resolvedCmd != null)
