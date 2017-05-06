@@ -49,6 +49,12 @@ namespace DiscordAstroBot.Utilities
         {
             Log<DiscordAstroBot>.Info($"Disabling command {command.CommandName} on server {discordServer.Name}");
 
+            if (command.CommandName.ToLower() == "admincommands")
+            {
+                Log<DiscordAstroBot>.Info($"Tried to disable AdminCommands on server {discordServer.Name}, which is not allowed");
+                return;
+            }
+
             // Get the server commands config
             var server = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == discordServer.Id);
 
