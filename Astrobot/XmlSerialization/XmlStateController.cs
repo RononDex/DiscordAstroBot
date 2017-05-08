@@ -17,7 +17,7 @@ namespace DiscordAstroBot.XmlSerialization
         /// <summary>
         /// lock object used to manage multi threading
         /// </summary>
-        private static object lockObj = null;
+        private static object lockObj = new object();
 
         public static T LoadObject<T>(string xmlFile)
         {
