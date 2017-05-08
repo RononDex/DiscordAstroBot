@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using log4net.Util.TypeConverters;
 
-namespace DiscordAstroBot.Objects
+namespace DiscordAstroBot.Objects.LaunchLibrary
 {
     public class Rocket
     {

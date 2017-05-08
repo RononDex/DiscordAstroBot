@@ -1,34 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Discord;
-using DiscordAstroBot.Objects;
-using DiscordAstroBot.Helpers;
+
 using System.Globalization;
+using DiscordAstroBot.Mappers.LaunchLibrary;
 
 namespace DiscordAstroBot.Commands
 {
+    /// <summary>
+    /// Command to query upcoming rocket launches and anything related to launches
+    /// </summary>
     class Launches : Command
     {
         public override string CommandName { get { return "Launches"; } }
 
-        public override string[] CommandSynonyms
-        {
-            get
-            {
-                return new string[] {
-                    @"what do you know about (?'AgencySearchName'.*\w)(\?)?",
-                    @"what are the (next|upcoming) (launches|missions) for (?'NextLaunchesQuery'(\w*\s*)*)(\?)?",
-                    @"what are the (next|upcoming) (?'NextLaunchesQuery'(\w*\s*)*) (launches|missions) (\?)?",
-                    @"what (launches|missions) are planned (for|by) (?'NextLaunchesQuery'(\w*\s*)*)(\?)?",
-                    @"what are the upcoming launches(?'NextLaunches')(\?)?",
-                    @"what is (?'AgencySearchName'.*\w)(\?)?",
-                };
-            }
-        }
+        public override string[] CommandSynonyms => new string[] {
+            @"what do you know about (?'AgencySearchName'.*\w)(\?)?",
+            @"what are the (next|upcoming) (launches|missions) for (?'NextLaunchesQuery'(\w*\s*)*)(\?)?",
+            @"what are the (next|upcoming) (?'NextLaunchesQuery'(\w*\s*)*) (launches|missions) (\?)?",
+            @"what (launches|missions) are planned (for|by) (?'NextLaunchesQuery'(\w*\s*)*)(\?)?",
+            @"what are the upcoming launches(?'NextLaunches')(\?)?",
+            @"what is (?'AgencySearchName'.*\w)(\?)?",
+        };
 
         public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {

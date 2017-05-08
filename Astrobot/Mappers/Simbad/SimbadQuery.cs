@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordAstroBot.Simbad
+namespace DiscordAstroBot.Mappers.Simbad
 {
     /// <summary>
     /// Allows a user to query the SIMNBAD database

@@ -7,8 +7,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordAstroBot.Objects.LaunchLibrary;
 
-namespace DiscordAstroBot.Helpers
+namespace DiscordAstroBot.Mappers.LaunchLibrary
 {
     public static class LaunchLibraryAPIHelper
     {
@@ -58,8 +59,8 @@ namespace DiscordAstroBot.Helpers
         /// <returns></returns>
         public static LaunchLibraryAgency GetSpaceAgency(string name)
         {
-            var agencies = Helpers.LaunchLibraryAPIHelper.FindAgenciesByName(name);
-            var byShortName = Helpers.LaunchLibraryAPIHelper.FindByShortName(name);
+            var agencies = LaunchLibraryAPIHelper.FindAgenciesByName(name);
+            var byShortName = LaunchLibraryAPIHelper.FindByShortName(name);
 
             LaunchLibraryAgency agency = null;
 

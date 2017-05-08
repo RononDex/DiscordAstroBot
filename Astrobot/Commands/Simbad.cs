@@ -1,12 +1,13 @@
 ﻿using Discord;
 using DiscordAstroBot.Helpers;
-using DiscordAstroBot.Simbad;
+using DiscordAstroBot.Mappers.Simbad;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DiscordAstroBot.Objects.Simbad;
 
 namespace DiscordAstroBot.Commands
 {
@@ -44,7 +45,7 @@ namespace DiscordAstroBot.Commands
                     return true;
                 }
 
-                var obj = Objects.AstronomicalObjectInfo.FromSimbadResult(info);
+                var obj = AstronomicalObjectInfo.FromSimbadResult(info);
                 e.Channel.SendMessage($"This is what I found in the SIMBAD database:\r\n" +
                                     $"```\r\n" +
                                     $"Main Identifier: {obj.Name}\r\n" +
@@ -74,7 +75,7 @@ namespace DiscordAstroBot.Commands
                     return true;
                 }
 
-                var obj = Objects.AstronomicalObjectInfo.FromSimbadResult(info);
+                var obj = AstronomicalObjectInfo.FromSimbadResult(info);
                 if (obj.Magntiudes.Count == 0)
                 {
                     e.Channel.SendMessage($"The object {matchedMessage.Groups["MagAstroObject"].Value} was found in the database, but no fluxes are known");
@@ -98,7 +99,7 @@ namespace DiscordAstroBot.Commands
                     return true;
                 }
 
-                var obj = Objects.AstronomicalObjectInfo.FromSimbadResult(info);
+                var obj = AstronomicalObjectInfo.FromSimbadResult(info);
                 if (obj.DistanceMeasurements.Count == 0)
                 {
                     e.Channel.SendMessage($"The object {matchedMessage.Groups["DistAstroObject"].Value} was found in the database, but no distance measurements were found");

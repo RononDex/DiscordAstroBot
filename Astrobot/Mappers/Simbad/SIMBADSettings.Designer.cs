@@ -8,11 +8,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DiscordAstroBot.Simbad {
+namespace DiscordAstroBot.Mappers.Simbad {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
     internal sealed partial class SIMBADSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static SIMBADSettings defaultInstance = ((SIMBADSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SIMBADSettings())));

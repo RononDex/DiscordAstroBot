@@ -48,7 +48,7 @@ namespace DiscordAstroBot.Commands
                 if (matchedMessage.Groups["MadUser"].Success)
                 {
                     var user = matchedMessage.Groups["MadUser"].Value;
-                    var resolvedUser = Utilities.DiscordUtilities.ResolveUser(e.Server, user);
+                    var resolvedUser = Utilities.DiscordUtility.ResolveUser(e.Server, user);
 
                     if (resolvedUser == null)
                     {
@@ -56,12 +56,12 @@ namespace DiscordAstroBot.Commands
                         return true;
                     }
 
-                    var entry = Config.MadUsers.Users.FirstOrDefault(x => x.Server == e.Server.Id.ToString() && x.User == resolvedUser.Id.ToString());
+                    var entry = Mappers.Config.MadUsers.Config.Users.FirstOrDefault(x => x.Server == e.Server.Id.ToString() && x.User == resolvedUser.Id.ToString());
 
                     // Stop being mad at the user
                     if (entry != null)
                     {
-                        Config.MadUsers.Users.Remove(entry);
+                        Mappers.Config.MadUsers.Config.Users.Remove(entry);
                         e.Channel.SendMessage($"No longer mad at {resolvedUser.Name}");
                     }
                     else
@@ -69,18 +69,18 @@ namespace DiscordAstroBot.Commands
                         entry = new MadUser();
                         entry.Server = Convert.ToString(e.Server.Id);
                         entry.User = Convert.ToString(resolvedUser.Id);
-                        Config.MadUsers.Users.Add(entry);
+                        Mappers.Config.MadUsers.Config.Users.Add(entry);
                         e.Channel.SendMessage($"Copy that! I am now mad at {resolvedUser.Name}");
                     }
 
                     // Save config
-                    Config.MadUsers.SaveConfig();
+                    Mappers.Config.MadUsers.SaveConfig();
                 }
 
                 // List mad users
                 if (matchedMessage.Groups["MadUserList"].Success)
                 {
-                    var users = Config.MadUsers.Users.Where(x => x.Server == e.Server.Id.ToString()).Select(y => e.Server.Users.FirstOrDefault(x => x.Id.ToString() == y.User).Name).ToList();
+                    var users = Mappers.Config.MadUsers.Config.Users.Where(x => x.Server == e.Server.Id.ToString()).Select(y => e.Server.Users.FirstOrDefault(x => x.Id.ToString() == y.User).Name).ToList();
                     if (users.Count == 0)
                         e.Channel.SendMessage("I am currently not mad at any users");
                     else
@@ -90,10 +90,13 @@ namespace DiscordAstroBot.Commands
                 // List enabled commands on this server
                 if (matchedMessage.Groups["EnabledCommandsList"].Success)
                 {
-                    var server = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == e.Server.Id);
+                    var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == e.Server.Id);
                     if (server == null)
                     {
-                        server = Utilities.CommandsUtility.SetupServerConfig(e.Server);
+                        server = new CommandsConfigServer() { ServerID = e.Server.Id};
+                        Mappers.Config.ServerCommands.SetDefaultValues(server);
+                        Mappers.Config.ServerCommands.Config.CommandsConfigServer.Add(server);
+                        Mappers.Config.ServerCommands.SaveConfig();
                     }
 
                     var commands = server.Commands;

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordAstroBot.Objects
+namespace DiscordAstroBot.Objects.LaunchLibrary
 {
     /// <summary>
     /// Represents a space launch event

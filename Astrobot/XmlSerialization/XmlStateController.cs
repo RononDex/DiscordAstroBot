@@ -14,6 +14,11 @@ namespace DiscordAstroBot.XmlSerialization
     /// </summary>
     public static class XmlStateController
     {
+        /// <summary>
+        /// lock object used to manage multi threading
+        /// </summary>
+        private static object lockObj = null;
+
         public static T LoadObject<T>(string xmlFile)
         {
             Log<DiscordAstroBot>.Info($"Loading xml file {xmlFile}");
@@ -23,11 +28,15 @@ namespace DiscordAstroBot.XmlSerialization
 
         public static void SaveObject<T>(T obj, string xmlFile)
         {
-            Log<DiscordAstroBot>.Info($"Saving xml file {xmlFile}");
-            var serializer = new XmlSerializer(typeof(T));
-            using (var fileStream = new FileStream(xmlFile, FileMode.OpenOrCreate))
+            // Multi-thread safety, only one thread at a time should write to the xml file
+            lock (lockObj)
             {
-                serializer.Serialize(fileStream, obj);
+                Log<DiscordAstroBot>.Info($"Saving xml file {xmlFile}");
+                var serializer = new XmlSerializer(typeof (T));
+                using (var fileStream = new FileStream(xmlFile, FileMode.OpenOrCreate))
+                {
+                    serializer.Serialize(fileStream, obj);
+                }
             }
         }
     }

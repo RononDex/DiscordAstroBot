@@ -5,9 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using System.Text.RegularExpressions;
+using DiscordAstroBot.Helpers;
 
 namespace DiscordAstroBot.Commands
 {
+    /// <summary>
+    /// Command to do smalltalk
+    /// </summary>
     public class SmallTalkCommand : Command
     {
 
@@ -15,7 +19,7 @@ namespace DiscordAstroBot.Commands
 
         public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
-            var reaction =  Reactions.Reactions.GetReaction(matchedMessage.Value.ToLower(), e);
+            var reaction =  ReactionsHelper.GetReaction(matchedMessage.Value.ToLower(), e);
             e.Channel.SendMessage(reaction);
 
             return true;

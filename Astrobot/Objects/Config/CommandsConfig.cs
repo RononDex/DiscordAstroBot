@@ -11,12 +11,7 @@ namespace DiscordAstroBot.Objects.Config
     public class CommandsConfig
     {
         [XmlElement("Server")]
-        public List<CommandsConfigServer> CommandsConfigServer { get; set; }
-
-        public void SaveConfig()
-        {
-            XmlSerialization.XmlStateController.SaveObject<CommandsConfig>(this, "config/Commands.xml");
-        }
+        public List<CommandsConfigServer> CommandsConfigServer { get; set; } = new List<CommandsConfigServer>();
     }
 
     public class CommandsConfigServer
@@ -27,8 +22,11 @@ namespace DiscordAstroBot.Objects.Config
         [XmlAttribute("ID")]
         public ulong ServerID { get; set; }
 
+        /// <summary>
+        /// List of commands
+        /// </summary>
         [XmlElement("Command")]
-        public List<CommandConfigServerCommand> Commands { get; set; }
+        public List<CommandConfigServerCommand> Commands { get; set; } = new List<CommandConfigServerCommand>();
     }
 
     public class CommandConfigServerCommand

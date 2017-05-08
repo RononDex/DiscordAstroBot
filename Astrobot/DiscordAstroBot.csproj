@@ -102,35 +102,37 @@
     <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="Commands\Version.cs" />
     <Compile Include="Commands\Weather.cs" />
-    <Compile Include="Config.cs" />
     <Compile Include="DiscordAstroBot.cs" />
     <Compile Include="Helpers\AstrometryHelper.cs" />
     <Compile Include="Helpers\GeoLocationHelper.cs" />
-    <Compile Include="Helpers\LaunchLibraryAPIHelper.cs" />
-    <Compile Include="Helpers\SesameHelper.cs" />
+    <Compile Include="Mappers\Config\MadUsers.cs" />
+    <Compile Include="Mappers\Config\ServerCommands.cs" />
+    <Compile Include="Mappers\Config\ServerConfig.cs" />
+    <Compile Include="Mappers\LaunchLibrary\LaunchLibraryAPIHelper.cs" />
     <Compile Include="Helpers\WeatherHelper.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="Objects\AstronomicalObjectInfo.cs" />
+    <Compile Include="Objects\Simbad\AstronomicalObjectInfo.cs" />
     <Compile Include="Objects\Config\CommandsConfig.cs" />
-    <Compile Include="Objects\LaunchLocation.cs" />
-    <Compile Include="Objects\LaunchPad.cs" />
+    <Compile Include="Objects\Config\ServerSettings.cs" />
+    <Compile Include="Objects\LaunchLibrary\LaunchLocation.cs" />
+    <Compile Include="Objects\LaunchLibrary\LaunchPad.cs" />
     <Compile Include="Objects\Config\MadUsers.cs" />
-    <Compile Include="Objects\Rocket.cs" />
-    <Compile Include="Objects\SpaceAgency.cs" />
-    <Compile Include="Objects\SpaceLaunch.cs" />
-    <Compile Include="Objects\SpaceMission.cs" />
+    <Compile Include="Objects\LaunchLibrary\Rocket.cs" />
+    <Compile Include="Objects\LaunchLibrary\SpaceAgency.cs" />
+    <Compile Include="Objects\LaunchLibrary\SpaceLaunch.cs" />
+    <Compile Include="Objects\LaunchLibrary\SpaceMission.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reactions\Reactions.cs" />
-    <Compile Include="Simbad\SimbadQuery.cs" />
-    <Compile Include="Simbad\SimbadResult.cs" />
-    <Compile Include="Simbad\SIMBADSettings.Designer.cs">
+    <Compile Include="Helpers\ReactionsHelper.cs" />
+    <Compile Include="Mappers\Simbad\SimbadQuery.cs" />
+    <Compile Include="Mappers\Simbad\SimbadResult.cs" />
+    <Compile Include="Mappers\Simbad\SIMBADSettings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>SIMBADSettings.settings</DependentUpon>
     </Compile>
     <Compile Include="Utilities\CommandsUtility.cs" />
-    <Compile Include="Utilities\DiscordUtilities.cs" />
+    <Compile Include="Utilities\DiscordUtility.cs" />
     <Compile Include="XmlSerialization\XmlStateController.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -138,7 +140,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Simbad\SIMBADSettings.settings">
+    <None Include="Mappers\Simbad\SIMBADSettings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>SIMBADSettings.Designer.cs</LastGenOutput>
     </None>
@@ -154,6 +156,7 @@
     <Content Include="config\MadUsers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="config\ServerSettings.xml" />
     <Content Include="phantomjs-license.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

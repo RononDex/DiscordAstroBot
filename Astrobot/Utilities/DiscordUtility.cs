@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DiscordAstroBot.Utilities
 {
-    public static class DiscordUtilities
+    public static class DiscordUtility
     {
         /// <summary>
         /// Tries to resolve a username on the given discord server

@@ -15,7 +15,7 @@ namespace DiscordAstroBot.Objects.Config
     public class MadUsers
     {
         [XmlElement("User")]
-        public List<MadUser> Users { get; set; }
+        public List<MadUser> Users { get; set; } = new List<MadUser>();
 
         public void SaveConfig()
         {

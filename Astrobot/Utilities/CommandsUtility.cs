@@ -19,11 +19,16 @@ namespace DiscordAstroBot.Utilities
             Log<DiscordAstroBot>.Info($"Enabling command {command.CommandName} on server {discordServer.Name}");
 
             // Get the server commands config
-            var server = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == discordServer.Id);
+            var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == discordServer.Id);
 
             // Setup config if none exists for this server yet
             if (server == null)
-                server = SetupServerConfig(discordServer);
+            {
+                server = new CommandsConfigServer() { ServerID = discordServer.Id };
+                Mappers.Config.ServerCommands.SetDefaultValues(server);
+                Mappers.Config.ServerCommands.Config.CommandsConfigServer.Add(server);
+                Mappers.Config.ServerCommands.SaveConfig();
+            }
 
             List<CommandConfigServerCommand> commands = server.Commands;
 
@@ -36,7 +41,7 @@ namespace DiscordAstroBot.Utilities
                 else
                     commands.First(x => x.CommandName == command.CommandName).Enabled = true;
 
-                Config.CommandsConfig.SaveConfig();
+                Mappers.Config.ServerCommands.SaveConfig();
             }
         }
 
@@ -56,11 +61,16 @@ namespace DiscordAstroBot.Utilities
             }
 
             // Get the server commands config
-            var server = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == discordServer.Id);
+            var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == discordServer.Id);
 
             // Setup config if none exists for this server yet
             if (server == null)
-                server = SetupServerConfig(discordServer);
+            {
+                server = new CommandsConfigServer() { ServerID = discordServer.Id };
+                Mappers.Config.ServerCommands.SetDefaultValues(server);
+                Mappers.Config.ServerCommands.Config.CommandsConfigServer.Add(server);
+                Mappers.Config.ServerCommands.SaveConfig();
+            }
 
             List<CommandConfigServerCommand> commands = server.Commands;
 
@@ -73,7 +83,7 @@ namespace DiscordAstroBot.Utilities
                 else
                     commands.First(x => x.CommandName == command.CommandName).Enabled = false;
 
-                Config.CommandsConfig.SaveConfig();
+                Mappers.Config.ServerCommands.SaveConfig();
             }
         }
 
@@ -108,34 +118,6 @@ namespace DiscordAstroBot.Utilities
         public static List<Command> GetAllRegisteredCommands()
         {
             return DiscordAstroBot.Commands.ToList();
-        }
-
-        /// <summary>
-        /// Creates a new server commands config with default commands enabled
-        /// </summary>
-        /// <returns></returns>
-        public static CommandsConfigServer SetupServerConfig(Discord.Server server)
-        {
-            Log<DiscordAstroBot>.Info($"Setting up commands config for server {server.Name}");
-
-            var serverCfg = Config.CommandsConfig.CommandsConfigServer.FirstOrDefault(x => x.ServerID == server.Id);
-
-            // Check if config already exists
-            if (serverCfg != null)
-                return serverCfg;
-
-            serverCfg = new CommandsConfigServer() { ServerID = server.Id, Commands = new List<CommandConfigServerCommand>() };
-
-            // Create server config
-            Config.CommandsConfig.CommandsConfigServer.Add(serverCfg);
-
-            // Enable default commands
-            EnableCommand(server, ResolveCommand("AdminCommands"));
-
-            // Save config
-            Config.CommandsConfig.SaveConfig();
-
-            return serverCfg;
         }
     }
 }

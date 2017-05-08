@@ -4,8 +4,9 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordAstroBot.Mappers.Simbad;
 
-namespace DiscordAstroBot.Objects
+namespace DiscordAstroBot.Objects.Simbad
 {
     /// <summary>
     /// Represents information on an astronomical object
@@ -17,7 +18,7 @@ namespace DiscordAstroBot.Objects
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
-        public static AstronomicalObjectInfo FromSimbadResult(Simbad.SimbadResult result)
+        public static AstronomicalObjectInfo FromSimbadResult(SimbadResult result)
         {
             var obj = new AstronomicalObjectInfo();
             if (result.Sections.ContainsKey("Main_id"))

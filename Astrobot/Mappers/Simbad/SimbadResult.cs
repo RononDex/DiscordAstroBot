@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordAstroBot.Simbad
+namespace DiscordAstroBot.Mappers.Simbad
 {
     /// <summary>
     /// Represents a rsult from the SIMBAD query

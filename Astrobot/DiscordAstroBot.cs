@@ -10,6 +10,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using DiscordAstroBot.Helpers;
+using DiscordAstroBot.Objects.Config;
 
 namespace DiscordAstroBot
 {
@@ -41,10 +43,12 @@ namespace DiscordAstroBot
         public DiscordAstroBot(string token, string chatPrefix)
         {
             // Initialize config store
-            Config.Initialize();
+            Mappers.Config.ServerCommands.LoadConfig();
+            Mappers.Config.MadUsers.LoadConfig();
+            Mappers.Config.ServerConfig.LoadConfig();
 
             // Initialize the client
-            Log<DiscordAstroBot>.InfoFormat("Loging into Discord");
+            Log<DiscordAstroBot>.InfoFormat("Login into Discord");
             DiscordClient = new DiscordClient(x =>
             {
                 x.AppName = "Discord Astro Bot";
@@ -77,8 +81,27 @@ namespace DiscordAstroBot
         /// <param name="e"></param>
         private void DiscordClient_JoinedServer(object sender, ServerEventArgs e)
         {
-            e.Server.DefaultChannel.SendMessage("Yay! I got invited to a new server.\r\nHello everyone!");
-            Utilities.CommandsUtility.SetupServerConfig(e.Server);
+            e.Server.DefaultChannel.SendMessage("Yay! I got invited to a new server!\r\nHello everyone!");
+
+            // Setup default server commands config
+            var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == e.Server.Id);
+            if (server == null)
+            {
+                server = new CommandsConfigServer() { ServerID = e.Server.Id };
+                Mappers.Config.ServerCommands.SetDefaultValues(server);
+                Mappers.Config.ServerCommands.Config.CommandsConfigServer.Add(server);
+                Mappers.Config.ServerCommands.SaveConfig();
+            }
+
+            // Setup default server config
+            var serverCfg = Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == e.Server.Id);
+            if (serverCfg == null)
+            {
+                serverCfg = new ServerSettingsServer() { ServerID  = e.Server.Id };
+                Mappers.Config.ServerConfig.SetDefaultValues(serverCfg);
+                Mappers.Config.ServerConfig.Config.Servers.Add(serverCfg);
+                Mappers.Config.ServerConfig.SaveConfig();
+            }
         }
 
         /// <summary>
@@ -114,7 +137,7 @@ namespace DiscordAstroBot
             {
                 if (e.Before.Status.Value.ToLower() != "online" && e.After.Status.Value.ToLower() == "online")
                 {
-                    Reactions.Reactions.HailEta(e.Server, e.After);
+                    ReactionsHelper.HailEta(e.Server, e.After);
                 }
             }
         }
@@ -166,9 +189,10 @@ namespace DiscordAstroBot
                             foreach (var command in Commands)
                             {
                                 // if Command is disabled on this server, ignore it
-                                if (!Config.CommandsConfig.CommandsConfigServer.First(x => x.ServerID == e.Server.Id).Commands.Any(x => x.CommandName.ToLower() == command.CommandName.ToLower() && x.Enabled))
+                                if (!Mappers.Config.ServerCommands.Config.CommandsConfigServer.First(x => x.ServerID == e.Server.Id).Commands.Any(x => x.CommandName.ToLower() == command.CommandName.ToLower() && x.Enabled))
                                     continue;
 
+                                // Check if there is a synonym that matches the message
                                 foreach (var synonym in command.CommandSynonyms)
                                 {
                                     var regex = new Regex(synonym, RegexOptions.IgnoreCase);
@@ -214,7 +238,7 @@ namespace DiscordAstroBot
                     }
                     else
                     {
-                        var reaction = Reactions.Reactions.ReactToNonTag(e.Message.RawText);
+                        var reaction = ReactionsHelper.ReactToNonTag(e.Message.RawText);
                         if (!string.IsNullOrEmpty(reaction))
                             e.Channel.SendMessage(reaction);
                     }
