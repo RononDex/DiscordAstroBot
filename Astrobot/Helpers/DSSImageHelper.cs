@@ -6,6 +6,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using RestSharp.Extensions.MonoHttp;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace DiscordAstroBot.Helpers
 {
@@ -28,8 +30,25 @@ namespace DiscordAstroBot.Helpers
         {
             var client = new WebClient();
             var data = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra)}&dec={HttpUtility.UrlEncode(dec)}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey={HttpUtility.UrlEncode(catalogue)}&equinox=J2000&statsmode=VO");
+            using (var stream = new MemoryStream(data))
+            {
+                var image = new Bitmap(stream);
+                var newImage = Utilities.ImageUtility.MakeGrayscaleFromRGB_R(image);
 
-            return data;
+                var stream2 = new MemoryStream();
+                newImage.Save(stream2, ImageFormat.Jpeg);
+
+                byte[] buffer = new byte[16 * 1024];
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    int read;
+                    while ((read = stream2.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        ms.Write(buffer, 0, read);
+                    }
+                    return ms.ToArray();
+                }
+            }
         }
     }
 }

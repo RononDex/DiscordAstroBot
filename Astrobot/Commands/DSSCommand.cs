@@ -54,7 +54,7 @@ namespace DiscordAstroBot.Commands
                     var stream = new MemoryStream(image);
                     e.Channel.SendMessage(
                         $"Here is the result for RA: {parsedInfo.Coordinates.RA}, DEC: {parsedInfo.Coordinates.DEC}, Radius: 60 arcminutes");
-                    e.Channel.SendFile($"DSS2.gif", stream);
+                    e.Channel.SendFile($"DSS2.jpg", stream);
 
                     return true;
                 }

@@ -148,6 +148,7 @@
     </Compile>
     <Compile Include="Utilities\CommandsUtility.cs" />
     <Compile Include="Utilities\DiscordUtility.cs" />
+    <Compile Include="Utilities\ImageUtility.cs" />
     <Compile Include="XmlSerialization\XmlStateController.cs" />
   </ItemGroup>
   <ItemGroup>
