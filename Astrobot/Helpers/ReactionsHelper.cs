@@ -88,7 +88,9 @@ namespace DiscordAstroBot.Helpers
 
         static Dictionary<string[], string[]> ReactionDictNonTag { get; set; } = new Dictionary<string[], string[]>()
         {
-            { new string[] { @"^god(\?)?", @"^god, you there(\?)?" },                           new string[] { "Yes?", "Yes, that's me!", "What you want?", "What's up?"} },
+            { new string[] { @"^god(\?)?$",
+                             @"^god, you there(\?)?$",
+                             @"^god, is that you(\?)?$" },                                      new string[] { "Yes?", "Yes, that's me!", "What you want?", "What's up?"} },
         };
 
         /// <summary>

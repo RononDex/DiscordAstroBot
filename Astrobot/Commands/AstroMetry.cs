@@ -42,7 +42,7 @@ namespace DiscordAstroBot.Commands
             string sessionID = Helpers.AstrometryHelper.LoginIntoAstrometry(File.ReadAllText(ConfigurationManager.AppSettings["AstrometryTokenFilePath"]));
 
             string submissionID = Helpers.AstrometryHelper.UploadFile(e.Message.Attachments[0].Url, e.Message.Attachments[0].Filename, sessionID);
-            e.Message.Channel.SendMessage(string.Format("Submission successfull: **{0}**. Awaiting results...", submissionID));
+            e.Message.Channel.SendMessage($"Submission successfull: **{submissionID}**. Awaiting results...");
 
             var waitDelta = 5000;
             var maxWait = 300 * 1000;

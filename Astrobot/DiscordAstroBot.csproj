@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="Command.cs" />
     <Compile Include="Commands\AstroMetry.cs" />
+    <Compile Include="Commands\DSSCommand.cs" />
     <Compile Include="Commands\GeoLocation.cs" />
     <Compile Include="Commands\Help.cs" />
     <Compile Include="Commands\Launches.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Commands\Weather.cs" />
     <Compile Include="DiscordAstroBot.cs" />
     <Compile Include="Helpers\AstrometryHelper.cs" />
+    <Compile Include="Helpers\DSSImageHelper.cs" />
     <Compile Include="Helpers\GeoLocationHelper.cs" />
     <Compile Include="Mappers\Config\MadUsers.cs" />
     <Compile Include="Mappers\Config\ServerCommands.cs" />
