@@ -30,65 +30,74 @@ namespace DiscordAstroBot.Commands
 
         public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
         {
-            // Check if there is an image attached
-            if (e.Message.Attachments.Length == 0)
+            try
             {
-                e.Channel.SendMessage("No file attached, please attach a file");
-                return true;
-            }
-
-            // Login into Astrometry
-            e.Message.Channel.SendMessage("Submitting your image to astrometry for analysis and plate-solving...\r\n(Depending on the image, this might take a few minutes, be patient...)");
-            string sessionID = Helpers.AstrometryHelper.LoginIntoAstrometry(File.ReadAllText(ConfigurationManager.AppSettings["AstrometryTokenFilePath"]));
-
-            string submissionID = Helpers.AstrometryHelper.UploadFile(e.Message.Attachments[0].Url, e.Message.Attachments[0].Filename, sessionID);
-            e.Message.Channel.SendMessage($"Submission successfull: **{submissionID}**. Awaiting results...");
-
-            var waitDelta = 5000;
-            var maxWait = 300 * 1000;
-            var curWait = 0;
-            var jobId = 0;
-            var finished = false;
-            while (curWait <= maxWait)
-            {
-                var status = Helpers.AstrometryHelper.GetSubmissionStatus(submissionID);
-
-                if (status.JobID != null)
-                    jobId = status.JobID.Value;
-
-                if (status.State == Helpers.AstrometrySubmissionState.JOB_FINISHED)
+                // Check if there is an image attached
+                if (e.Message.Attachments.Length == 0)
                 {
-                    finished = true;
-                    break;
+                    e.Channel.SendMessage("No file attached, please attach a file");
+                    return true;
                 }
 
-                curWait += waitDelta;
-                Thread.Sleep(waitDelta);
-            }
+                // Login into Astrometry
+                e.Message.Channel.SendMessage("Submitting your image to astrometry for analysis and plate-solving...\r\n(Depending on the image, this might take a few minutes, be patient...)");
+                string sessionID = Helpers.AstrometryHelper.LoginIntoAstrometry(File.ReadAllText(ConfigurationManager.AppSettings["AstrometryTokenFilePath"]));
 
-            if (!finished)
-            {
-                e.Channel.SendMessage(string.Format("__**WARNING:**__ Astrometry could not finish the image analysis within {0} minutes for your submission **{1}**. Please check the result yourself on the provided submission link\r\n http://nova.astrometry.net/status/{1}", maxWait / 1000 / 60, submissionID));
+                string submissionID = Helpers.AstrometryHelper.UploadFile(e.Message.Attachments[0].Url, e.Message.Attachments[0].Filename, sessionID);
+                e.Message.Channel.SendMessage($"Submission successfull: **{submissionID}**. Awaiting results...");
+
+                var waitDelta = 5000;
+                var maxWait = 300 * 1000;
+                var curWait = 0;
+                var jobId = 0;
+                var finished = false;
+                while (curWait <= maxWait)
+                {
+                    var status = Helpers.AstrometryHelper.GetSubmissionStatus(submissionID);
+
+                    if (status.JobID != null)
+                        jobId = status.JobID.Value;
+
+                    if (status.State == Helpers.AstrometrySubmissionState.JOB_FINISHED)
+                    {
+                        finished = true;
+                        break;
+                    }
+
+                    curWait += waitDelta;
+                    Thread.Sleep(waitDelta);
+                }
+
+                if (!finished)
+                {
+                    e.Channel.SendMessage(string.Format("__**WARNING:**__ Astrometry could not finish the image analysis within {0} minutes for your submission **{1}**. Please check the result yourself on the provided submission link\r\n http://nova.astrometry.net/status/{1}", maxWait / 1000 / 60, submissionID));
+                    return true;
+                }
+
+                e.Channel.SendMessage(string.Format("Image analysis for submission **{0}** successfull. Here are the results:", submissionID));
+                var calibrationData = Helpers.AstrometryHelper.GetCalibrationFromFinishedJob(jobId.ToString());
+                var objectsInImage = string.Join(", ", calibrationData.ObjectsInfField);
+                var tags = string.Join(", ", calibrationData.Tags);
+                e.Channel.SendMessage(string.Format("```\r\nRA: {0}\r\nDEC: {1}\r\nOrientation: up is {2} deg\r\nRadius: {3} deg\r\nPixelScale: {4} arcsec/pixel\r\nObjectsInImage: {5}\r\nTags: {6}\r\n```",
+                    calibrationData.CalibrationData.RA,
+                    calibrationData.CalibrationData.DEC,
+                    calibrationData.CalibrationData.Orientation,
+                    calibrationData.CalibrationData.Radius,
+                    calibrationData.CalibrationData.PixScale,
+                    objectsInImage,
+                    tags));
+
+                e.Channel.SendFile(string.Format("annoated_{0}", calibrationData.FileName), Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString())).Wait();
+                e.Channel.SendMessage(string.Format("Link to astrometry job result: http://nova.astrometry.net/status/{0}", submissionID));
+
                 return true;
             }
-
-            e.Channel.SendMessage(string.Format("Image analysis for submission **{0}** successfull. Here are the results:", submissionID));
-            var calibrationData = Helpers.AstrometryHelper.GetCalibrationFromFinishedJob(jobId.ToString());
-            var objectsInImage = string.Join(", ", calibrationData.ObjectsInfField);
-            var tags = string.Join(", ", calibrationData.Tags);
-            e.Channel.SendMessage(string.Format("```\r\nRA: {0}\r\nDEC: {1}\r\nOrientation: up is {2} deg\r\nRadius: {3} deg\r\nPixelScale: {4} arcsec/pixel\r\nObjectsInImage: {5}\r\nTags: {6}\r\n```", 
-                calibrationData.CalibrationData.RA, 
-                calibrationData.CalibrationData.DEC, 
-                calibrationData.CalibrationData.Orientation, 
-                calibrationData.CalibrationData.Radius, 
-                calibrationData.CalibrationData.PixScale, 
-                objectsInImage,
-                tags));
-
-            e.Channel.SendFile(string.Format("annoated_{0}", calibrationData.FileName),Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString())).Wait();
-            e.Channel.SendMessage(string.Format("Link to astrometry job result: http://nova.astrometry.net/status/{0}", submissionID));
-
-            return true;
+            catch (Exception ex)
+            {
+                e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);
+                return true;
+            }
         }
     }
 }
