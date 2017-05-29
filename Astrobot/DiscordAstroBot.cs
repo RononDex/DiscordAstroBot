@@ -83,21 +83,26 @@ namespace DiscordAstroBot
         {
             e.Server.DefaultChannel.SendMessage("Yay! I got invited to a new server!\r\nHello everyone!");
 
+            SetupDefaultSettings(e.Server);
+        }
+
+        private void SetupDefaultSettings(Server dserver)
+        {
             // Setup default server commands config
-            var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == e.Server.Id);
+            var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == dserver.Id);
             if (server == null)
             {
-                server = new CommandsConfigServer() { ServerID = e.Server.Id };
+                server = new CommandsConfigServer() { ServerID = dserver.Id };
                 Mappers.Config.ServerCommands.SetDefaultValues(server);
                 Mappers.Config.ServerCommands.Config.CommandsConfigServer.Add(server);
                 Mappers.Config.ServerCommands.SaveConfig();
             }
 
             // Setup default server config
-            var serverCfg = Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == e.Server.Id);
+            var serverCfg = Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == dserver.Id);
             if (serverCfg == null)
             {
-                serverCfg = new ServerSettingsServer() { ServerID  = e.Server.Id };
+                serverCfg = new ServerSettingsServer() { ServerID = dserver.Id };
                 Mappers.Config.ServerConfig.SetDefaultValues(serverCfg);
                 Mappers.Config.ServerConfig.Config.Servers.Add(serverCfg);
                 Mappers.Config.ServerConfig.SaveConfig();
@@ -156,6 +161,7 @@ namespace DiscordAstroBot
             {
                 //<e.Server.DefaultChannel.SendMessage("I am now up and running");
                 HailedServers.Add(e.Server.Id);
+                SetupDefaultSettings(e.Server);
             }
         }
 
