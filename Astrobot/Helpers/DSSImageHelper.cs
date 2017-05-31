@@ -37,6 +37,7 @@ namespace DiscordAstroBot.Helpers
 
                 var stream2 = new MemoryStream();
                 newImage.Save(stream2, ImageFormat.Jpeg);
+                stream2.Position = 0;
 
                 byte[] buffer = new byte[16 * 1024];
                 using (MemoryStream ms = new MemoryStream())

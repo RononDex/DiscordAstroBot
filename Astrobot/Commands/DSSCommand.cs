@@ -48,7 +48,7 @@ namespace DiscordAstroBot.Commands
                         return true;
                     }
 
-                    e.Channel.SendMessage("Give me a sec... getting the image from the DSS server");
+                    e.Channel.SendMessage("Querying the DSS server for the image. One moment...");
 
                     var image = DSSImageHelper.GetImage(parsedInfo.Coordinates.RA, parsedInfo.Coordinates.DEC);
                     var stream = new MemoryStream(image);
