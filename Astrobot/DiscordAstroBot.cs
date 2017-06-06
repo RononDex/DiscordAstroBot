@@ -72,6 +72,7 @@ namespace DiscordAstroBot
                 await DiscordClient.Connect(token, TokenType.Bot);
                 Log<DiscordAstroBot>.InfoFormat("Login successfull");
             });
+
         }
 
         /// <summary>

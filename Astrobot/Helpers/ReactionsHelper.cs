@@ -140,7 +140,7 @@ namespace DiscordAstroBot.Helpers
 
                                                                                                             }},
             { new string[] { @"how old are you(\?)?" },                                         new string[] { $"My first bits of code were created on 04th December 2016, this makes me {(DateTime.Now - new DateTime(2016, 12, 04)).TotalSeconds}s old" }},
-            { new string[] { @"fuck (you|off)(!)?" },                                           new string[] { $"That's rude!", "Not sure what I should think of this..." }},
+            { new string[] { @"fuck (you|off)(!)?" },                                           new string[] { $"That's rude!", "Not sure what I should think of this...", "Errm... ok?" }},
             { new string[] { @"what are you(\?)?" },                                            new string[] { "A few bits and bytes floating around inside of the RAM and CPU of my owners server" } },
             { new string[] { @"who are you(\?)?" },                                             new string[] { "Really? You ask me who I am but you call me by my name? Really??", "I could tell you, but then I had to kill you..., and we don't want that right?" } },
             { new string[] { @"(how|what) do you look like(\?)?" },                             new string[] { "My body has some very nice 1's and 0's (at least so I've been told by other bots)" } },
