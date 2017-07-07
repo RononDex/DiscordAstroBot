@@ -23,10 +23,7 @@ namespace DiscordAstroBot.Mappers.Config
         /// </summary>
         public static List<Objects.Config.ServerSettingsServerConfig> DefaultConfig => new List<ServerSettingsServerConfig>()
         {
-            return new List<Objects.Config.ServerSettingsServerConfig>()
-                   {
 
-                   };
         };
 
         /// <summary>
