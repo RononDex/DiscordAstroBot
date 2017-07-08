@@ -1,5 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -22,8 +22,10 @@ namespace DiscordAstroBot
         /// </summary>
         private List<ulong> HailedServers { get; set; } = new List<ulong>();
 
-
-        DiscordClient DiscordClient { get; set; }
+        /// <summary>
+        /// The Discord client used to talk to the Discord API
+        /// </summary>
+        DiscordSocketClient DiscordClient { get; set; }
 
         /// <summary>
         /// Holds all the registered Commands
@@ -40,39 +42,40 @@ namespace DiscordAstroBot
         /// </summary>
         /// <param name="token"></param>
         /// <param name="chatPrefix"></param>
-        public DiscordAstroBot(string token, string chatPrefix)
+        public DiscordAstroBot()
         {
             // Initialize config store
             Mappers.Config.ServerCommands.LoadConfig();
             Mappers.Config.MadUsers.LoadConfig();
             Mappers.Config.ServerConfig.LoadConfig();
+        }
 
+        public async void InitDiscordClient(string token, string chatPrefix)
+        {
             // Initialize the client
             Log<DiscordAstroBot>.InfoFormat("Login into Discord");
-            DiscordClient = new DiscordClient(x =>
+            DiscordClient = new DiscordSocketClient(/*x =>
             {
                 x.AppName = "Discord Astro Bot";
                 x.LogLevel = LogSeverity.Info;
                 x.LogHandler = Log;
-            });
+            }*/);
+
+            DiscordClient.Log += Log;
+            await DiscordClient.LoginAsync(TokenType.Bot, token);
+            await DiscordClient.StartAsync();
 
             this.ChatPrefix = chatPrefix;
 
             RegisterCommands();
 
             DiscordClient.MessageReceived += MessageReceived;
-            DiscordClient.ServerAvailable += DiscordClient_ServerAvailable;
-            DiscordClient.UserUpdated += DiscordClient_UserUpdated;
+            DiscordClient.GuildAvailable += DiscordClient_ServerAvailable;
+            DiscordClient.GuildMemberUpdated += DiscordClient_UserUpdated;
             DiscordClient.UserJoined += DiscordClient_UserJoined;
-            DiscordClient.JoinedServer += DiscordClient_JoinedServer;
+            DiscordClient.JoinedGuild += DiscordClient_JoinedServer;
 
-            // Login into Discord
-            DiscordClient.ExecuteAndWait(async () =>
-            {
-                await DiscordClient.Connect(token, TokenType.Bot);
-                Log<DiscordAstroBot>.InfoFormat("Login successfull");
-            });
-
+            Log<DiscordAstroBot>.InfoFormat("Login successfull");
         }
 
         /// <summary>
@@ -80,14 +83,21 @@ namespace DiscordAstroBot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DiscordClient_JoinedServer(object sender, ServerEventArgs e)
+        private Task DiscordClient_JoinedServer(SocketGuild server)
         {
-            e.Server.DefaultChannel.SendMessage("Yay! I got invited to a new server!\r\nHello everyone!");
+            server.DefaultChannel.SendMessageAsync("Yay! I got invited to a new server!\r\nHello everyone!");
 
-            SetupDefaultSettings(e.Server);
+            SetupDefaultSettings(server);
+
+            return Task.CompletedTask;
         }
 
-        private void SetupDefaultSettings(Server dserver)
+        /// <summary>
+        /// Initializes default settings store for newly joined servers
+        /// </summary>
+        /// <param name="dserver"></param>
+        /// <returns></returns>
+        private Task SetupDefaultSettings(SocketGuild dserver)
         {
             // Setup default server commands config
             var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == dserver.Id);
@@ -108,6 +118,8 @@ namespace DiscordAstroBot
                 Mappers.Config.ServerConfig.Config.Servers.Add(serverCfg);
                 Mappers.Config.ServerConfig.SaveConfig();
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -115,20 +127,22 @@ namespace DiscordAstroBot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DiscordClient_UserJoined(object sender, UserEventArgs e)
+        private Task DiscordClient_UserJoined(SocketGuildUser user)
         {
-            Log<DiscordAstroBot>.InfoFormat($"New user {e.User.Name} joined on server {e.Server.Name}");
+            Log<DiscordAstroBot>.InfoFormat($"New user {user.Username} joined on server {user.Username}");
 
             // Send a welcome message in the default channel
-            var rulesChannel = e.Server.AllChannels.FirstOrDefault(x => x.Name.ToLower() == "rules");
+            var rulesChannel = user.Guild.Channels.FirstOrDefault(x => x.Name.ToLower() == "rules");
             if (rulesChannel != null)
             {
-                e.Server.DefaultChannel.SendMessage($"A new user joined! Say hi to {e.User.Mention}\r\nMake sure to check out the {rulesChannel.Mention} channel!");
+                user.Guild.DefaultChannel.SendMessageAsync($"A new user joined! Say hi to {user.Mention}\r\nMake sure to check out the {((ITextChannel)rulesChannel).Mention} channel!");
             }
             else
             {
-                e.Server.DefaultChannel.SendMessage($"A new user joined! Say hi to {e.User.Mention}");
+                user.Guild.DefaultChannel.SendMessageAsync($"A new user joined! Say hi to {user.Mention}");
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -136,16 +150,18 @@ namespace DiscordAstroBot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DiscordClient_UserUpdated(object sender, UserUpdatedEventArgs e)
+        private Task DiscordClient_UserUpdated(SocketGuildUser beforeUser, SocketGuildUser afterUser)
         {
             // If astrobots best friend comes online (another bot) hail it
-            if (e.After.Name.ToLower().Contains("eta") || e.After.Name.ToLower().Contains("gaben") && e.After.IsBot)
+            if (afterUser.Username.ToLower().Contains("eta") || afterUser.Username.ToLower().Contains("gaben") && afterUser.IsBot)
             {
-                if (e.Before.Status.Value.ToLower() != "online" && e.After.Status.Value.ToLower() == "online")
+                if (beforeUser.Status != UserStatus.Online && afterUser.Status == UserStatus.Online)
                 {
-                    ReactionsHelper.HailEta(e.Server, e.After);
+                    ReactionsHelper.HailEta(beforeUser.Guild, afterUser);
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -153,17 +169,19 @@ namespace DiscordAstroBot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DiscordClient_ServerAvailable(object sender, ServerEventArgs e)
+        private Task DiscordClient_ServerAvailable(SocketGuild server)
         {
             // Since random disconnects and reconects to the servers happen, we dont want
             // the bot to tell everyone that he is online everytime this happen,
             // but rather only the first time
-            if (!HailedServers.Contains(e.Server.Id /*false*/))
+            if (!HailedServers.Contains(server.Id /*false*/))
             {
                 //<e.Server.DefaultChannel.SendMessage("I am now up and running");
-                HailedServers.Add(e.Server.Id);
-                SetupDefaultSettings(e.Server);
+                HailedServers.Add(server.Id);
+                SetupDefaultSettings(server);
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -171,20 +189,20 @@ namespace DiscordAstroBot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MessageReceived(object sender, MessageEventArgs e)
+        private Task MessageReceived(SocketMessage recievedMessage)
         {
             try
             {
                 // Check to make sure that the bot is not the author
-                if (!e.Message.IsAuthor)
+                if (recievedMessage.Author.Id != DiscordClient.CurrentUser.Id)
                 {
-                    var splitted = e.Message.RawText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (splitted.Length > 0 && splitted[0].ToLower() == this.ChatPrefix || e.Message.MentionedUsers.Any(x => x.Id == DiscordClient.CurrentUser.Id))
+                    var splitted = recievedMessage.Content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (splitted.Length > 0 && splitted[0].ToLower() == this.ChatPrefix || recievedMessage.MentionedUsers.Any(x => x.Id == DiscordClient.CurrentUser.Id))
                     {
-                        Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", e.Message.Text);
+                        Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", recievedMessage.Content);
 
                         // Search for synonyms usind regex                       
-                        var message = e.Message.RawText.Replace(ChatPrefix, "").Replace(DiscordClient.CurrentUser.Mention, "").Trim();
+                        var message = recievedMessage.Content.Replace(ChatPrefix, "").Replace(DiscordClient.CurrentUser.Mention, "").Trim();
                         Task.Run(() =>
                         {
                             // Set threading culture for parsing floating numbers
@@ -196,7 +214,7 @@ namespace DiscordAstroBot
                             foreach (var command in Commands)
                             {
                                 // if Command is disabled on this server, ignore it
-                                if (!Mappers.Config.ServerCommands.Config.CommandsConfigServer.First(x => x.ServerID == e.Server.Id).Commands.Any(x => x.CommandName.ToLower() == command.CommandName.ToLower() && x.Enabled))
+                                if (!Mappers.Config.ServerCommands.Config.CommandsConfigServer.First(x => x.ServerID == ((SocketTextChannel)recievedMessage.Channel).Guild.Id).Commands.Any(x => x.CommandName.ToLower() == command.CommandName.ToLower() && x.Enabled))
                                     continue;
 
                                 // Check if there is a synonym that matches the message
@@ -209,12 +227,12 @@ namespace DiscordAstroBot
 
                                         try
                                         {
-                                            commandExecuted = command.MessageRecieved(match, e);
+                                            commandExecuted = command.MessageRecieved(match, recievedMessage);
                                         }
                                         catch (Exception ex)
                                         {
-                                            e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
-                                            Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);
+                                            recievedMessage.Channel.SendMessageAsync(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                                            Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", recievedMessage.Content, ex.Message);
                                         }
 
                                         if (commandExecuted)
@@ -232,12 +250,12 @@ namespace DiscordAstroBot
 
                                 try
                                 {
-                                    smallTalkCommand.MessageRecieved(new Regex(".*").Match(message), e);
+                                    smallTalkCommand.MessageRecieved(new Regex(".*").Match(message), recievedMessage);
                                 }
                                 catch (Exception ex)
                                 {
-                                    e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
-                                    Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);
+                                    recievedMessage.Channel.SendMessageAsync(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                                    Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", recievedMessage.Content, ex.Message);
                                 }
                                 commandExecuted = true;
                             }
@@ -245,17 +263,19 @@ namespace DiscordAstroBot
                     }
                     else
                     {
-                        var reaction = ReactionsHelper.ReactToNonTag(e.Message.RawText);
+                        var reaction = ReactionsHelper.ReactToNonTag(recievedMessage.Content);
                         if (!string.IsNullOrEmpty(reaction))
-                            e.Channel.SendMessage(reaction);
+                            recievedMessage.Channel.SendMessageAsync(reaction);
                     }
                 }
             }
             catch (Exception ex)
             {
-                e.Channel.SendMessage(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
-                Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", e.Message.RawText, ex.Message);
+                recievedMessage.Channel.SendMessageAsync(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", recievedMessage.Content, ex.Message);
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -290,26 +310,28 @@ namespace DiscordAstroBot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Log(object sender, LogMessageEventArgs e)
+        private Task Log(LogMessage msg)
         {
-            switch (e.Severity)
+            switch (msg.Severity)
             {
                 case LogSeverity.Debug:
-                    Log<DiscordAstroBot>.DebugFormat(e.Message);
+                    Log<DiscordAstroBot>.DebugFormat(msg.Message);
                     break;
                 case LogSeverity.Error:
-                    Log<DiscordAstroBot>.ErrorFormat(e.Message);
+                    Log<DiscordAstroBot>.ErrorFormat(msg.Message);
                     break;
                 case LogSeverity.Info:
-                    Log<DiscordAstroBot>.InfoFormat(e.Message);
+                    Log<DiscordAstroBot>.InfoFormat(msg.Message);
                     break;
                 case LogSeverity.Verbose:
-                    Log<DiscordAstroBot>.DebugFormat(e.Message);
+                    Log<DiscordAstroBot>.DebugFormat(msg.Message);
                     break;
                 case LogSeverity.Warning:
-                    Log<DiscordAstroBot>.WarnFormat(e.Message);
+                    Log<DiscordAstroBot>.WarnFormat(msg.Message);
                     break;
             }
+
+            return Task.CompletedTask;
         }
     }
 }

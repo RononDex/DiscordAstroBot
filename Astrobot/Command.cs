@@ -1,5 +1,4 @@
-﻿using Discord;
-using Discord.Commands;
+﻿using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +20,6 @@ namespace DiscordAstroBot
         /// <param name="matchedMessage"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        public abstract bool MessageRecieved(Match matchedMessage, MessageEventArgs e);
+        public abstract bool MessageRecieved(Match matchedMessage, SocketMessage e);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,10 +81,10 @@ namespace DiscordAstroBot.Helpers
             return null;
         }
 
-        public static void HailEta(Discord.Server server, User user)
+        public static void HailEta(SocketGuild server, SocketUser user)
         {
-            server.DefaultChannel.SendMessage("Oh look, my best friend came online!");
-            server.DefaultChannel.SendMessage(string.Format("{0} Hi", user.Mention));
+            server.DefaultChannel.SendMessageAsync("Oh look, my best friend came online!");
+            server.DefaultChannel.SendMessageAsync(string.Format("{0} Hi", user.Mention));
         }
 
         static Dictionary<string[], string[]> ReactionDictNonTag { get; set; } = new Dictionary<string[], string[]>()
