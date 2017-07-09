@@ -32,9 +32,9 @@ namespace DiscordAstroBot.Helpers
             return null;
         }
 
-        public static string GetReaction(string input, MessageEventArgs e)
+        public static string GetReaction(string input, SocketMessage e)
         {
-            if (Mappers.Config.MadUsers.Config.Users.Any(x => x.Server == e.Server.Id.ToString() && x.User == e.User.Id.ToString()))
+            if (Mappers.Config.MadUsers.Config.Users.Any(x => x.Server == ((SocketGuildChannel)e.Channel).Guild.Id.ToString() && x.User == e.Author.Id.ToString()))
             {
                 var reactionMad = GetReactionTo(input, true);
                 return reactionMad;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using System.Text.RegularExpressions;
+using Discord.WebSocket;
 
 namespace DiscordAstroBot.Commands
 {
@@ -21,9 +22,9 @@ namespace DiscordAstroBot.Commands
             }
         }
 
-        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
-            e.Channel.SendMessage(string.Format("IT'S WORKING!!! You entered: {0}", matchedMessage.Value));
+            await recievedMessage.Channel.SendMessageAsync(string.Format("IT'S WORKING!!! You entered: {0}", matchedMessage.Value));
 
             return true;
         }

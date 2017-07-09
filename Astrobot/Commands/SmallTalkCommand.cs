@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using System.Text.RegularExpressions;
 using DiscordAstroBot.Helpers;
+using Discord.WebSocket;
 
 namespace DiscordAstroBot.Commands
 {
@@ -17,10 +18,10 @@ namespace DiscordAstroBot.Commands
 
         public override string CommandName { get { return "SmallTalk"; } }
 
-        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
-            var reaction =  ReactionsHelper.GetReaction(matchedMessage.Value.ToLower(), e);
-            e.Channel.SendMessage(reaction);
+            var reaction =  ReactionsHelper.GetReaction(matchedMessage.Value.ToLower(), recievedMessage);
+            await recievedMessage.Channel.SendMessageAsync(reaction);
 
             return true;
         }

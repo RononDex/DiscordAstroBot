@@ -227,7 +227,7 @@ namespace DiscordAstroBot
 
                                         try
                                         {
-                                            commandExecuted = command.MessageRecieved(match, recievedMessage);
+                                            commandExecuted = command.MessageRecieved(match, recievedMessage).Result;
                                         }
                                         catch (Exception ex)
                                         {

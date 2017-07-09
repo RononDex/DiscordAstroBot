@@ -20,6 +20,6 @@ namespace DiscordAstroBot
         /// <param name="matchedMessage"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        public abstract bool MessageRecieved(Match matchedMessage, SocketMessage e);
+        public abstract Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage);
     }
 }

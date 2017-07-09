@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
+using Discord.WebSocket;
 
 namespace DiscordAstroBot.Commands
 {
@@ -14,7 +15,7 @@ namespace DiscordAstroBot.Commands
 
         public override string[] CommandSynonyms => base.CommandSynonyms;
 
-        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             return false;
         }

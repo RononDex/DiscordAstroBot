@@ -4,6 +4,8 @@ using Discord;
 
 using System.Globalization;
 using DiscordAstroBot.Mappers.LaunchLibrary;
+using Discord.WebSocket;
+using System.Threading.Tasks;
 
 namespace DiscordAstroBot.Commands
 {
@@ -23,7 +25,7 @@ namespace DiscordAstroBot.Commands
             @"what is (?'AgencySearchName'.*\w)(\?)?",
         };
 
-        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             // When searching for a specific agency
             if (matchedMessage.Groups["AgencySearchName"] != null && matchedMessage.Groups["AgencySearchName"].Success)
@@ -33,7 +35,7 @@ namespace DiscordAstroBot.Commands
                 if (agency == null)
                     return false;
 
-                e.Channel.SendMessage($"I found the following space agency matching your search:\r\n```\r\n" +
+                await recievedMessage.Channel.SendMessageAsync($"I found the following space agency matching your search:\r\n```\r\n" +
                                       $"{agency}\r\n" +
                                       $"```");
 
@@ -68,7 +70,7 @@ namespace DiscordAstroBot.Commands
                     }
                 }
 
-                e.Channel.SendMessage($"These are the next upcoming launches: \r\n```\r\n{msg}\r\n```");
+                await recievedMessage.Channel.SendMessageAsync($"These are the next upcoming launches: \r\n```\r\n{msg}\r\n```");
 
                 return true;
             }
@@ -89,7 +91,7 @@ namespace DiscordAstroBot.Commands
                         msg = $"{msg}{launch.WindowStart?.ToString("yyyy-MM-dd ", CultureInfo.InvariantCulture)}: {launch.Name}\r\n";
                     }
                 }
-                e.Channel.SendMessage($"These are the upcoming launches for {matchedMessage.Groups["NextLaunchesQuery"].Value}: \r\n```\r\n{msg}\r\n```");
+                await recievedMessage.Channel.SendMessageAsync($"These are the upcoming launches for {matchedMessage.Groups["NextLaunchesQuery"].Value}: \r\n```\r\n{msg}\r\n```");
                 return true;
             }
 

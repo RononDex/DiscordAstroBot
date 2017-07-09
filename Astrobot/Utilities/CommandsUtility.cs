@@ -1,4 +1,5 @@
-﻿using DiscordAstroBot.Objects.Config;
+﻿using Discord.WebSocket;
+using DiscordAstroBot.Objects.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace DiscordAstroBot.Utilities
         /// </summary>
         /// <param name="discordServer"></param>
         /// <param name="command"></param>
-        public static void EnableCommand(Discord.Server discordServer, Command command)
+        public static void EnableCommand(SocketGuild discordServer, Command command)
         {
             Log<DiscordAstroBot>.Info($"Enabling command {command.CommandName} on server {discordServer.Name}");
 
@@ -50,7 +51,7 @@ namespace DiscordAstroBot.Utilities
         /// </summary>
         /// <param name="discordServer"></param>
         /// <param name="command"></param>
-        public static void DisableCommand(Discord.Server discordServer, Command command)
+        public static void DisableCommand(SocketGuild discordServer, Command command)
         {
             Log<DiscordAstroBot>.Info($"Disabling command {command.CommandName} on server {discordServer.Name}");
 
@@ -101,7 +102,7 @@ namespace DiscordAstroBot.Utilities
         /// Enables all the commands on the given server
         /// </summary>
         /// <param name="server"></param>
-        public static void EnableAllCommands(Discord.Server server)
+        public static void EnableAllCommands(SocketGuild server)
         {
             Log<DiscordAstroBot>.InfoFormat($"Enabling all commands on server {server.Name}");
 

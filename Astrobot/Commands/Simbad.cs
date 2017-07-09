@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DiscordAstroBot.Objects.Simbad;
+using Discord.WebSocket;
 
 namespace DiscordAstroBot.Commands
 {
@@ -30,9 +31,9 @@ namespace DiscordAstroBot.Commands
             }
         }
 
-        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
-            e.Channel.SendMessage("Querying the SIMBAD database, please wait...");
+            await recievedMessage.Channel.SendMessageAsync("Querying the SIMBAD database, please wait...");
 
             // Output full information for "AstroObject"
             if (matchedMessage.Groups["AstroObject"].Success)
@@ -41,12 +42,12 @@ namespace DiscordAstroBot.Commands
 
                 if (info == null)
                 {
-                    e.Channel.SendMessage(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["AstroObject"].Value));
+                    await recievedMessage.Channel.SendMessageAsync(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["AstroObject"].Value));
                     return true;
                 }
 
                 var obj = AstronomicalObjectInfo.FromSimbadResult(info);
-                e.Channel.SendMessage($"This is what I found in the SIMBAD database:\r\n" +
+                await recievedMessage.Channel.SendMessageAsync($"This is what I found in the SIMBAD database:\r\n" +
                                     $"```\r\n" +
                                     $"Main Identifier: {obj.Name}\r\n" +
                                     $"MainType: {obj.ObjectType}\r\n" +
@@ -58,7 +59,7 @@ namespace DiscordAstroBot.Commands
                                     $"Proper motion:\r\n{obj.ProperMotion}\r\n\r\n" +
                                     $"```\r\n");
 
-                e.Channel.SendMessage($"```\r\n" +
+                await recievedMessage.Channel.SendMessageAsync($"```\r\n" +
                                     $"SecondaryTypes:\r\n{string.Join(", ", obj.SecondaryTypes.Select(x => x.Replace("\n", "").Replace("\r", "")))}\r\n\r\n" +
                                     $"Also known as: \r\n{string.Join(", ", obj.AlsoKnownAs)}\r\n\r\n" +
                                     $"```\r\n");
@@ -71,18 +72,18 @@ namespace DiscordAstroBot.Commands
 
                 if (info == null)
                 {
-                    e.Channel.SendMessage(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["MagAstroObject"].Value));
+                    await recievedMessage.Channel.SendMessageAsync(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["MagAstroObject"].Value));
                     return true;
                 }
 
                 var obj = AstronomicalObjectInfo.FromSimbadResult(info);
                 if (obj.Magntiudes.Count == 0)
                 {
-                    e.Channel.SendMessage($"The object {matchedMessage.Groups["MagAstroObject"].Value} was found in the database, but no fluxes are known");
+                    await recievedMessage.Channel.SendMessageAsync($"The object {matchedMessage.Groups["MagAstroObject"].Value} was found in the database, but no fluxes are known");
                     return true;
                 }
 
-                e.Channel.SendMessage($"These are the magnitudes I found for {matchedMessage.Groups["MagAstroObject"].Value}" +
+                await recievedMessage.Channel.SendMessageAsync($"These are the magnitudes I found for {matchedMessage.Groups["MagAstroObject"].Value}" +
                                       $"```\r\n" +
                                       $"{string.Join("\r\n", obj.Magntiudes)}\r\n\r\n" +
                                       $"```\r\n");
@@ -95,18 +96,18 @@ namespace DiscordAstroBot.Commands
 
                 if (info == null)
                 {
-                    e.Channel.SendMessage(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["DistAstroObject"].Value));
+                    await recievedMessage.Channel.SendMessageAsync(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["DistAstroObject"].Value));
                     return true;
                 }
 
                 var obj = AstronomicalObjectInfo.FromSimbadResult(info);
                 if (obj.DistanceMeasurements.Count == 0)
                 {
-                    e.Channel.SendMessage($"The object {matchedMessage.Groups["DistAstroObject"].Value} was found in the database, but no distance measurements were found");
+                    await recievedMessage.Channel.SendMessageAsync($"The object {matchedMessage.Groups["DistAstroObject"].Value} was found in the database, but no distance measurements were found");
                     return true;
                 }
 
-                e.Channel.SendMessage($"The object {matchedMessage.Groups["DistAstroObject"].Value} is approximatly `{obj.DistanceMeasurements[0].Distance} {obj.DistanceMeasurements[0].Unit} ± {obj.DistanceMeasurements[0].ErrPlus.Replace("+", "")}` away from earth.");
+                await recievedMessage.Channel.SendMessageAsync($"The object {matchedMessage.Groups["DistAstroObject"].Value} is approximatly `{obj.DistanceMeasurements[0].Distance} {obj.DistanceMeasurements[0].Unit} ± {obj.DistanceMeasurements[0].ErrPlus.Replace("+", "")}` away from earth.");
             }
 
             return true;

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 using System.Text.RegularExpressions;
+using Discord.WebSocket;
 
 namespace DiscordAstroBot.Commands
 {
@@ -37,17 +38,17 @@ namespace DiscordAstroBot.Commands
             }
         }
 
-        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             // Search for the given address
             var foundLocation = Helpers.GeoLocationHelper.FindLocation(matchedMessage.Groups["SearchLocation"].Value);
 
             // Output result
             if (foundLocation == null)
-                e.Channel.SendMessage(string.Format("Could not find any location matching your search \"{0}\"", matchedMessage.Value));
+                await recievedMessage.Channel.SendMessageAsync(string.Format("Could not find any location matching your search \"{0}\"", matchedMessage.Value));
             else
             {
-                e.Channel.SendMessage(foundLocation.ToString());
+                await recievedMessage.Channel.SendMessageAsync(foundLocation.ToString());
             }
 
             return true;

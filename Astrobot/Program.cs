@@ -39,7 +39,8 @@ namespace DiscordAstroBot
             var chatPrefix = ConfigurationManager.AppSettings["ChatPrefix"];
 
             Log<DiscordAstroBot>.InfoFormat("Launching Astro bot...");
-            var discoBot = new DiscordAstroBot(token, chatPrefix);
+            var discoBot = new DiscordAstroBot();
+            discoBot.InitDiscordClient(token, chatPrefix);
         }
     }
 }

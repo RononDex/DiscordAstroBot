@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using System.IO;
 using System.Text.RegularExpressions;
+using Discord.WebSocket;
 
 namespace DiscordAstroBot.Commands
 {
@@ -23,20 +24,20 @@ namespace DiscordAstroBot.Commands
 
         public override string CommandName { get { return "Weather"; } }
 
-        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             var location = Helpers.GeoLocationHelper.FindLocation(matchedMessage.Groups["SearchLocation"].Value);
             // If no loacation with that name found, stop searching for a weather forcast
             if (location == null)
             {
-                e.Channel.SendMessage(string.Format("I don't know any place on this planet that is called \"{0}\"", matchedMessage.Groups["SearchLocation"].Value));
+                await recievedMessage.Channel.SendMessageAsync(string.Format("I don't know any place on this planet that is called \"{0}\"", matchedMessage.Groups["SearchLocation"].Value));
                 return true;
             }
 
-            e.Channel.SendMessage(string.Format("Hold on, searching a weather forcast for {0}. This might take a moment...", location));
+            await recievedMessage.Channel.SendMessageAsync(string.Format("Hold on, searching a weather forcast for {0}. This might take a moment...", location));
             var forcast = Helpers.WeatherHelper.GetWeatherForcast(DateTime.Today, location);
-            e.Channel.SendMessage(string.Format("This is the weather forcast that I found for {0}:", matchedMessage.Groups["SearchLocation"].Value));
-            e.Channel.SendFile("Weather_forcast.png", new MemoryStream(forcast.Screenshot));
+            await recievedMessage.Channel.SendMessageAsync(string.Format("This is the weather forcast that I found for {0}:", matchedMessage.Groups["SearchLocation"].Value));
+            await recievedMessage.Channel.SendFileAsync(new MemoryStream(forcast.Screenshot), "Weather_forcast.png" );
 
             return true;
         }

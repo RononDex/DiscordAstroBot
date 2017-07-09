@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using DiscordAstroBot.Helpers;
+using Discord.WebSocket;
 
 namespace DiscordAstroBot.Commands
 {
@@ -20,7 +21,7 @@ namespace DiscordAstroBot.Commands
         public override string[] CommandSynonyms =>
             new string[] {@"(how|what) does (?'ObjectName'\w*) look like(\?)?"};
 
-        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             try
             {
@@ -33,7 +34,7 @@ namespace DiscordAstroBot.Commands
 
                     if (info == null)
                     {
-                        e.Channel.SendMessage(
+                        await recievedMessage.Channel.SendMessageAsync(
                             $"Could not find any obejct with the name \"{matchedMessage.Groups["ObjectName"].Value}\" in the SIMBAD database");
                         return true;
                     }
@@ -43,18 +44,18 @@ namespace DiscordAstroBot.Commands
                     if (string.IsNullOrEmpty(parsedInfo.Coordinates.DEC) ||
                         string.IsNullOrEmpty(parsedInfo.Coordinates.RA))
                     {
-                        e.Channel.SendMessage(
+                        await recievedMessage.Channel.SendMessageAsync(
                             $"The object was found in the SIMBAD database, but no RA,DEC coordinates are known.");
                         return true;
                     }
 
-                    e.Channel.SendMessage("Querying the DSS server for the image. One moment...");
+                    await recievedMessage.Channel.SendMessageAsync("Querying the DSS server for the image. One moment...");
 
                     var image = DSSImageHelper.GetImage(parsedInfo.Coordinates.RA, parsedInfo.Coordinates.DEC);
                     var stream = new MemoryStream(image);
-                    e.Channel.SendMessage(
+                    await recievedMessage.Channel.SendMessageAsync(
                         $"Here is the result for RA: {parsedInfo.Coordinates.RA}, DEC: {parsedInfo.Coordinates.DEC}, Radius: 60 arcminutes");
-                    e.Channel.SendFile($"DSS2.jpg", stream);
+                    await recievedMessage.Channel.SendFileAsync(stream, $"DSS2.jpg");
 
                     return true;
                 }

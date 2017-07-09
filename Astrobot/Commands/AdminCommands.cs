@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Discord;
 using DiscordAstroBot.Objects.Config;
+using Discord.WebSocket;
 
 namespace DiscordAstroBot.Commands
 {
@@ -39,38 +40,41 @@ namespace DiscordAstroBot.Commands
             }
         }
 
-        public override bool MessageRecieved(Match matchedMessage, MessageEventArgs e)
+        public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             // Make sure user is admin
-            if (e.User.Roles.Any(x => x.Permissions.Administrator))
+            if (((SocketGuildUser)recievedMessage.Author).Roles.Any(x => x.Permissions.Administrator))
             {
                 // Toggle mad user
                 if (matchedMessage.Groups["MadUser"].Success)
                 {
                     var user = matchedMessage.Groups["MadUser"].Value;
-                    var resolvedUser = Utilities.DiscordUtility.ResolveUser(e.Server, user);
+                    var resolvedUser = Utilities.DiscordUtility.ResolveUser(((SocketGuildChannel)recievedMessage.Channel).Guild, user);
 
                     if (resolvedUser == null)
                     {
-                        e.Channel.SendMessage("Could not find any user with that name!");
+                        await recievedMessage.Channel.SendMessageAsync("Could not find any user with that name!");
                         return true;
                     }
 
-                    var entry = Mappers.Config.MadUsers.Config.Users.FirstOrDefault(x => x.Server == e.Server.Id.ToString() && x.User == resolvedUser.Id.ToString());
+                    var entry = Mappers.Config.MadUsers.Config.Users.FirstOrDefault(x => x.Server == ((SocketGuildChannel)recievedMessage.Channel).Guild.Id.ToString() && x.User == resolvedUser.Id.ToString());
 
                     // Stop being mad at the user
                     if (entry != null)
                     {
                         Mappers.Config.MadUsers.Config.Users.Remove(entry);
-                        e.Channel.SendMessage($"No longer mad at {resolvedUser.Name}");
+                        await recievedMessage.Channel.SendMessageAsync($"No longer mad at {resolvedUser.Username}");
                     }
                     else
                     {
-                        entry = new MadUser();
-                        entry.Server = Convert.ToString(e.Server.Id);
-                        entry.User = Convert.ToString(resolvedUser.Id);
+                        entry = new MadUser()
+                        {
+                            Server = Convert.ToString(((SocketGuildChannel)recievedMessage.Channel).Guild.Id),
+                            User = Convert.ToString(resolvedUser.Id)
+                        };
+
                         Mappers.Config.MadUsers.Config.Users.Add(entry);
-                        e.Channel.SendMessage($"Copy that! I am now mad at {resolvedUser.Name}");
+                        await recievedMessage.Channel.SendMessageAsync($"Copy that! I am now mad at {resolvedUser.Username}");
                     }
 
                     // Save config
@@ -80,34 +84,36 @@ namespace DiscordAstroBot.Commands
                 // List mad users
                 if (matchedMessage.Groups["MadUserList"].Success)
                 {
-                    var users = Mappers.Config.MadUsers.Config.Users.Where(x => x.Server == e.Server.Id.ToString()).Select(y => e.Server.Users.FirstOrDefault(x => x.Id.ToString() == y.User).Name).ToList();
+                    var users = Mappers.Config.MadUsers.Config.Users.Where(x => x.Server == ((SocketGuildChannel)recievedMessage.Channel).Guild.Id.ToString())
+                        .Select(y => ((SocketGuildChannel)recievedMessage.Channel).Guild.Users.FirstOrDefault(x => x.Id.ToString() == y.User).Username).ToList();
+
                     if (users.Count == 0)
-                        e.Channel.SendMessage("I am currently not mad at any users");
+                        await recievedMessage.Channel.SendMessageAsync("I am currently not mad at any users");
                     else
-                        e.Channel.SendMessage($"I am currently mad at these users:\r\n```\r\n{string.Join("\r\n", users)}\r\n```");
+                        await recievedMessage.Channel.SendMessageAsync($"I am currently mad at these users:\r\n```\r\n{string.Join("\r\n", users)}\r\n```");
                 }
 
                 // List enabled commands on this server
                 if (matchedMessage.Groups["EnabledCommandsList"].Success)
                 {
-                    var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == e.Server.Id);
+                    var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == ((SocketGuildChannel)recievedMessage.Channel).Guild.Id);
                     if (server == null)
                     {
-                        server = new CommandsConfigServer() { ServerID = e.Server.Id};
+                        server = new CommandsConfigServer() { ServerID = ((SocketGuildChannel)recievedMessage.Channel).Guild.Id};
                         Mappers.Config.ServerCommands.SetDefaultValues(server);
                         Mappers.Config.ServerCommands.Config.CommandsConfigServer.Add(server);
                         Mappers.Config.ServerCommands.SaveConfig();
                     }
 
                     var commands = server.Commands;
-                    e.Channel.SendMessage($"The following commands are currently enabled on this server:\r\n```\r\n{string.Join("\r\n", commands.Select(x => x.CommandName))}\r\n```");
+                    await recievedMessage.Channel.SendMessageAsync($"The following commands are currently enabled on this server:\r\n```\r\n{string.Join("\r\n", commands.Select(x => x.CommandName))}\r\n```");
                 }
 
                 // List enabled commands on this server
                 if (matchedMessage.Groups["AvailableCommandList"].Success)
                 {
                     var commands = Utilities.CommandsUtility.GetAllRegisteredCommands();
-                    e.Channel.SendMessage($"The following commands are currently registered and can be used on this server:\r\n```\r\n{string.Join("\r\n", commands.Select(x => x.CommandName))}\r\n```");
+                    await recievedMessage.Channel.SendMessageAsync($"The following commands are currently registered and can be used on this server:\r\n```\r\n{string.Join("\r\n", commands.Select(x => x.CommandName))}\r\n```");
                 }
 
                 // Enable a command
@@ -116,12 +122,12 @@ namespace DiscordAstroBot.Commands
                     var resolvedCmd = Utilities.CommandsUtility.ResolveCommand(matchedMessage.Groups["EnableCommandName"].Value);
                     if (resolvedCmd != null)
                     {
-                        Utilities.CommandsUtility.EnableCommand(e.Server, resolvedCmd);
-                        e.Channel.SendMessage($"Command {resolvedCmd.CommandName} is now enabled");
+                        Utilities.CommandsUtility.EnableCommand(((SocketGuildChannel)recievedMessage.Channel).Guild, resolvedCmd);
+                        await recievedMessage.Channel.SendMessageAsync($"Command {resolvedCmd.CommandName} is now enabled");
                     }
                     else
                     {
-                        e.Channel.SendMessage($"Could not find any command called {matchedMessage.Groups["EnableCommandName"].Value}");
+                        await recievedMessage.Channel.SendMessageAsync($"Could not find any command called {matchedMessage.Groups["EnableCommandName"].Value}");
                     }
                 }
 
@@ -133,33 +139,33 @@ namespace DiscordAstroBot.Commands
                     // AdminCommands may not be disabled
                     if (resolvedCmd.CommandName.ToLower() == "admincommands")
                     {
-                        e.Channel.SendMessage($"AdminCommands can not be disabled, or else how are you going to configure me on your server?");
+                        await recievedMessage.Channel.SendMessageAsync($"AdminCommands can not be disabled, or else how are you going to configure me on your server?");
                         return true;
                     }
 
                     if (resolvedCmd != null)
                     {
-                        Utilities.CommandsUtility.DisableCommand(e.Server, resolvedCmd);
-                        e.Channel.SendMessage($"Command {resolvedCmd.CommandName} is now disabled");
+                        Utilities.CommandsUtility.DisableCommand(((SocketGuildChannel)recievedMessage.Channel).Guild, resolvedCmd);
+                        await recievedMessage.Channel.SendMessageAsync($"Command {resolvedCmd.CommandName} is now disabled");
                     }
                     else
                     {
-                        e.Channel.SendMessage($"Could not find any command called {matchedMessage.Groups["DisableCommandName"].Value}");
+                        await recievedMessage.Channel.SendMessageAsync($"Could not find any command called {matchedMessage.Groups["DisableCommandName"].Value}");
                     }
                 }
 
                 // Enable all the commands
                 if (matchedMessage.Groups["EnableAllCommands"].Success)
                 {
-                    Utilities.CommandsUtility.EnableAllCommands(e.Server);
-                    e.Channel.SendMessage("All Commands are now enabled!");
+                    Utilities.CommandsUtility.EnableAllCommands(((SocketGuildChannel)recievedMessage.Channel).Guild);
+                    await recievedMessage.Channel.SendMessageAsync("All Commands are now enabled!");
                 }
 
                 return true;
             }
             else
             {
-                e.Channel.SendMessage("UNAUTHORIZED ACCESS DETECTED!\r\nBut seriously, this command is only for admins (and you are not one of them, so...)!");
+                await recievedMessage.Channel.SendMessageAsync("UNAUTHORIZED ACCESS DETECTED!\r\nBut seriously, this command is only for admins (and you are not one of them, so...)!");
                 return true;
             }
         }

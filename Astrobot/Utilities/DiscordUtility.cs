@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Discord.WebSocket;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,9 +15,9 @@ namespace DiscordAstroBot.Utilities
         /// <param name="serverId"></param>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public static Discord.User ResolveUser(Discord.Server server, string userName)
+        public static SocketUser ResolveUser(SocketGuild server, string userName)
         {
-            var user = server.Users.FirstOrDefault(x => x.Name.ToLower().Contains(userName));
+            var user = server.Users.FirstOrDefault(x => x.Username.ToLower().Contains(userName));
 
             return user;
         }
