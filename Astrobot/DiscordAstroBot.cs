@@ -50,7 +50,7 @@ namespace DiscordAstroBot
             Mappers.Config.ServerConfig.LoadConfig();
         }
 
-        public async void InitDiscordClient(string token, string chatPrefix)
+        public async Task InitDiscordClient(string token, string chatPrefix)
         {
             // Initialize the client
             Log<DiscordAstroBot>.InfoFormat("Login into Discord");
@@ -290,7 +290,6 @@ namespace DiscordAstroBot
             // Add Commands
             Commands.Add(new Commands.AdminCommands());
             Commands.Add(new Commands.SmallTalkCommand());
-            Commands.Add(new Commands.TestCommand());
             Commands.Add(new Commands.AstroMetry());
             Commands.Add(new Commands.GeoLocation());
             Commands.Add(new Commands.Weather());
@@ -298,6 +297,7 @@ namespace DiscordAstroBot
             Commands.Add(new Commands.Simbad());
             Commands.Add(new Commands.Version());
             Commands.Add(new Commands.DSSCommand());
+            Commands.Add(new Commands.TestCommand());
 
             foreach (var command in Commands)
             {

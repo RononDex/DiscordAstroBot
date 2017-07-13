@@ -9,8 +9,17 @@ using System.Threading.Tasks;
 
 namespace DiscordAstroBot.Helpers
 {
+    /// <summary>
+    /// Helps with reactions to small talk or unkown messages
+    /// </summary>
     public static class ReactionsHelper
     {
+        /// <summary>
+        /// Checks wether the bot should react to a message, in which he wasnt tagged
+        /// and if so, determines how it should react
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public static string ReactToNonTag(string message)
         {
             var dict = ReactionDictNonTag;
@@ -32,8 +41,15 @@ namespace DiscordAstroBot.Helpers
             return null;
         }
 
+        /// <summary>
+        /// Gets a reaction to a message which was not handled by any commands
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
         public static string GetReaction(string input, SocketMessage e)
         {
+            // If it was a user that the bot is mad at, choose from another subset of reactions
             if (Mappers.Config.MadUsers.Config.Users.Any(x => x.Server == ((SocketGuildChannel)e.Channel).Guild.Id.ToString() && x.User == e.Author.Id.ToString()))
             {
                 var reactionMad = GetReactionTo(input, true);
@@ -68,7 +84,7 @@ namespace DiscordAstroBot.Helpers
                 foreach (var key in reaction.Key)
                 {
                     var regexTester = new Regex(key, RegexOptions.IgnoreCase);
-                    if (regexTester.IsMatch(message))
+                    if (regexTester.IsMatch(message.Trim()))
                     {
                         // Select one answer by random
                         var random = new Random();
@@ -81,12 +97,20 @@ namespace DiscordAstroBot.Helpers
             return null;
         }
 
+        /// <summary>
+        /// Hails another bot when it comes online
+        /// </summary>
+        /// <param name="server"></param>
+        /// <param name="user"></param>
         public static void HailEta(SocketGuild server, SocketUser user)
         {
             server.DefaultChannel.SendMessageAsync("Oh look, my best friend came online!");
             server.DefaultChannel.SendMessageAsync(string.Format("{0} Hi", user.Mention));
         }
 
+        /// <summary>
+        /// Disctionary with reactions for non-tag messages
+        /// </summary>
         static Dictionary<string[], string[]> ReactionDictNonTag { get; set; } = new Dictionary<string[], string[]>()
         {
             { new string[] { @"^god(\?)?$",

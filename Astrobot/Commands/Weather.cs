@@ -10,6 +10,9 @@ using Discord.WebSocket;
 
 namespace DiscordAstroBot.Commands
 {
+    /// <summary>
+    /// Provides weather forcasts for astronomy
+    /// </summary>
     public class Weather : Command
     {
         public override string[] CommandSynonyms
@@ -17,7 +20,8 @@ namespace DiscordAstroBot.Commands
             get
             {
                 return new string[] {
-                    @"(whats|what's|show\sme|how is|hows|how's|what is) the weather (like )?(in|for) (?'SearchLocation'.*\w)(\?)?",
+                    @"(whats|what's|show\sme|how is|hows|how's|what is) the (weather|forcast) (like )?(in|for) (?'SearchLocation'.*\w)(\?)?",
+                    @"(weather|forcast) (in|for) (?'SearchLocation'.*\w)(\?)?"
                 };
             }
         }

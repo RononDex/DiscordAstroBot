@@ -11,7 +11,18 @@ namespace DiscordAstroBot
 {
     class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// The main function (entry point for application) is basically just a wrapper to call the async Main method and wait for its execution to finish
+        /// (keeps the application open)
+        /// </summary>
+        /// <param name="args"></param>
+        public static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
+
+        /// <summary>
+        /// Starts the bot
+        /// </summary>
+        /// <returns></returns>
+        public async Task MainAsync()
         {
             XmlConfigurator.Configure();
 
@@ -40,7 +51,9 @@ namespace DiscordAstroBot
 
             Log<DiscordAstroBot>.InfoFormat("Launching Astro bot...");
             var discoBot = new DiscordAstroBot();
-            discoBot.InitDiscordClient(token, chatPrefix);
+            await discoBot.InitDiscordClient(token, chatPrefix);
+
+            await Task.Delay(-1);
         }
     }
 }
