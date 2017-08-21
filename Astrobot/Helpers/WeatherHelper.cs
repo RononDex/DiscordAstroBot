@@ -62,7 +62,7 @@ namespace DiscordAstroBot.Helpers
             // Opens the PhandomJS browser (hidden)
             using (var driver = new OpenQA.Selenium.PhantomJS.PhantomJSDriver())
             {
-                driver.Manage().Window.Size = new System.Drawing.Size(1500, 2560);
+                driver.Manage().Window.Size = new System.Drawing.Size(1500, 2000);
 
                 var lat = (location.Lat >= 0) ? $"{location.Lat}N" : $"{Math.Abs(location.Lat)}S";
                 var lng = (location.Long >= 0) ? $"{location.Long}E" : $"{Math.Abs(location.Long)}W";

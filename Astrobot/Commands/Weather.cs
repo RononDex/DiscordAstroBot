@@ -17,14 +17,22 @@ namespace DiscordAstroBot.Commands
     {
         public override string[] CommandSynonyms => new string[] {
             @"(whats|what's|show\sme|how is|hows|how's|what is) the (weather|forcast) (like )?(in|for) (?'SearchLocation'.*\w)(\?)?",
-            @"(weather|forcast) (in|for) (?'SearchLocation'.*\w)(\?)?"
+            @"(weather|forcast) (in|for) (?'SearchLocation'.*\w)(\?)?",
+            @"clearoutside (?'SearchLocationCL'.*\w)(\?)?"
         };
 
         public override string CommandName => "Weather";
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
-            var location = Helpers.GeoLocationHelper.FindLocation(matchedMessage.Groups["SearchLocation"].Value);
+            Helpers.GeoLocation location;
+
+            if (matchedMessage.Groups["SearchLocationCL"].Success == false)
+                location = Helpers.GeoLocationHelper.FindLocation(matchedMessage.Groups["SearchLocation"].Value);
+            else
+            {
+                location =  Helpers.GeoLocationHelper.FindLocation(matchedMessage.Groups["SearchLocationCL"].Value);
+            }
             // If no loacation with that name found, stop searching for a weather forcast
             if (location == null)
             {
@@ -33,7 +41,12 @@ namespace DiscordAstroBot.Commands
             }
 
             await recievedMessage.Channel.SendMessageAsync($"Hold on, searching a weather forcast for {location}. This might take a moment...");
-            var forcast = Helpers.WeatherHelper.GetWeatherForcastMeteoBlue(location);
+            Helpers.WeatherForcast forcast;
+            if (matchedMessage.Groups["SearchLocation"].Success)
+                forcast = Helpers.WeatherHelper.GetWeatherForcastMeteoBlue(location);
+            else
+                forcast = Helpers.WeatherHelper.GetWeatherForcastClearOutside(location);
+
             await recievedMessage.Channel.SendMessageAsync($"This is the weather forcast that I found for {matchedMessage.Groups["SearchLocation"].Value}:");
             await recievedMessage.Channel.SendFileAsync(new MemoryStream(forcast.Screenshot), "Weather_forcast.png" );
 
