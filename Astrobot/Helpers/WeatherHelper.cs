@@ -64,8 +64,8 @@ namespace DiscordAstroBot.Helpers
             {
                 driver.Manage().Window.Size = new System.Drawing.Size(1500, 2000);
 
-                var lat = (location.Lat >= 0) ? $"{location.Lat}N" : $"{Math.Abs(location.Lat)}S";
-                var lng = (location.Long >= 0) ? $"{location.Long}E" : $"{Math.Abs(location.Long)}W";
+                var lat = $"{location.Lat}N";
+                var lng = $"{location.Long}E";
 
                 // Navigate to clearoutside
                 driver.Navigate().GoToUrl($"https://www.meteoblue.com/en/weather/forecast/seeing/{lat}{lng}");
