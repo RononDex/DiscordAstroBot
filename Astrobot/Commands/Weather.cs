@@ -15,18 +15,12 @@ namespace DiscordAstroBot.Commands
     /// </summary>
     public class Weather : Command
     {
-        public override string[] CommandSynonyms
-        {
-            get
-            {
-                return new string[] {
-                    @"(whats|what's|show\sme|how is|hows|how's|what is) the (weather|forcast) (like )?(in|for) (?'SearchLocation'.*\w)(\?)?",
-                    @"(weather|forcast) (in|for) (?'SearchLocation'.*\w)(\?)?"
-                };
-            }
-        }
+        public override string[] CommandSynonyms => new string[] {
+            @"(whats|what's|show\sme|how is|hows|how's|what is) the (weather|forcast) (like )?(in|for) (?'SearchLocation'.*\w)(\?)?",
+            @"(weather|forcast) (in|for) (?'SearchLocation'.*\w)(\?)?"
+        };
 
-        public override string CommandName { get { return "Weather"; } }
+        public override string CommandName => "Weather";
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
@@ -34,13 +28,13 @@ namespace DiscordAstroBot.Commands
             // If no loacation with that name found, stop searching for a weather forcast
             if (location == null)
             {
-                await recievedMessage.Channel.SendMessageAsync(string.Format("I don't know any place on this planet that is called \"{0}\"", matchedMessage.Groups["SearchLocation"].Value));
+                await recievedMessage.Channel.SendMessageAsync($"I don't know any place on this planet that is called \"{matchedMessage.Groups["SearchLocation"].Value}\"");
                 return true;
             }
 
-            await recievedMessage.Channel.SendMessageAsync(string.Format("Hold on, searching a weather forcast for {0}. This might take a moment...", location));
-            var forcast = Helpers.WeatherHelper.GetWeatherForcast(DateTime.Today, location);
-            await recievedMessage.Channel.SendMessageAsync(string.Format("This is the weather forcast that I found for {0}:", matchedMessage.Groups["SearchLocation"].Value));
+            await recievedMessage.Channel.SendMessageAsync($"Hold on, searching a weather forcast for {location}. This might take a moment...");
+            var forcast = Helpers.WeatherHelper.GetWeatherForcastMeteoBlue(location);
+            await recievedMessage.Channel.SendMessageAsync($"This is the weather forcast that I found for {matchedMessage.Groups["SearchLocation"].Value}:");
             await recievedMessage.Channel.SendFileAsync(new MemoryStream(forcast.Screenshot), "Weather_forcast.png" );
 
             return true;
