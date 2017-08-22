@@ -14,18 +14,12 @@ namespace DiscordAstroBot.Commands
 {
     public class AstroMetry : Command
     {
-        public override string[] CommandSynonyms
+        public override string[] CommandSynonyms => new string[]
         {
-            get
-            {
-                return new string[]
-                {
-                    @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this (image|photo)(\?)?",
-                    @"what can you (find|figure) out (about|on|from|for) this (image|photo)(\?)?",
-                    @"what (space )?(objects|DSO) (are|do you know) in this (image|photo)(\?)?"
-                };
-            }
-        }
+            @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this (image|photo)(\?)?",
+            @"what can you (find|figure) out (about|on|from|for) this (image|photo)(\?)?",
+            @"what (space )?(objects|DSO) (are|do you know) in this (image|photo)(\?)?"
+        };
 
         public override string CommandName { get { return "Astrometry"; } }
 
@@ -75,27 +69,20 @@ namespace DiscordAstroBot.Commands
                     return true;
                 }
 
-                await recievedMessage.Channel.SendMessageAsync(string.Format("Image analysis for submission **{0}** successfull. Here are the results:", submissionID));
+                await recievedMessage.Channel.SendMessageAsync($"Image analysis for submission **{submissionID}** successfull. Here are the results:");
                 var calibrationData = Helpers.AstrometryHelper.GetCalibrationFromFinishedJob(jobId.ToString());
                 var objectsInImage = string.Join(", ", calibrationData.ObjectsInfField);
                 var tags = string.Join(", ", calibrationData.Tags);
-                await recievedMessage.Channel.SendMessageAsync(string.Format("```\r\nRA: {0}\r\nDEC: {1}\r\nOrientation: up is {2} deg\r\nRadius: {3} deg\r\nPixelScale: {4} arcsec/pixel\r\nObjectsInImage: {5}\r\nTags: {6}\r\n```",
-                    calibrationData.CalibrationData.RA,
-                    calibrationData.CalibrationData.DEC,
-                    calibrationData.CalibrationData.Orientation,
-                    calibrationData.CalibrationData.Radius,
-                    calibrationData.CalibrationData.PixScale,
-                    objectsInImage,
-                    tags));
+                await recievedMessage.Channel.SendMessageAsync($"```\r\nRA: {calibrationData.CalibrationData.RA}\r\nDEC: {calibrationData.CalibrationData.DEC}\r\nOrientation: up is {calibrationData.CalibrationData.Orientation} deg\r\nRadius: {calibrationData.CalibrationData.Radius} deg\r\nPixelScale: {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\nObjectsInImage: {objectsInImage}\r\nTags: {tags}\r\n```");
 
-                await recievedMessage.Channel.SendFileAsync(Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString()), string.Format("annoated_{0}", calibrationData.FileName));
-                await recievedMessage.Channel.SendMessageAsync(string.Format("Link to astrometry job result: http://nova.astrometry.net/status/{0}", submissionID));
+                await recievedMessage.Channel.SendFileAsync(Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString()), $"annoated_{calibrationData.FileName}");
+                await recievedMessage.Channel.SendMessageAsync($"Link to astrometry job result: http://nova.astrometry.net/status/{submissionID}");
 
                 return true;
             }
             catch (Exception ex)
             {
-                await recievedMessage.Channel.SendMessageAsync(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                await recievedMessage.Channel.SendMessageAsync($"Oh noes! Something you did caused me to crash: {ex.Message}");
                 Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", recievedMessage.Content, ex.Message);
                 return true;
             }

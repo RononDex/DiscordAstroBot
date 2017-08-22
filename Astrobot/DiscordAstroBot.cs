@@ -212,11 +212,16 @@ namespace DiscordAstroBot
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Show message that server is not whitelisted
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <returns></returns>
         private async Task WriteNotOnWhitelistResponse(ISocketMessageChannel channel)
         {
-            await channel.SendMessageAsync($"Since I am configured to run on WhiteList mode and this server is not on the WhiteList, I will not work on this server.");
+            await channel.SendMessageAsync($"I am currently disabled on this server, since I am configured to run on WhiteList mode and this server is not on the WhiteList");
             await channel.SendMessageAsync($"Please contact the owner of this bot ({OwnerName}) if you wish to use me on your server and ask to get your server WhiteListed");
-            await channel.SendMessageAsync($"This is to limit hardware usage on the server where I am running on.");
+            await channel.SendMessageAsync($"This is to limit hardware usage on the physical server where I am running on.");
         }
 
         /// <summary>
