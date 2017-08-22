@@ -19,7 +19,7 @@ namespace DiscordAstroBot.Helpers
             Log<DiscordAstroBot>.InfoFormat("Requesting GeoLocation for {0}", address);
 
             var webRequest = WebRequest.Create(string.Format("http://maps.googleapis.com/maps/api/geocode/json?address={0}", WebUtility.UrlEncode(address)));
-            var response = (HttpWebResponse)webRequest.GetResponse();
+            var response   = (HttpWebResponse)webRequest.GetResponse();
 
             string text;
             using (var sr = new StreamReader(response.GetResponseStream()))
@@ -35,8 +35,8 @@ namespace DiscordAstroBot.Helpers
             return new GeoLocation()
             {
                 LocationName = hit.formatted_address,
-                Lat = Convert.ToSingle(hit.geometry.location.lat),
-                Long = Convert.ToSingle(hit.geometry.location.lng)
+                Lat          = Convert.ToSingle(hit.geometry.location.lat),
+                Long         = Convert.ToSingle(hit.geometry.location.lng)
             };
         }
     }

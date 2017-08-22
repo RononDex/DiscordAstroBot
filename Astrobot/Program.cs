@@ -27,13 +27,15 @@ namespace DiscordAstroBot
             XmlConfigurator.Configure();
 
             Log<DiscordAstroBot>.InfoFormat("---------------------------------------------------------");
-            Log<DiscordAstroBot>.InfoFormat("---------------- Launching up Astro bot -----------------");
+            Log<DiscordAstroBot>.InfoFormat("----------------- Launching Astro bot -------------------");
             Log<DiscordAstroBot>.InfoFormat("---------------------------------------------------------");
             Log<DiscordAstroBot>.InfoFormat("");
             Log<DiscordAstroBot>.InfoFormat("Settings:");
-            Log<DiscordAstroBot>.InfoFormat(" - TokenFilePath: {0}", ConfigurationManager.AppSettings["TokenFilePath"]);
-            Log<DiscordAstroBot>.InfoFormat(" - AstrometryTokenFilePath: {0}", ConfigurationManager.AppSettings["AstrometryTokenFilePath"]);
-            Log<DiscordAstroBot>.InfoFormat(" - ChatPrefix: {0}", ConfigurationManager.AppSettings["ChatPrefix"]);
+            Log<DiscordAstroBot>.InfoFormat(" - TokenFilePath:            {0}", ConfigurationManager.AppSettings["TokenFilePath"]);
+            Log<DiscordAstroBot>.InfoFormat(" - AstrometryTokenFilePath:  {0}", ConfigurationManager.AppSettings["AstrometryTokenFilePath"]);
+            Log<DiscordAstroBot>.InfoFormat(" - ChatPrefix:               {0}", ConfigurationManager.AppSettings["ChatPrefix"]);
+            Log<DiscordAstroBot>.InfoFormat(" - WhiteListEnabled:         {0}", ConfigurationManager.AppSettings["WhiteListEnabled"]);
+            Log<DiscordAstroBot>.InfoFormat(" - OwnerName:                {0}", ConfigurationManager.AppSettings["OwnerName"]);
 
             if (!File.Exists(ConfigurationManager.AppSettings["TokenFilePath"]))
             {
@@ -50,7 +52,11 @@ namespace DiscordAstroBot
             var chatPrefix = ConfigurationManager.AppSettings["ChatPrefix"];
 
             Log<DiscordAstroBot>.InfoFormat("Launching Astro bot...");
-            var discoBot = new DiscordAstroBot();
+
+            var discoBot              = new DiscordAstroBot();
+            discoBot.WhiteListEnabled = bool.Parse(ConfigurationManager.AppSettings["WhiteListEnabled"]);
+            discoBot.OwnerName        = ConfigurationManager.AppSettings["OwnerName"];
+
             await discoBot.InitDiscordClient(token, chatPrefix);
 
             await Task.Delay(-1);

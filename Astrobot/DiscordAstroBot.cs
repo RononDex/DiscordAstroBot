@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DiscordAstroBot.Helpers;
 using DiscordAstroBot.Objects.Config;
+using WhiteList = DiscordAstroBot.Mappers.Config.WhiteList;
 
 namespace DiscordAstroBot
 {
@@ -38,6 +39,17 @@ namespace DiscordAstroBot
         public string ChatPrefix { get; set; }
 
         /// <summary>
+        /// If whitelist is enabled, only servers on the whitelist may use the bot
+        /// (measure to limit hardware usage of bot to only whitelisted servers)
+        /// </summary>
+        public bool WhiteListEnabled { get; set; }
+
+        /// <summary>
+        /// The name of the bot owner, used to tell people how to contact the owner if needed
+        /// </summary>
+        public string OwnerName { get; set; }
+
+        /// <summary>
         /// Constructor of the bot, this is where all the initialisations happen
         /// </summary>
         /// <param name="token"></param>
@@ -48,18 +60,14 @@ namespace DiscordAstroBot
             Mappers.Config.ServerCommands.LoadConfig();
             Mappers.Config.MadUsers.LoadConfig();
             Mappers.Config.ServerConfig.LoadConfig();
+            Mappers.Config.WhiteList.LoadConfig();
         }
 
         public async Task InitDiscordClient(string token, string chatPrefix)
         {
             // Initialize the client
             Log<DiscordAstroBot>.InfoFormat("Login into Discord");
-            DiscordClient = new DiscordSocketClient(/*x =>
-            {
-                x.AppName = "Discord Astro Bot";
-                x.LogLevel = LogSeverity.Info;
-                x.LogHandler = Log;
-            }*/);
+            DiscordClient = new DiscordSocketClient();
 
             DiscordClient.Log += Log;
             await DiscordClient.LoginAsync(TokenType.Bot, token);
@@ -69,13 +77,19 @@ namespace DiscordAstroBot
 
             RegisterCommands();
 
-            DiscordClient.MessageReceived += MessageReceived;
-            DiscordClient.GuildAvailable += DiscordClient_ServerAvailable;
+            DiscordClient.MessageReceived    += MessageReceived;
+            DiscordClient.GuildAvailable     += DiscordClient_ServerAvailable;
             DiscordClient.GuildMemberUpdated += DiscordClient_UserUpdated;
-            DiscordClient.UserJoined += DiscordClient_UserJoined;
-            DiscordClient.JoinedGuild += DiscordClient_JoinedServer;
+            DiscordClient.UserJoined         += DiscordClient_UserJoined;
+            DiscordClient.JoinedGuild        += DiscordClient_JoinedServer;
 
             Log<DiscordAstroBot>.InfoFormat("Login successfull");
+
+            Log<DiscordAstroBot>.InfoFormat("Available servers:");
+
+            // Log available servers
+            foreach (var server in DiscordClient.Guilds)
+                Log<DiscordAstroBot>.InfoFormat("    ServerName:  {0},   ServerID:  {1}", server.Name.PadRight(50, ' '), server.Id);
         }
 
         /// <summary>
@@ -88,6 +102,14 @@ namespace DiscordAstroBot
             server.DefaultChannel.SendMessageAsync("Yay! I got invited to a new server!\r\nHello everyone!");
 
             SetupDefaultSettings(server);
+
+
+            // If Whitelist is enabled and server is not on white list
+            if (WhiteListEnabled && WhiteList.WhitelistedServers.Entries.All(x => x.ServerID != ((SocketTextChannel)server.DefaultChannel).Guild.Id))
+            {
+                WriteNotOnWhitelistResponse(server.DefaultChannel);
+                return Task.CompletedTask;
+            }
 
             return Task.CompletedTask;
         }
@@ -131,8 +153,14 @@ namespace DiscordAstroBot
         {
             Log<DiscordAstroBot>.InfoFormat($"New user {user.Username} joined on server {user.Username}");
 
+            // If Whitelist is enabled and server is not on white list
+            if (WhiteListEnabled && WhiteList.WhitelistedServers.Entries.All(x => x.ServerID != user.Guild.Id))
+            {
+                return Task.CompletedTask;
+            }
+
             // Send a welcome message in the default channel
-            var rulesChannel = user.Guild.Channels.FirstOrDefault(x => x.Name.ToLower() == "rules");
+                var rulesChannel = user.Guild.Channels.FirstOrDefault(x => x.Name.ToLower() == "rules");
             if (rulesChannel != null)
             {
                 user.Guild.DefaultChannel.SendMessageAsync($"A new user joined! Say hi to {user.Mention}\r\nMake sure to check out the {((ITextChannel)rulesChannel).Mention} channel!");
@@ -184,6 +212,13 @@ namespace DiscordAstroBot
             return Task.CompletedTask;
         }
 
+        private async Task WriteNotOnWhitelistResponse(ISocketMessageChannel channel)
+        {
+            await channel.SendMessageAsync($"Since I am configured to run on WhiteList mode and this server is not on the WhiteList, I will not work on this server.");
+            await channel.SendMessageAsync($"Please contact the owner of this bot ({OwnerName}) if you wish to use me on your server and ask to get your server WhiteListed");
+            await channel.SendMessageAsync($"This is to limit hardware usage on the server where I am running on.");
+        }
+
         /// <summary>
         /// Listens for commands
         /// </summary>
@@ -196,6 +231,20 @@ namespace DiscordAstroBot
                 // Check to make sure that the bot is not the author
                 if (recievedMessage.Author.Id != DiscordClient.CurrentUser.Id)
                 {
+                    // Don't allow direct message for now, since this would require some extra code to handle them properly
+                    if (recievedMessage.Channel is IPrivateChannel)
+                    {
+                        recievedMessage.Channel.SendMessageAsync("Due to technical limiations I can't handle direct messages at the moment.");
+                        return Task.CompletedTask;
+                    }
+
+                    // If Whitelist is enabled and server is not on white list
+                    if (WhiteListEnabled && WhiteList.WhitelistedServers.Entries.All(x => x.ServerID != ((SocketTextChannel) recievedMessage.Channel).Guild.Id))
+                    {
+                        WriteNotOnWhitelistResponse(recievedMessage.Channel);
+                        return Task.CompletedTask;
+                    }
+
                     var splitted = recievedMessage.Content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     if (splitted.Length > 0 && splitted[0].ToLower() == this.ChatPrefix || recievedMessage.MentionedUsers.Any(x => x.Id == DiscordClient.CurrentUser.Id))
                     {
@@ -231,7 +280,7 @@ namespace DiscordAstroBot
                                         }
                                         catch (Exception ex)
                                         {
-                                            recievedMessage.Channel.SendMessageAsync(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                                            recievedMessage.Channel.SendMessageAsync($"Oh noes! Something you did caused me to crash: {ex.Message}");
                                             Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", recievedMessage.Content, ex.Message);
                                         }
 
@@ -254,7 +303,7 @@ namespace DiscordAstroBot
                                 }
                                 catch (Exception ex)
                                 {
-                                    recievedMessage.Channel.SendMessageAsync(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                                    recievedMessage.Channel.SendMessageAsync($"Oh noes! Something you did caused me to crash: {ex.Message}");
                                     Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", recievedMessage.Content, ex.Message);
                                 }
                                 commandExecuted = true;
@@ -271,7 +320,7 @@ namespace DiscordAstroBot
             }
             catch (Exception ex)
             {
-                recievedMessage.Channel.SendMessageAsync(string.Format("Oh noes! Something you did caused me to crash: {0}", ex.Message));
+                recievedMessage.Channel.SendMessageAsync($"Oh noes! Something you did caused me to crash: {ex.Message}");
                 Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", recievedMessage.Content, ex.Message);
             }
 

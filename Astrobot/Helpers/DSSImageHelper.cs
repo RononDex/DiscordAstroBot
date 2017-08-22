@@ -29,13 +29,14 @@ namespace DiscordAstroBot.Helpers
         public static byte[] GetImage(string ra, string dec, string size = "60", string mimetype = "download-gif", string catalogue = "DSS2")
         {
             var client = new WebClient();
-            var data = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra)}&dec={HttpUtility.UrlEncode(dec)}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey={HttpUtility.UrlEncode(catalogue)}&equinox=J2000&statsmode=VO");
+            var data   = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra)}&dec={HttpUtility.UrlEncode(dec)}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey={HttpUtility.UrlEncode(catalogue)}&equinox=J2000&statsmode=VO");
+
             using (var stream = new MemoryStream(data))
             {
-                var image = new Bitmap(stream);
+                var image    = new Bitmap(stream);
                 var newImage = Utilities.ImageUtility.MakeGrayscaleFromRGB_R(image);
+                var stream2  = new MemoryStream();
 
-                var stream2 = new MemoryStream();
                 newImage.Save(stream2, ImageFormat.Jpeg);
                 stream2.Position = 0;
 

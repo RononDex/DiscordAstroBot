@@ -23,10 +23,10 @@ namespace DiscordAstroBot.Helpers
             // Setup json payload
             var json = new { apikey = token};
 
-            var webRequest = (HttpWebRequest)WebRequest.Create("http://nova.astrometry.net/api/login");
+            var webRequest         = (HttpWebRequest)WebRequest.Create("http://nova.astrometry.net/api/login");
             webRequest.ContentType = "application/x-www-form-urlencoded";
-            webRequest.Method = "POST";
-            var requestStream = webRequest.GetRequestStream();
+            webRequest.Method      = "POST";
+            var requestStream      = webRequest.GetRequestStream();
 
             // Send the json payload
             using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
@@ -197,12 +197,12 @@ namespace DiscordAstroBot.Helpers
             var result = new AstrometrySubmissionResult();
             var calibrationData = new AstrometrySubmissionCalibrationData();
 
-            calibrationData.DEC = Convert.ToSingle(jsonResult.calibration.dec);
+            calibrationData.DEC         = Convert.ToSingle(jsonResult.calibration.dec);
             calibrationData.Orientation = Convert.ToSingle(jsonResult.calibration.orientation);
-            calibrationData.Parity = Convert.ToSingle(jsonResult.calibration.parity);
-            calibrationData.PixScale = Convert.ToSingle(jsonResult.calibration.pixscale);
-            calibrationData.RA = Convert.ToSingle(jsonResult.calibration.ra);
-            calibrationData.Radius = Convert.ToSingle(jsonResult.calibration.radius);
+            calibrationData.Parity      = Convert.ToSingle(jsonResult.calibration.parity);
+            calibrationData.PixScale    = Convert.ToSingle(jsonResult.calibration.pixscale);
+            calibrationData.RA          = Convert.ToSingle(jsonResult.calibration.ra);
+            calibrationData.Radius      = Convert.ToSingle(jsonResult.calibration.radius);
 
             result.CalibrationData = calibrationData;
 

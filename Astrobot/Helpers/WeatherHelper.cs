@@ -39,8 +39,8 @@ namespace DiscordAstroBot.Helpers
                 wait.Until(driver1 => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
 
                 // Take a screenshoot
-                Screenshot ss = driver.GetScreenshot();
-                string screenshot = ss.AsBase64EncodedString;
+                Screenshot ss                = driver.GetScreenshot();
+                string screenshot            = ss.AsBase64EncodedString;
                 byte[] screenshotAsByteArray = ss.AsByteArray;
 
                 return new WeatherForcast()
@@ -75,8 +75,8 @@ namespace DiscordAstroBot.Helpers
                 wait.Until(driver1 => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
 
                 // Take a screenshoot
-                Screenshot ss = driver.GetScreenshot();
-                string screenshot = ss.AsBase64EncodedString;
+                Screenshot ss                = driver.GetScreenshot();
+                string screenshot            = ss.AsBase64EncodedString;
                 byte[] screenshotAsByteArray = ss.AsByteArray;
 
                 return new WeatherForcast()
@@ -84,14 +84,6 @@ namespace DiscordAstroBot.Helpers
                     Screenshot = screenshotAsByteArray
                 };
             }
-        }
-
-        public static MemoryStream GetWeatherForecastImgUrl(GeoLocation location)
-        {
-            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            var url = string.Format("https://clearoutside.com/forecast_image_large/{0:0.00}/{1:0.00}/forecast.png", location.Lat, location.Long);
-            var wc = new WebClient();
-            return new MemoryStream(wc.DownloadData(url));
         }
     }
 
