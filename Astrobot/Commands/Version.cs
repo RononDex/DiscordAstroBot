@@ -15,23 +15,11 @@ namespace DiscordAstroBot.Commands
     /// </summary>
     public class Version : Command
     {
-        public override string CommandName
-        {
-            get
-            {
-                return "Version";
-            }
-        }
+        public override string CommandName => "Version";
 
-        public override string[] CommandSynonyms
-        {
-            get
-            {
-                return new[] {
-                    @"what('s|s| is)? your version(\?)?",
-                };
-            }
-        }
+        public override string[] CommandSynonyms => new[] {
+            @"what('s|s| is)? your version(\?)?",
+        };
 
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
@@ -41,7 +29,7 @@ namespace DiscordAstroBot.Commands
             System.IO.FileInfo fileInfo = new System.IO.FileInfo(assembly.Location);
             DateTime lastModified = fileInfo.LastWriteTime;
 
-            await recievedMessage.Channel.SendMessageAsync(string.Format("{0}, Last update: {1}", Assembly.GetExecutingAssembly().GetName().Version, lastModified.ToString()));
+            await recievedMessage.Channel.SendMessageAsync($"{Assembly.GetExecutingAssembly().GetName().Version}, Last update: {lastModified}");
             
             return true;
         }

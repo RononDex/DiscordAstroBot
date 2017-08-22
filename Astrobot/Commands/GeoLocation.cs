@@ -17,26 +17,20 @@ namespace DiscordAstroBot.Commands
         /// <summary>
         /// Name of the command
         /// </summary>
-        public override string CommandName { get { return "GeoLocation"; } }
+        public override string CommandName => "GeoLocation";
 
         /// <summary>
         /// Define the synonyms for this command
         /// </summary>
-        public override string[] CommandSynonyms
-        {
-            get
-            {
-                return new string[] {
-                    @"What are the coordinates of (?'SearchLocation'.*\w)(\?)?",
-                    @"Tell me the coordinates of (?'SearchLocation'.*\w)(\?)?",
-                    @"Find the coordinates of (?'SearchLocation'.*\w)(\?)?",
-                    @"Find the coordinates from (?'SearchLocation'.*\w)(\?)?",
-                    @"Where is (?'SearchLocation'.*\w)(\?)?",
-                    @"Get the coordinates from (?'SearchLocation'.*\w)(\?)?",
-                    @"Get the coordinates of (?'SearchLocation'.*\w)(\?)?",
-                    @"Do you know the location of (?'SearchLocation'.*\w)(\?)?" };
-            }
-        }
+        public override string[] CommandSynonyms => new string[] {
+            @"What are the coordinates of (?'SearchLocation'.*\w)(\?)?",
+            @"Tell me the coordinates of (?'SearchLocation'.*\w)(\?)?",
+            @"Find the coordinates of (?'SearchLocation'.*\w)(\?)?",
+            @"Find the coordinates from (?'SearchLocation'.*\w)(\?)?",
+            @"Where is (?'SearchLocation'.*\w)(\?)?",
+            @"Get the coordinates from (?'SearchLocation'.*\w)(\?)?",
+            @"Get the coordinates of (?'SearchLocation'.*\w)(\?)?",
+            @"Do you know the location of (?'SearchLocation'.*\w)(\?)?" };
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
@@ -45,7 +39,7 @@ namespace DiscordAstroBot.Commands
 
             // Output result
             if (foundLocation == null)
-                await recievedMessage.Channel.SendMessageAsync(string.Format("Could not find any location matching your search \"{0}\"", matchedMessage.Value));
+                await recievedMessage.Channel.SendMessageAsync($"Could not find any location matching your search \"{matchedMessage.Value}\"");
             else
             {
                 await recievedMessage.Channel.SendMessageAsync(foundLocation.ToString());

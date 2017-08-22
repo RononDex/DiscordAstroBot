@@ -18,14 +18,12 @@ namespace DiscordAstroBot.Commands
     {
         public override string CommandName => "DSS";
 
-        public override string[] CommandSynonyms =>
-            new string[] {@"(how|what) does (?'ObjectName'\w*) look like(\?)?"};
+        public override string[] CommandSynonyms => new string[] {@"(how|what) does (?'ObjectName'\w*) look like(\?)?"};
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             try
             {
-
                 if (matchedMessage.Groups["ObjectName"].Success)
                 {
                     // Search for object in SIMBAD database

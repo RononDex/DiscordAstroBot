@@ -16,7 +16,7 @@ namespace DiscordAstroBot.Commands
     public class SmallTalkCommand : Command
     {
 
-        public override string CommandName { get { return "SmallTalk"; } }
+        public override string CommandName => "SmallTalk";
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {

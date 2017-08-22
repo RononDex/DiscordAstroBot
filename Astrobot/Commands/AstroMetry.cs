@@ -21,7 +21,7 @@ namespace DiscordAstroBot.Commands
             @"what (space )?(objects|DSO) (are|do you know) in this (image|photo)(\?)?"
         };
 
-        public override string CommandName { get { return "Astrometry"; } }
+        public override string CommandName => "Astrometry";
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {

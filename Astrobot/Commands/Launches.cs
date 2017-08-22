@@ -14,7 +14,7 @@ namespace DiscordAstroBot.Commands
     /// </summary>
     class Launches : Command
     {
-        public override string CommandName { get { return "Launches"; } }
+        public override string CommandName => "Launches";
 
         public override string[] CommandSynonyms => new string[] {
             @"what do you know about (?'AgencySearchName'.*\w)(\?)?",

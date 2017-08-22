@@ -14,22 +14,16 @@ namespace DiscordAstroBot.Commands
 {
     public class Simbad : Command
     {
-        public override string CommandName { get { return "Simbad"; } }
+        public override string CommandName => "Simbad";
 
-        public override string[] CommandSynonyms
-        {
-            get
-            {
-                return new string[] {
-                    @"what do you know about (?'AstroObject'.*\w)(\?)?",
-                    @"what (is|are) the (magnitude|magnitudes|brightness|brightnes|fluxes|flux) of (?'MagAstroObject'.*\w)(\?)?",
-                    @"how bright is (?'MagAstroObject'.*\w)(\?)?",
-                    @"what is the distance of (?'DistAstroObject'.*\w)(\?)?",
-                    @"how far (away )?is (?'DistAstroObject'\w*)( away)?( from earth| from us)?(\')?",
-                    @"what is (?'AstroObject'.*\w)(\?)?"
-                };
-            }
-        }
+        public override string[] CommandSynonyms => new string[] {
+            @"what do you know about (?'AstroObject'.*\w)(\?)?",
+            @"what (is|are) the (magnitude|magnitudes|brightness|brightnes|fluxes|flux) of (?'MagAstroObject'.*\w)(\?)?",
+            @"how bright is (?'MagAstroObject'.*\w)(\?)?",
+            @"what is the distance of (?'DistAstroObject'.*\w)(\?)?",
+            @"how far (away )?is (?'DistAstroObject'\w*)( away)?( from earth| from us)?(\')?",
+            @"what is (?'AstroObject'.*\w)(\?)?"
+        };
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
@@ -42,7 +36,7 @@ namespace DiscordAstroBot.Commands
 
                 if (info == null)
                 {
-                    await recievedMessage.Channel.SendMessageAsync(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["AstroObject"].Value));
+                    await recievedMessage.Channel.SendMessageAsync($"Could not find any object matching your search \"{matchedMessage.Groups["AstroObject"].Value}\" in the SIMBAD database");
                     return true;
                 }
 
@@ -72,7 +66,7 @@ namespace DiscordAstroBot.Commands
 
                 if (info == null)
                 {
-                    await recievedMessage.Channel.SendMessageAsync(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["MagAstroObject"].Value));
+                    await recievedMessage.Channel.SendMessageAsync($"Could not find any object matching your search \"{matchedMessage.Groups["MagAstroObject"].Value}\" in the SIMBAD database");
                     return true;
                 }
 
@@ -96,7 +90,7 @@ namespace DiscordAstroBot.Commands
 
                 if (info == null)
                 {
-                    await recievedMessage.Channel.SendMessageAsync(string.Format("Could not find any object matching your search \"{0}\" in the SIMBAD database", matchedMessage.Groups["DistAstroObject"].Value));
+                    await recievedMessage.Channel.SendMessageAsync($"Could not find any object matching your search \"{matchedMessage.Groups["DistAstroObject"].Value}\" in the SIMBAD database");
                     return true;
                 }
 

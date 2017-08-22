@@ -15,30 +15,18 @@ namespace DiscordAstroBot.Commands
     /// </summary>
     public class AdminCommands : Command
     {
-        public override string CommandName
-        {
-            get
-            {
-                return "AdminCommands";
-            }
-        }
+        public override string CommandName => "AdminCommands";
 
-        public override string[] CommandSynonyms
+        public override string[] CommandSynonyms => new[]
         {
-            get
-            {
-                return new[]
-                {
-                    @"toggle mad mode for (?'MadUser'.*)",
-                    @"who are you mad at(?'MadUserList')(\?)?",
-                    @"(what|which) commands are enabled(?'EnabledCommandsList')( on this server)?(\?)?",
-                    @"(what|which) commands are (available|registered)(?'AvailableCommandList')( on this server)?(\?)?",
-                    @"enable all commands(?'EnableAllCommands')",
-                    @"enable( command)? (?'EnableCommandName'[^\s]+)",
-                    @"disable( command)? (?'DisableCommandName'[^\s]+)",
-                };
-            }
-        }
+            @"toggle mad mode for (?'MadUser'.*)",
+            @"who are you mad at(?'MadUserList')(\?)?",
+            @"(what|which) commands are enabled(?'EnabledCommandsList')( on this server)?(\?)?",
+            @"(what|which) commands are (available|registered)(?'AvailableCommandList')( on this server)?(\?)?",
+            @"enable all commands(?'EnableAllCommands')",
+            @"enable( command)? (?'EnableCommandName'[^\s]+)",
+            @"disable( command)? (?'DisableCommandName'[^\s]+)",
+        };
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
