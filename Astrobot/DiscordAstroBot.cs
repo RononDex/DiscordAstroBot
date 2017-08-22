@@ -84,12 +84,6 @@ namespace DiscordAstroBot
             DiscordClient.JoinedGuild        += DiscordClient_JoinedServer;
 
             Log<DiscordAstroBot>.InfoFormat("Login successfull");
-
-            Log<DiscordAstroBot>.InfoFormat("Available servers:");
-
-            // Log available servers
-            foreach (var server in DiscordClient.Guilds)
-                Log<DiscordAstroBot>.InfoFormat("    ServerName:  {0},   ServerID:  {1}", server.Name.PadRight(50, ' '), server.Id);
         }
 
         /// <summary>
@@ -207,6 +201,7 @@ namespace DiscordAstroBot
                 //<e.Server.DefaultChannel.SendMessage("I am now up and running");
                 HailedServers.Add(server.Id);
                 SetupDefaultSettings(server);
+                Log<DiscordAstroBot>.InfoFormat("Server available:  ServerName:  {0},   ServerID:  {1}", server.Name.PadRight(50, ' '), server.Id);
             }
 
             return Task.CompletedTask;
@@ -220,7 +215,7 @@ namespace DiscordAstroBot
         private async Task WriteNotOnWhitelistResponse(ISocketMessageChannel channel)
         {
             await channel.SendMessageAsync($"I am currently disabled on this server, since I am configured to run on WhiteList mode and this server is not on the WhiteList");
-            await channel.SendMessageAsync($"Please contact the owner of this bot ({OwnerName}) if you wish to use me on your server and ask to get your server WhiteListed");
+            await channel.SendMessageAsync($"Please contact the programmer / owner of this bot ({OwnerName}) if you wish to use me on your server and ask to get your server WhiteListed");
             await channel.SendMessageAsync($"This is to limit hardware usage on the physical server where I am running on.");
         }
 
