@@ -23,7 +23,7 @@ namespace DiscordAstroBot.Mappers.Config
         /// </summary>
         public static List<Objects.Config.ServerSettingsServerConfig> DefaultConfig => new List<ServerSettingsServerConfig>()
         {
-
+            new ServerSettingsServerConfig() { Key = "HailNewUsers", Value = "false" },
         };
 
         /// <summary>

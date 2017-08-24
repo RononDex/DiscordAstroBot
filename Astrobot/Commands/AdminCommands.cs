@@ -26,6 +26,9 @@ namespace DiscordAstroBot.Commands
             @"enable all commands(?'EnableAllCommands')",
             @"enable( command)? (?'EnableCommandName'[^\s]+)",
             @"disable( command)? (?'DisableCommandName'[^\s]+)",
+            @"(?'ListSettings'list settings)",
+            @"setconfig (?'SetConfigKey'[^\s]) (?'SetConfigValue'[^.*])"
+
         };
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
@@ -149,11 +152,39 @@ namespace DiscordAstroBot.Commands
                     await recievedMessage.Channel.SendMessageAsync("All Commands are now enabled!");
                 }
 
+                // List all settings from this server
+                if (matchedMessage.Groups["ListSettings"].Success)
+                {
+                    var configs = Mappers.Config.ServerConfig.Config.Servers.Single(x => x.ServerID == ((SocketGuildChannel) recievedMessage.Channel).Guild.Id).Configs;
+
+                    var output = string.Join("\r\n", configs.Select(x => $"{x.Key.PadLeft(32)}: {x.Value}"));
+
+                    await recievedMessage.Channel.SendMessageAsync($"These settings are available on this server:\r\n```\r\n{output}\r\n```\r\nUse \"setconfig <key> <value>\" to set a configuration value");
+                }
+
+                // Set new condfig value
+                if (matchedMessage.Groups["SetConfigKey"].Success)
+                {
+                    var configEntry =
+                        Mappers.Config.ServerConfig.Config.Servers.Single(x => x.ServerID == ((SocketGuildChannel) recievedMessage.Channel).Guild.Id)
+                            .Configs.SingleOrDefault(x => x.Key == matchedMessage.Groups["SetConfigKey"].Value);
+                    if (configEntry == null)
+                    {
+                        await recievedMessage.Channel.SendMessageAsync($"There is no setting with key {matchedMessage.Groups["SetConfigKey"].Value}");
+                        return true;
+                    }
+
+                    configEntry.Value = matchedMessage.Groups["SetConfigValue"].Value;
+                    Mappers.Config.ServerConfig.SaveConfig();
+
+                    await recievedMessage.Channel.SendMessageAsync("Value set");
+                }
+
                 return true;
             }
             else
             {
-                await recievedMessage.Channel.SendMessageAsync("UNAUTHORIZED ACCESS DETECTED!\r\nBut seriously, this command is only for admins (and you are not one of them, so...)!");
+                await recievedMessage.Channel.SendMessageAsync("UNAUTHORIZED ACCESS DETECTED!\r\nBut seriously, this command is only for admins (and you are not one of them ...)!");
                 return true;
             }
         }

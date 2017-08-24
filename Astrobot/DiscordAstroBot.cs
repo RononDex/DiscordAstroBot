@@ -118,22 +118,20 @@ namespace DiscordAstroBot
             // Setup default server commands config
             var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == dserver.Id);
             if (server == null)
-            {
                 server = new CommandsConfigServer() { ServerID = dserver.Id };
-                Mappers.Config.ServerCommands.SetDefaultValues(server);
-                Mappers.Config.ServerCommands.Config.CommandsConfigServer.Add(server);
-                Mappers.Config.ServerCommands.SaveConfig();
-            }
+
+            Mappers.Config.ServerCommands.SetDefaultValues(server);
+            Mappers.Config.ServerCommands.Config.CommandsConfigServer.Add(server);
+            Mappers.Config.ServerCommands.SaveConfig();
 
             // Setup default server config
             var serverCfg = Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == dserver.Id);
             if (serverCfg == null)
-            {
                 serverCfg = new ServerSettingsServer() { ServerID = dserver.Id };
-                Mappers.Config.ServerConfig.SetDefaultValues(serverCfg);
-                Mappers.Config.ServerConfig.Config.Servers.Add(serverCfg);
-                Mappers.Config.ServerConfig.SaveConfig();
-            }
+
+            Mappers.Config.ServerConfig.SetDefaultValues(serverCfg);
+            Mappers.Config.ServerConfig.Config.Servers.Add(serverCfg);
+            Mappers.Config.ServerConfig.SaveConfig();
 
             return Task.CompletedTask;
         }
