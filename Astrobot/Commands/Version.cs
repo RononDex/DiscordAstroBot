@@ -19,6 +19,7 @@ namespace DiscordAstroBot.Commands
 
         public override string[] CommandSynonyms => new[] {
             @"what('s|s| is)? your version(\?)?",
+            @"version(\?)?"
         };
 
 

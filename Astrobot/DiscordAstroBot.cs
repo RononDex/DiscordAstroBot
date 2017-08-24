@@ -55,12 +55,18 @@ namespace DiscordAstroBot
         /// <param name="token"></param>
         /// <param name="chatPrefix"></param>
         public DiscordAstroBot()
-        {
-            // Initialize config store
-            Mappers.Config.ServerCommands.LoadConfig();
-            Mappers.Config.MadUsers.LoadConfig();
-            Mappers.Config.ServerConfig.LoadConfig();
-            Mappers.Config.WhiteList.LoadConfig();
+        {try
+            {
+                // Initialize config store
+                Mappers.Config.ServerCommands.LoadConfig();
+                Mappers.Config.MadUsers.LoadConfig();
+                Mappers.Config.ServerConfig.LoadConfig();
+                Mappers.Config.WhiteList.LoadConfig();
+            }
+            catch (Exception ex)
+            {
+                Log<DiscordAstroBot>.ErrorFormat($"Error loading config: {ex.Message}");
+            }
         }
 
         public async Task InitDiscordClient(string token, string chatPrefix)
@@ -118,19 +124,23 @@ namespace DiscordAstroBot
             // Setup default server commands config
             var server = Mappers.Config.ServerCommands.Config.CommandsConfigServer.FirstOrDefault(x => x.ServerID == dserver.Id);
             if (server == null)
+            {
                 server = new CommandsConfigServer() { ServerID = dserver.Id };
+                Mappers.Config.ServerCommands.Config.CommandsConfigServer.Add(server);
+            }
 
             Mappers.Config.ServerCommands.SetDefaultValues(server);
-            Mappers.Config.ServerCommands.Config.CommandsConfigServer.Add(server);
             Mappers.Config.ServerCommands.SaveConfig();
 
             // Setup default server config
             var serverCfg = Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == dserver.Id);
             if (serverCfg == null)
+            {
                 serverCfg = new ServerSettingsServer() { ServerID = dserver.Id };
+                Mappers.Config.ServerConfig.Config.Servers.Add(serverCfg);
+            }
 
             Mappers.Config.ServerConfig.SetDefaultValues(serverCfg);
-            Mappers.Config.ServerConfig.Config.Servers.Add(serverCfg);
             Mappers.Config.ServerConfig.SaveConfig();
 
             return Task.CompletedTask;
@@ -152,14 +162,17 @@ namespace DiscordAstroBot
             }
 
             // Send a welcome message in the default channel
+            if (Mappers.Config.ServerConfig.Config.Servers.Single(x => x.ServerID == user.Guild.Id).Configs.Any(x => x.Key == "HailNewUsers" && bool.Parse(x.Value)))
+            {
                 var rulesChannel = user.Guild.Channels.FirstOrDefault(x => x.Name.ToLower() == "rules");
-            if (rulesChannel != null)
-            {
-                user.Guild.DefaultChannel.SendMessageAsync($"A new user joined! Say hi to {user.Mention}\r\nMake sure to check out the {((ITextChannel)rulesChannel).Mention} channel!");
-            }
-            else
-            {
-                user.Guild.DefaultChannel.SendMessageAsync($"A new user joined! Say hi to {user.Mention}");
+                if (rulesChannel != null)
+                {
+                    user.Guild.DefaultChannel.SendMessageAsync($"A new user joined! Say hi to {user.Mention}\r\nMake sure to check out the {((ITextChannel)rulesChannel).Mention} channel!");
+                }
+                else
+                {
+                    user.Guild.DefaultChannel.SendMessageAsync($"A new user joined! Say hi to {user.Mention}");
+                }
             }
 
             return Task.CompletedTask;

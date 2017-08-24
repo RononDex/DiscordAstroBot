@@ -26,8 +26,8 @@ namespace DiscordAstroBot.Commands
             @"enable all commands(?'EnableAllCommands')",
             @"enable( command)? (?'EnableCommandName'[^\s]+)",
             @"disable( command)? (?'DisableCommandName'[^\s]+)",
-            @"(?'ListSettings'list settings)",
-            @"setconfig (?'SetConfigKey'[^\s]) (?'SetConfigValue'[^.*])"
+            @"(?'ListSettings'show config)",
+            @"setconfig (?'SetConfigKey'[^\s]*) (?'SetConfigValue'[^.*]*)"
 
         };
 
