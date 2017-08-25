@@ -71,8 +71,8 @@ query id {0}")]
 ""[[Fluxes]]\n%FLUXLIST()[%*(N=F)\n]\n"" +
 ""[[end]]""
 
-set radius val({0}d)
-query around {1}")]
+set radius {0}d
+query coo {1}")]
         public string RegionQuery {
             get {
                 return ((string)(this["RegionQuery"]));

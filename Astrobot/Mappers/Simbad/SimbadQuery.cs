@@ -52,7 +52,7 @@ namespace DiscordAstroBot.Mappers.Simbad
         /// <returns></returns>
         public static List<SimbadResult> QueryAround(RADECCoords coords, float radiusInDegrees, float limitingMagnitude)
         {
-            var query = string.Format(SIMBADSettings.Default.RegionQuery, $"{coords.RA} {coords.DEC}", radiusInDegrees);
+            var query = string.Format(SIMBADSettings.Default.RegionQuery, radiusInDegrees, $"{coords.RA} {coords.DEC}");
 
             var url = $"http://simbad.u-strasbg.fr/simbad/sim-script?script={WebUtility.UrlEncode(query)}";
 

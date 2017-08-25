@@ -34,8 +34,8 @@ query id {0}</Value>
 "[[Fluxes]]\n%FLUXLIST()[%*(N=F)\n]\n" +
 "[[end]]"
 
-set radius val({0}d)
-query around {1}</Value>
+set radius {0}d
+query coo {1}</Value>
     </Setting>
   </Settings>
 </SettingsFile>
