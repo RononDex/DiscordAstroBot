@@ -136,7 +136,7 @@ namespace DiscordAstroBot.Helpers
             { new string[] { @"what do you know(\?)?" },                                        new string[] { "42", "Everything there is to know about you!" } },
             { new string[] { @"what gender (are you|do you have)(\?)?",
                              @"what('s|\s is)? your gender(\?)?" },                             new string[] { "Bots don't identify by a gender, but if you need one, I guess \"Apache Helicopter\" " } },
-            { new string[] { @"(can you)?tell( me)? a joke"},                                   new string[]
+            { new string[] { @"(can you)?tell( me)? a( funny)? joke"},                          new string[]
                                                                                                             {
                                                                                                                 "I was up all night wondering where the Sun had gone… then it dawned on me.",
                                                                                                                 "Heisenberg is out for a drive when he’s stopped for speeding. The policeman says “Do you know how fast you were going?” Heisenberg says “No, but I know where I am.”",
