@@ -18,7 +18,7 @@ namespace DiscordAstroBot.Commands
     {
         public override string CommandName => "DSS";
 
-        public override string[] CommandSynonyms => new string[] {@"(how|what) does (?'ObjectName'\w*) look like(\?)?"};
+        public override string[] CommandSynonyms => new string[] { @"(how|what) does (?'ObjectName'.+?(?= look)) look like(\?)?" };
 
         public override string Description => "Query DSS database for how some deep space object looks like. Usage:\r\n```    @Astro Bot How does M63 look like```";
 
