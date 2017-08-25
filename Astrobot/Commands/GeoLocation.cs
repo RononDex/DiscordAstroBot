@@ -32,6 +32,8 @@ namespace DiscordAstroBot.Commands
             @"Get the coordinates of (?'SearchLocation'.*\w)(\?)?",
             @"Do you know the location of (?'SearchLocation'.*\w)(\?)?" };
 
+        public override string Description => "Used to find out the coordinates of a place (needed to align telescopes properly). Usage:\r\n```    @Astro Bot Where is Zürich?```";
+
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             // Search for the given address

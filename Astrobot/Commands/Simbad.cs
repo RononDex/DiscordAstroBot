@@ -25,6 +25,8 @@ namespace DiscordAstroBot.Commands
             @"what is (?'AstroObject'.*\w)(\?)?"
         };
 
+        public override string Description => "Access data from SIMBAD. Usage: \r\n```    @Astro Bot What is M31\r\n    @Astro Bot How far away is M31```";
+
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             await recievedMessage.Channel.SendMessageAsync("Querying the SIMBAD database, please wait...");

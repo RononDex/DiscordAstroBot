@@ -31,6 +31,8 @@ namespace DiscordAstroBot.Commands
 
         };
 
+        public override string Description => "Just some admin stuff";
+
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             // Make sure user is admin

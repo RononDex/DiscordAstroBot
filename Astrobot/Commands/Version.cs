@@ -22,6 +22,7 @@ namespace DiscordAstroBot.Commands
             @"version(\?)?"
         };
 
+        public override string Description => "Checks for the version of this bot and shows when the last update happend. Usage: \r\n```    @Astro Bot version```";
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {

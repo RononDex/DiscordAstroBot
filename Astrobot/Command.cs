@@ -14,6 +14,8 @@ namespace DiscordAstroBot
 
         public virtual string[] CommandSynonyms { get; } = new string[0];
 
+        public virtual string Description { get; } = "";
+
         /// <summary>
         /// Returns true when handeld, false when not
         /// </summary>

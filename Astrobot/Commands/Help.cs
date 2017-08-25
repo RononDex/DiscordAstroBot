@@ -15,6 +15,8 @@ namespace DiscordAstroBot.Commands
 
         public override string[] CommandSynonyms => base.CommandSynonyms;
 
+        public override string Description => "Displays this help";
+
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             return false;

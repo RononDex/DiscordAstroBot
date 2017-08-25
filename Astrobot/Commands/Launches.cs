@@ -25,6 +25,8 @@ namespace DiscordAstroBot.Commands
             @"what is (?'AgencySearchName'.*\w)(\?)?",
         };
 
+        public override string Description => "Can give info on upcoming rocket launches. Usage:\r\n```    @Astro Bot What are the upcoming launches?";
+
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             // When searching for a specific agency

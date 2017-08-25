@@ -23,6 +23,8 @@ namespace DiscordAstroBot.Commands
 
         public override string CommandName => "Weather";
 
+        public override string Description => "Shows weather forecast for astronomy. Usage: \r\n```    @Astro Bot weather in Zürich\r\n    @Astro Bot clearoutside Zürich```";
+
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             Helpers.GeoLocation location;

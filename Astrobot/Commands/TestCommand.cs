@@ -16,6 +16,8 @@ namespace DiscordAstroBot.Commands
 
         public override string[] CommandSynonyms => new[] { "test" };
 
+        public override string Description => "Just some testing. Usage: \r\n```    @Astro Bot test```";
+
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
             await recievedMessage.Channel.SendMessageAsync($"IT'S WORKING!!! You entered: {matchedMessage.Value}");

@@ -15,8 +15,9 @@ namespace DiscordAstroBot.Commands
     /// </summary>
     public class SmallTalkCommand : Command
     {
-
         public override string CommandName => "SmallTalk";
+
+        public override string Description => "This command is just for some random smalltalk, it gets triggered whenever no other command gets triggered";
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
