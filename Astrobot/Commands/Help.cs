@@ -22,11 +22,11 @@ namespace DiscordAstroBot.Commands
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
-            var output =
+            var output = string.Join("\r\n",
                 Mappers.Config.ServerCommands.Config.CommandsConfigServer.Single(
                     x => x.ServerID == ((SocketGuildChannel) recievedMessage.Channel).Guild.Id)
                     .Commands.Where(x => x.Enabled)
-                    .Select(x => $"**{x.CommandName}**: {Utilities.CommandsUtility.ResolveCommand(x.CommandName).Description} \r\n");
+                    .Select(x => $"**{x.CommandName}**: {Utilities.CommandsUtility.ResolveCommand(x.CommandName).Description}"));
             await recievedMessage.Channel.SendMessageAsync($"Available commands on this server:\r\n{output}");
             return true;
         }
