@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordAstroBot.Objects.Simbad;
 
 namespace DiscordAstroBot.Mappers.Simbad
 {
@@ -22,7 +23,7 @@ namespace DiscordAstroBot.Mappers.Simbad
         {
             var query = string.Format(SIMBADSettings.Default.ObjectQuery, objectName);
 
-            var url = string.Format("http://simbad.u-strasbg.fr/simbad/sim-script?script={0}", WebUtility.UrlEncode(query));
+            var url = $"http://simbad.u-strasbg.fr/simbad/sim-script?script={WebUtility.UrlEncode(query)}";
 
             var webRequest = WebRequest.Create(url);
             string text;
@@ -40,6 +41,30 @@ namespace DiscordAstroBot.Mappers.Simbad
             var result = new SimbadResult(text);
 
             return result;
+        }
+
+        /// <summary>
+        /// Queries for objects in a given area
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="radiusInDegrees"></param>
+        /// <param name="limitingMagnitude"></param>
+        /// <returns></returns>
+        public static List<SimbadResult> QueryAround(RADECCoords coords, float radiusInDegrees, float limitingMagnitude)
+        {
+            var query = string.Format(SIMBADSettings.Default.RegionQuery, $"{coords.RA} {coords.DEC}", radiusInDegrees);
+
+            var url = $"http://simbad.u-strasbg.fr/simbad/sim-script?script={WebUtility.UrlEncode(query)}";
+
+            var webRequest = WebRequest.Create(url);
+            string text;
+            using (var response = (HttpWebResponse)webRequest.GetResponse())
+                using (var sr = new StreamReader(response.GetResponseStream()))
+                    text = sr.ReadToEnd();
+
+            var splitted = text.Split(new [] { "[[end]]" }, StringSplitOptions.RemoveEmptyEntries);
+
+            return splitted.Select(entry => new SimbadResult(entry)).ToList();
         }
     }
 }

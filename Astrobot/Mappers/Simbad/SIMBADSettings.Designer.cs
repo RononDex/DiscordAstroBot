@@ -12,7 +12,7 @@ namespace DiscordAstroBot.Mappers.Simbad {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.1.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
     internal sealed partial class SIMBADSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static SIMBADSettings defaultInstance = ((SIMBADSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SIMBADSettings())));
@@ -54,6 +54,31 @@ query id {0}")]
             }
             set {
                 this["IdentifierNotFoundMessage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"format object f1 ""[[Main_id]]\n%IDLIST(1)\n"" +
+""[[ObjectType]]\n%OTYPE(V)\n"" +
+""[[Coordinates]]\nRA: %COO(A)\nDEC: %COO(D)\n"" +
+""[[Identifiers]]\n%IDLIST[%-20*\n]\n""+
+""[[OtherTypes]]\n%OTYPELIST(V\n)\n""+
+""[[ProperMotion]]\nRA: %PM(A)\nDEC: %PM(D)\n"" +
+""[[Parallax]]\nValue: %PLX(V)\nError: %PLX(E)\n"" +
+""[[RadialVelocity]]\nz: %RV(Z)\nError: %RV(E)\nv: %RV(V)\n"" +
+""[[Distances]]\n%MEASLIST(distance)\n"" +
+""[[Fluxes]]\n%FLUXLIST()[%*(N=F)\n]\n"" +
+""[[end]]""
+
+set radius val({0}d)
+query around {1}")]
+        public string RegionQuery {
+            get {
+                return ((string)(this["RegionQuery"]));
+            }
+            set {
+                this["RegionQuery"] = value;
             }
         }
     }
