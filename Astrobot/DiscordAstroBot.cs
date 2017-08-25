@@ -358,6 +358,7 @@ namespace DiscordAstroBot
             Commands.Add(new Commands.Version());
             Commands.Add(new Commands.DSSCommand());
             Commands.Add(new Commands.TestCommand());
+            Commands.Add(new Commands.Help());
 
             foreach (var command in Commands)
             {
