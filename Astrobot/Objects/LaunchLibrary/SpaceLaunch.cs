@@ -173,9 +173,9 @@ namespace DiscordAstroBot.Objects.LaunchLibrary
     /// </summary>
     public enum LaunchStatus
     {
-        GREEN = 1,
-        RED = 2,
+        GREEN   = 1,
+        RED     = 2,
         SUCCESS = 3,
-        FAILED = 4
+        FAILED  = 4
     }
 }

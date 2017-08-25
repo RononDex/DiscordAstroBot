@@ -23,7 +23,9 @@ namespace DiscordAstroBot.Commands
 
         public override string CommandName => "Astrometry";
 
-        public override string Description => "This is an advanced plate solving / image analysis command. Usage (attach an image to your message): \r\n```    @Astro Bot analyse this image```"
+        public override string Description
+            =>
+                "This is an advanced plate solving / image analysis command. Usage (attach an image to your message): \r\n```    @Astro Bot analyse this image```";
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
