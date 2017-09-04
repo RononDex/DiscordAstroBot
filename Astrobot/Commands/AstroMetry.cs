@@ -77,7 +77,14 @@ namespace DiscordAstroBot.Commands
                 var calibrationData = Helpers.AstrometryHelper.GetCalibrationFromFinishedJob(jobId.ToString());
                 var objectsInImage = string.Join(", ", calibrationData.ObjectsInfField);
                 var tags = string.Join(", ", calibrationData.Tags);
-                await recievedMessage.Channel.SendMessageAsync($"```\r\nRA: {calibrationData.CalibrationData.RA}\r\nDEC: {calibrationData.CalibrationData.DEC}\r\nOrientation: up is {calibrationData.CalibrationData.Orientation} deg\r\nRadius: {calibrationData.CalibrationData.Radius} deg\r\nPixelScale: {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\nObjectsInImage: {objectsInImage}\r\nTags: {tags}\r\n```");
+                await recievedMessage.Channel.SendMessageAsync(     $"```css\r\n" + 
+                                                                    $"RA:             {calibrationData.CalibrationData.RA}\r\n" + 
+                                                                    $"DEC:            {calibrationData.CalibrationData.DEC}\r\n" + 
+                                                                    $"Orientation:    up is {calibrationData.CalibrationData.Orientation} deg\r\n" + 
+                                                                    $"Radius:         {calibrationData.CalibrationData.Radius} deg\r\n" + 
+                                                                    $"PixelScale:     {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\n" + 
+                                                                    $"ObjectsInImage: {objectsInImage}\r\n" + 
+                                                                    $"Tags:           {tags}\r\n```");
 
                 await recievedMessage.Channel.SendFileAsync(Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString()), $"annoated_{calibrationData.FileName}");
                 await recievedMessage.Channel.SendMessageAsync($"Link to astrometry job result: http://nova.astrometry.net/status/{submissionID}");
