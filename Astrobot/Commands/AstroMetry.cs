@@ -77,6 +77,10 @@ namespace DiscordAstroBot.Commands
                 var calibrationData = Helpers.AstrometryHelper.GetCalibrationFromFinishedJob(jobId.ToString());
                 var objectsInImage = string.Join(", ", calibrationData.ObjectsInfField);
                 var tags = string.Join(", ", calibrationData.Tags);
+
+                var builder = new EmbedBuilder();
+               
+
                 await recievedMessage.Channel.SendMessageAsync(     $"```css\r\n" + 
                                                                     $"RA:             {calibrationData.CalibrationData.RA}\r\n" + 
                                                                     $"DEC:            {calibrationData.CalibrationData.DEC}\r\n" + 
