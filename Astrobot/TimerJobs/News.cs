@@ -14,6 +14,8 @@ namespace DiscordAstroBot.TimerJobs
     {
         public override DateTime NextExecutionTime => throw new NotImplementedException();
 
+        public override string Name => "News";
+
         public override void Execute(IGuild guild)
         {
             throw new NotImplementedException();

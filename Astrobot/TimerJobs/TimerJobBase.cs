@@ -13,6 +13,11 @@ namespace DiscordAstroBot.TimerJobs
     public abstract class TimerJobBase
     {
         /// <summary>
+        /// Name of the timer job
+        /// </summary>
+        public abstract string Name { get; }
+
+        /// <summary>
         /// Returns the next time this Job has to be executed
         /// </summary>
         public abstract DateTime NextExecutionTime { get; }

@@ -34,6 +34,11 @@ namespace DiscordAstroBot
         public static List<Command> Commands { get; set; }
 
         /// <summary>
+        /// Holds all the timer jobs
+        /// </summary>
+        public static List<TimerJobs.TimerJobBase> TimerJobs { get; set; } = new List<TimerJobs.TimerJobBase>();
+
+        /// <summary>
         /// The prefix that this bot listens to
         /// </summary>
         public string ChatPrefix { get; set; }
@@ -55,7 +60,8 @@ namespace DiscordAstroBot
         /// <param name="token"></param>
         /// <param name="chatPrefix"></param>
         public DiscordAstroBot()
-        {try
+        {
+            try
             {
                 // Initialize config store
                 Mappers.Config.ServerCommands.LoadConfig();
@@ -82,6 +88,7 @@ namespace DiscordAstroBot
             this.ChatPrefix = chatPrefix;
 
             RegisterCommands();
+            SetupTimerJobs();
 
             DiscordClient.MessageReceived    += MessageReceived;
             DiscordClient.GuildAvailable     += DiscordClient_ServerAvailable;
@@ -90,6 +97,21 @@ namespace DiscordAstroBot
             DiscordClient.JoinedGuild        += DiscordClient_JoinedServer;
 
             Log<DiscordAstroBot>.InfoFormat("Login successfull");
+        }
+
+        /// <summary>
+        /// Setups the TimerJobs
+        /// </summary>
+        private void SetupTimerJobs()
+        {
+            Log<DiscordAstroBot>.InfoFormat("Registering TimerJobs...");
+
+            TimerJobs.Add(new TimerJobs.News());
+
+            foreach (var job in TimerJobs)
+            {
+                Log<DiscordAstroBot>.InfoFormat("TimerJob registered \"{0}\"", job.Name);
+            }
         }
 
         /// <summary>
