@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DiscordAstroBot.Helpers;
 using DiscordAstroBot.Objects.Config;
+using System.Timers;
 using WhiteList = DiscordAstroBot.Mappers.Config.WhiteList;
 
 namespace DiscordAstroBot
@@ -53,6 +54,11 @@ namespace DiscordAstroBot
         /// The name of the bot owner, used to tell people how to contact the owner if needed
         /// </summary>
         public string OwnerName { get; set; }
+
+        /// <summary>
+        /// Timer that executes the timer jobs
+        /// </summary>
+        public System.Timers.Timer TimerJobTimer { get; set; }
 
         /// <summary>
         /// Constructor of the bot, this is where all the initialisations happen
@@ -104,6 +110,7 @@ namespace DiscordAstroBot
         /// </summary>
         private void SetupTimerJobs()
         {
+            // Register the timerjobs
             Log<DiscordAstroBot>.InfoFormat("Registering TimerJobs...");
 
             TimerJobs.Add(new TimerJobs.News());
@@ -112,6 +119,15 @@ namespace DiscordAstroBot
             {
                 Log<DiscordAstroBot>.InfoFormat("TimerJob registered \"{0}\"", job.Name);
             }
+
+            // Start the timer that will check periodically if a job has to be executed
+            TimerJobTimer = new System.Timers.Timer(1000 * 60 * 60);
+            TimerJobTimer.Elapsed += ExecuteTimerJobs;
+        }
+
+        private void ExecuteTimerJobs(object sender, ElapsedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
