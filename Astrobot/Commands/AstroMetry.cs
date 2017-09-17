@@ -81,7 +81,7 @@ namespace DiscordAstroBot.Commands
                 var builder = new EmbedBuilder();
                
 
-                await recievedMessage.Channel.SendMessageAsync(     $"```css\r\n" + 
+                await recievedMessage.Channel.SendMessageAsync(     $"```python\r\n" + 
                                                                     $"RA:             {calibrationData.CalibrationData.RA}\r\n" + 
                                                                     $"DEC:            {calibrationData.CalibrationData.DEC}\r\n" + 
                                                                     $"Orientation:    up is {calibrationData.CalibrationData.Orientation} deg\r\n" + 

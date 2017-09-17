@@ -47,6 +47,11 @@ namespace DiscordAstroBot.Objects.LaunchLibrary
         /// </summary>
         public string WikiURL { get; set; }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
         public LaunchPad(dynamic item)
         {
             // Initialize the object from the json object

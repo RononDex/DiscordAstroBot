@@ -49,7 +49,7 @@ namespace DiscordAstroBot.Commands
             else
                 forcast = Helpers.WeatherHelper.GetWeatherForcastClearOutside(location);
 
-            await recievedMessage.Channel.SendMessageAsync($"This is the weather forcast that I found for {matchedMessage.Groups["SearchLocation"].Value}:");
+            await recievedMessage.Channel.SendMessageAsync($"This is the weather forcast that I found for {matchedMessage.Groups["SearchLocation"].Value}{matchedMessage.Groups["SearchLocationCL"].Value}:");
             await recievedMessage.Channel.SendFileAsync(new MemoryStream(forcast.Screenshot), "Weather_forcast.png" );
 
             return true;

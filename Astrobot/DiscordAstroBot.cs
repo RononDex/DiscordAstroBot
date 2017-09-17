@@ -96,11 +96,11 @@ namespace DiscordAstroBot
             RegisterCommands();
             SetupTimerJobs();
 
-            DiscordClient.MessageReceived    += MessageReceived;
-            DiscordClient.GuildAvailable     += DiscordClient_ServerAvailable;
+            DiscordClient.MessageReceived += MessageReceived;
+            DiscordClient.GuildAvailable += DiscordClient_ServerAvailable;
             DiscordClient.GuildMemberUpdated += DiscordClient_UserUpdated;
-            DiscordClient.UserJoined         += DiscordClient_UserJoined;
-            DiscordClient.JoinedGuild        += DiscordClient_JoinedServer;
+            DiscordClient.UserJoined += DiscordClient_UserJoined;
+            DiscordClient.JoinedGuild += DiscordClient_JoinedServer;
 
             Log<DiscordAstroBot>.InfoFormat("Login successfull");
         }
@@ -113,7 +113,7 @@ namespace DiscordAstroBot
             // Register the timerjobs
             Log<DiscordAstroBot>.InfoFormat("Registering TimerJobs...");
 
-            TimerJobs.Add(new TimerJobs.News());
+            TimerJobs.Add(new TimerJobs.LaunchNews());
 
             foreach (var job in TimerJobs)
             {
@@ -121,13 +121,43 @@ namespace DiscordAstroBot
             }
 
             // Start the timer that will check periodically if a job has to be executed
+#if DEBUG
+            TimerJobTimer = new System.Timers.Timer(1000 * 60);
+#else
             TimerJobTimer = new System.Timers.Timer(1000 * 60 * 60);
+#endif
             TimerJobTimer.Elapsed += ExecuteTimerJobs;
+            TimerJobTimer.Start();
         }
 
+        /// <summary>
+        /// Event gets called when bot checks for timer jobs that have to run
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ExecuteTimerJobs(object sender, ElapsedEventArgs e)
         {
-            throw new NotImplementedException();
+
+            foreach (var job in TimerJobs)
+            {
+                // If the job has to be executed, execute it on all enabled servers
+                if (job.NextExecutionTime < DateTime.Now)
+                {
+                    foreach (var server in this.DiscordClient.Guilds)
+                    {
+                        try
+                        {
+                            Log<DiscordAstroBot>.Info($"Executing TimerJob {job.Name} on server {server.Name}");
+                            job.Execute(server);
+                            job.LastExecutionTime = DateTime.Now;
+                        }
+                        catch (Exception ex)
+                        {
+                            Log<DiscordAstroBot>.Error($"Error while executing timer job {job.Name}: {ex.Message}");
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -288,7 +318,7 @@ namespace DiscordAstroBot
                     }
 
                     // If Whitelist is enabled and server is not on white list
-                    if (WhiteListEnabled && WhiteList.WhitelistedServers.Entries.All(x => x.ServerID != ((SocketTextChannel) recievedMessage.Channel).Guild.Id))
+                    if (WhiteListEnabled && WhiteList.WhitelistedServers.Entries.All(x => x.ServerID != ((SocketTextChannel)recievedMessage.Channel).Guild.Id))
                     {
                         WriteNotOnWhitelistResponse(recievedMessage.Channel);
                         return Task.CompletedTask;
@@ -395,8 +425,8 @@ namespace DiscordAstroBot
             Commands.Add(new Commands.Simbad());
             Commands.Add(new Commands.Version());
             Commands.Add(new Commands.DSSCommand());
-            Commands.Add(new Commands.TestCommand());
             Commands.Add(new Commands.Help());
+            Commands.Add(new Commands.TestCommand());
 
             foreach (var command in Commands)
             {

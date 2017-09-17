@@ -175,5 +175,47 @@ namespace DiscordAstroBot.Mappers.LaunchLibrary
 
             return launches;
         }
+
+        public static List<SpaceLaunch> GetLaunches(DateTime startDate, DateTime endDate)
+        {
+            Log<DiscordAstroBot>.InfoFormat("Requesting the next upcoming launches");
+
+            string text;
+
+            try
+            {
+                var webRequest = WebRequest.CreateHttp(string.Format("http://launchlibrary.net/1.2/launch/{0}/{1}", startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd")));
+                webRequest.Accept = "application/json";
+                webRequest.Headers["X-Requested-With"] = "DiscordAstroBot";
+                webRequest.UserAgent = "DiscordAstroBot";
+
+                var response = (HttpWebResponse)webRequest.GetResponse();
+
+                using (var sr = new StreamReader(response.GetResponseStream()))
+                {
+                    text = sr.ReadToEnd();
+                }
+            }
+            catch
+            {
+                return new List<SpaceLaunch>();
+            }            
+
+            dynamic result = JsonConvert.DeserializeObject(text);
+            if (result.launches.Count == 0)
+                return null;
+
+            if (result.launches == null || result.launches.Count == 0)
+                return null;
+
+            var launches = new List<SpaceLaunch>();
+
+            for (var i = 0; i < result.launches.Count; i++)
+            {
+                launches.Add(new SpaceLaunch(result.launches[i]));
+            }
+
+            return launches;
+        }
     }
 }
