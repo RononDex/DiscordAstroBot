@@ -15,7 +15,7 @@ namespace DiscordAstroBot.TimerJobs
     {
         public override DateTime NextExecutionTime => LastExecutionTime != null
             ? LastExecutionTime.Value + new TimeSpan(24, 0, 0)
-            : DateTime.Today.AddDays(1).AddHours(-2);
+            : DateTime.Today;
 
         public override string Name => "News";
 
