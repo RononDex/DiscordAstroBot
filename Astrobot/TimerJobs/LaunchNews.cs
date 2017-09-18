@@ -13,9 +13,13 @@ namespace DiscordAstroBot.TimerJobs
     /// </summary>
     public class LaunchNews : TimerJobBase
     {
+#if DEBUG
+        public override DateTime NextExecutionTime => DateTime.Now.AddSeconds(-30);
+#else
         public override DateTime NextExecutionTime => LastExecutionTime != null
             ? LastExecutionTime.Value + new TimeSpan(24, 0, 0)
             : DateTime.Today;
+#endif
 
         public override string Name => "News";
 
@@ -33,7 +37,7 @@ namespace DiscordAstroBot.TimerJobs
                 if (channel != null)
                 {
                     // Get the upcomming launches
-                    var launches = Mappers.LaunchLibrary.LaunchLibraryAPIHelper.GetLaunches(DateTime.Today, DateTime.Today.AddDays(3));
+                    var launches = Mappers.LaunchLibrary.LaunchLibraryAPIHelper.GetLaunches(DateTime.Today, DateTime.Today.AddDays(10));
                     
                     if (launches.Count > 0)
                     {
@@ -46,7 +50,7 @@ namespace DiscordAstroBot.TimerJobs
                             message += $"Launch window:     {launch.WindowStart} - {launch.WindowEnd}\r\n";
                             message += $"Rocket:            {launch.Rocket.Name}\r\n";
                             message += $"Launch-Location:   {launch.Location.Name} - Pad: {launch.Location.LaunchPads.FirstOrDefault()}\r\n";
-                            message += $"Wath live here:    {!string.IsNullOrEmpty(launch.VidURL) ? launch.VidURL : }\r\n";
+                            message += $"Wath live here:    {(!string.IsNullOrEmpty(launch.VidURL) ? launch.VidURL : launch.VidURLs.FirstOrDefault())}\r\n";
                             message += $"Description:\r\n{string.Join("\r\n - ", launch.Missions.Select(x => x.Description))}\r\n";
                             message += $"/*-----------------------------------------------------------------------------------------------------*/\r\n```";
                             await (channel as ISocketMessageChannel).SendMessageAsync(message);
