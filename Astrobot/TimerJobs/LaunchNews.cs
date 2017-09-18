@@ -46,7 +46,7 @@ namespace DiscordAstroBot.TimerJobs
                             message += $"Launch window:     {launch.WindowStart} - {launch.WindowEnd}\r\n";
                             message += $"Rocket:            {launch.Rocket.Name}\r\n";
                             message += $"Launch-Location:   {launch.Location.Name} - Pad: {launch.Location.LaunchPads.FirstOrDefault()}\r\n";
-                            message += $"Wath live here:    {launch.VidURL}\r\n";
+                            message += $"Wath live here:    {!string.IsNullOrEmpty(launch.VidURL) ? launch.VidURL : }\r\n";
                             message += $"Description:\r\n{string.Join("\r\n - ", launch.Missions.Select(x => x.Description))}\r\n";
                             message += $"/*-----------------------------------------------------------------------------------------------------*/\r\n```";
                             await (channel as ISocketMessageChannel).SendMessageAsync(message);
