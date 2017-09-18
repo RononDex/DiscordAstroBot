@@ -37,7 +37,7 @@ namespace DiscordAstroBot.TimerJobs
                 if (channel != null)
                 {
                     // Get the upcomming launches
-                    var launches = Mappers.LaunchLibrary.LaunchLibraryAPIHelper.GetLaunches(DateTime.Today, DateTime.Today.AddDays(10));
+                    var launches = Mappers.LaunchLibrary.LaunchLibraryAPIHelper.GetLaunches(DateTime.Today, DateTime.Today.AddDays(3));
                     
                     if (launches.Count > 0)
                     {
