@@ -13,13 +13,9 @@ namespace DiscordAstroBot.TimerJobs
     /// </summary>
     public class LaunchNews : TimerJobBase
     {
-#if DEBUG
-        public override DateTime NextExecutionTime => DateTime.Now.AddSeconds(-30);
-#else
         public override DateTime NextExecutionTime => LastExecutionTime != null
             ? LastExecutionTime.Value + new TimeSpan(24, 0, 0)
-            : DateTime.Today;
-#endif
+            : DateTime.Today.AddHours(-2);
 
         public override string Name => "News";
 
@@ -52,7 +48,7 @@ namespace DiscordAstroBot.TimerJobs
                             message += $"Launch-Location:   {launch.Location.Name} - Pad: {launch.Location.LaunchPads.FirstOrDefault()}\r\n";
                             message += $"Wath live here:    {(!string.IsNullOrEmpty(launch.VidURL) ? launch.VidURL : launch.VidURLs.FirstOrDefault())}\r\n";
                             message += $"Description:\r\n{string.Join("\r\n - ", launch.Missions.Select(x => x.Description))}\r\n";
-                            message += $"/*-----------------------------------------------------------------------------------------------------*/\r\n```";
+                            message += $"/*-----------------------------------------------------------------*/\r\n```";
                             await (channel as ISocketMessageChannel).SendMessageAsync(message);
                         }
                     }

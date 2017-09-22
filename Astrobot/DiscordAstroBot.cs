@@ -121,11 +121,7 @@ namespace DiscordAstroBot
             }
 
             // Start the timer that will check periodically if a job has to be executed
-#if DEBUG
             TimerJobTimer = new System.Timers.Timer(1000 * 60);
-#else
-            TimerJobTimer = new System.Timers.Timer(1000 * 60 * 60);
-#endif
             TimerJobTimer.Elapsed += ExecuteTimerJobs;
             TimerJobTimer.Start();
         }
