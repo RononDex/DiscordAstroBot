@@ -217,7 +217,7 @@ namespace DiscordAstroBot
         /// <param name="e"></param>
         private Task DiscordClient_UserJoined(SocketGuildUser user)
         {
-            Log<DiscordAstroBot>.InfoFormat($"New user {user.Username} joined on server {user.Username}");
+            Log<DiscordAstroBot>.InfoFormat($"New user {user.Username} joined on server {user.Guild.Name}");
 
             // If Whitelist is enabled and server is not on white list
             if (WhiteListEnabled && WhiteList.WhitelistedServers.Entries.All(x => x.ServerID != user.Guild.Id))
@@ -228,7 +228,7 @@ namespace DiscordAstroBot
             // Send a welcome message in the default channel
             if (Mappers.Config.ServerConfig.Config.Servers.Single(x => x.ServerID == user.Guild.Id).Configs.Any(x => x.Key == "HailNewUsers" && bool.Parse(x.Value)))
             {
-                var rulesChannel = user.Guild.Channels.FirstOrDefault(x => x.Name.ToLower() == "rules");
+                var rulesChannel = user.Guild.Channels.FirstOrDefault(x => x.Name != null && x.Name.ToLower() == "rules");
                 if (rulesChannel != null)
                 {
                     user.Guild.DefaultChannel.SendMessageAsync($"A new user joined! Say hi to {user.Mention}\r\nMake sure to check out the {((ITextChannel)rulesChannel).Mention} channel!");
