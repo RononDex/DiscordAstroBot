@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordAstroBot.Objects.Config;
 
 namespace DiscordAstroBot.TimerJobs
 {
@@ -25,7 +26,29 @@ namespace DiscordAstroBot.TimerJobs
         /// <summary>
         /// Gets set from the framework when the last execution was
         /// </summary>
-        public DateTime? LastExecutionTime { get; set; } = null;
+        public DateTime? LastExecutionTime
+        {
+            get
+            {
+                var configEntry = Mappers.Config.TimerJobExecutions.Config.TimerJobEntries.FirstOrDefault(x => x.TimerJobName == Name);
+                return configEntry?.LastExecution;
+            }
+            set
+            {
+                var configEntry = Mappers.Config.TimerJobExecutions.Config.TimerJobEntries.FirstOrDefault(x => x.TimerJobName == Name);
+                if (configEntry == null)
+                {
+                    configEntry = new TimerJobEntry();
+                    configEntry.TimerJobName = Name;
+                    Mappers.Config.TimerJobExecutions.Config.TimerJobEntries.Add(configEntry);
+                }
+
+                if (value != null)
+                    configEntry.LastExecution = value.Value;
+
+                Mappers.Config.TimerJobExecutions.SaveConfig();
+            }
+        }
 
         /// <summary>
         /// Execute the scheduled timer job

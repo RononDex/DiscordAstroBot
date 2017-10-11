@@ -13,13 +13,21 @@ namespace DiscordAstroBot.TimerJobs
     /// </summary>
     public class LaunchNews : TimerJobBase
     {
-        public override DateTime NextExecutionTime => LastExecutionTime != null
-            ? LastExecutionTime.Value + new TimeSpan(24, 0, 0)
-            : DateTime.Today.AddHours(-2);
+        /// <summary>
+        /// Determines the next execution time for the news timer job
+        /// </summary>
+        public override DateTime NextExecutionTime => LastExecutionTime?.Date.AddDays(1) ?? DateTime.Today;
 
-        public override string Name => "News";
+        /// <summary>
+        /// A unique name for the timer job
+        /// </summary>
+        public override string Name => "LaunchNews";
 
-        public async override void Execute(IGuild guild)
+        /// <summary>
+        /// Executes the timer job
+        /// </summary>
+        /// <param name="guild"></param>
+        public override async void Execute(IGuild guild)
         {
             // Check if news enabled and if news channel is defined on the server
             var serverCfg = Mappers.Config.ServerConfig.Config.Servers.First(x => x.ServerID == guild.Id);
@@ -37,7 +45,7 @@ namespace DiscordAstroBot.TimerJobs
                     
                     if (launches.Count > 0)
                     {
-                        await (channel as ISocketMessageChannel).SendMessageAsync("Following launches are scheduled for the next 3 days:");
+                        await (channel as ISocketMessageChannel).SendMessageAsync("Following launches are scheduled within the next 3 days:");
 
                         foreach (var launch in launches)
                         {

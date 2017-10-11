@@ -188,10 +188,12 @@
     <Compile Include="Mappers\Config\MadUsers.cs" />
     <Compile Include="Mappers\Config\ServerCommands.cs" />
     <Compile Include="Mappers\Config\ServerConfig.cs" />
+    <Compile Include="Mappers\Config\TimerJobExecutions.cs" />
     <Compile Include="Mappers\Config\WhiteList.cs" />
     <Compile Include="Mappers\LaunchLibrary\LaunchLibraryAPIHelper.cs" />
     <Compile Include="Helpers\WeatherHelper.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Objects\Config\TimerJobExecutions.cs" />
     <Compile Include="Objects\Config\WhiteList.cs" />
     <Compile Include="Objects\Simbad\AstronomicalObjectInfo.cs" />
     <Compile Include="Objects\Config\CommandsConfig.cs" />
@@ -245,6 +247,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="config\ServerWhiteList.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="config\TimerJobExecutions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="phantomjs-license.txt">

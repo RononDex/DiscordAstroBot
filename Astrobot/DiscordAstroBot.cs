@@ -74,6 +74,7 @@ namespace DiscordAstroBot
                 Mappers.Config.MadUsers.LoadConfig();
                 Mappers.Config.ServerConfig.LoadConfig();
                 Mappers.Config.WhiteList.LoadConfig();
+                Mappers.Config.TimerJobExecutions.LoadConfig();
             }
             catch (Exception ex)
             {
