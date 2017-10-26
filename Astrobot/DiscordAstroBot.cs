@@ -86,7 +86,10 @@ namespace DiscordAstroBot
         {
             // Initialize the client
             Log<DiscordAstroBot>.InfoFormat("Login into Discord");
-            DiscordClient = new DiscordSocketClient();
+            DiscordClient = new DiscordSocketClient(new DiscordSocketConfig()
+            {
+                MessageCacheSize = 150,                
+            });
 
             DiscordClient.Log += Log;
             await DiscordClient.LoginAsync(TokenType.Bot, token);
@@ -102,8 +105,59 @@ namespace DiscordAstroBot
             DiscordClient.GuildMemberUpdated += DiscordClient_UserUpdated;
             DiscordClient.UserJoined += DiscordClient_UserJoined;
             DiscordClient.JoinedGuild += DiscordClient_JoinedServer;
+            DiscordClient.MessageDeleted += DiscordClient_MessageDeleted;
 
             Log<DiscordAstroBot>.InfoFormat("Login successfull");
+        }
+
+        /// <summary>
+        /// Gets called when a user deletes a messages
+        /// </summary>
+        /// <param name="arg1"></param>
+        /// <param name="arg2"></param>
+        /// <returns></returns>
+        private Task DiscordClient_MessageDeleted(Cacheable<IMessage, ulong> arg1, ISocketMessageChannel arg2)
+        {
+            if (arg2 is IGuildChannel)
+            {
+                Task.Run(async () =>
+                {
+                    // Log deleted message
+                    var channel = arg2 as IGuildChannel;
+                    var msg = arg1.Value;
+                    if (arg1.Value == null)
+                    {
+                        msg = await arg2.GetMessageAsync(arg1.Id);
+                    }
+
+                    if (msg != null)
+                    {
+                        Log<DiscordAstroBot>.Warn($"DELETED MESSAGE: The following message was deleted in channel {channel.Name} on server {channel.Guild.Name}:\r\n```\\nAuthor:{arg1.Value.Author.Username}\r\n{arg1.Value.Content}```");
+
+                        // Find admin channel and if exists post warning there
+                        var channels = await channel.Guild.GetChannelsAsync(CacheMode.CacheOnly);
+                        var adminChannel = channels.FirstOrDefault(x => x.Name == "admin-chat");
+                        if (adminChannel != null)
+                        {
+                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"WARNING: Following message was deleted in channel {channel.Name}:\r\n```\r\nAuthor: {arg1.Value.Author.Username}\r\n{arg1.Value.Content}");
+                        }
+                    }
+                    else
+                    {
+                        Log<DiscordAstroBot>.Warn($"DELETED MESSAGE in channel {channel.Name} on server {channel.Guild.Name}");
+
+                        // Find admin channel and if exists post warning there
+                        var channels = await channel.Guild.GetChannelsAsync(CacheMode.CacheOnly);
+                        var adminChannel = channels.FirstOrDefault(x => x.Name == "admin-chat");
+                        if (adminChannel != null)
+                        {
+                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"WARNING: Deleted message in channel {channel.Name}");
+                        }
+                    }
+                });
+            }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
