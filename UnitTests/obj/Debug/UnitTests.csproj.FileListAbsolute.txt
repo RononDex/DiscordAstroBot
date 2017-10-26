@@ -69,3 +69,4 @@ C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\System.Interacti
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.csprojResolveAssemblyReference.cache
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.pdb
+C:\Users\het\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\config\TimerJobExecutions.xml

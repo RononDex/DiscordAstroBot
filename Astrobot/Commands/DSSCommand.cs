@@ -41,8 +41,7 @@ namespace DiscordAstroBot.Commands
 
                     // Check if RA and DEC coordinates are known
                     var parsedInfo = Objects.Simbad.AstronomicalObjectInfo.FromSimbadResult(info);
-                    if (string.IsNullOrEmpty(parsedInfo.Coordinates.DEC) ||
-                        string.IsNullOrEmpty(parsedInfo.Coordinates.RA))
+                    if (parsedInfo.Coordinates == null)
                     {
                         await recievedMessage.Channel.SendMessageAsync(
                             $"The object was found in the SIMBAD database, but no RA,DEC coordinates are known.");

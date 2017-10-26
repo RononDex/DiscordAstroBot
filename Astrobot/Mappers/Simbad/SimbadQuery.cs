@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -50,9 +51,12 @@ namespace DiscordAstroBot.Mappers.Simbad
         /// <param name="radiusInDegrees"></param>
         /// <param name="limitingMagnitude"></param>
         /// <returns></returns>
-        public static List<SimbadResult> QueryAround(RADECCoords coords, float radiusInDegrees, float limitingMagnitude)
+        public static List<SimbadResult> QueryAround(RADECCoords coords, float radiusInDegrees)
         {
-            var query = string.Format(SIMBADSettings.Default.RegionQuery, radiusInDegrees, $"{coords.RA} {coords.DEC}");
+            var query = SIMBADSettings.Default.RegionQuery.Replace("{RALowerLimit}", (coords.RA - (radiusInDegrees / 2)).ToString(CultureInfo.InvariantCulture))
+                                                          .Replace("{RAUpperLimit}", (coords.RA + (radiusInDegrees / 2)).ToString(CultureInfo.InvariantCulture))
+                                                          .Replace("{DECUpperLimit}", (coords.DEC + (radiusInDegrees / 2)).ToString(CultureInfo.InvariantCulture))
+                                                          .Replace("{DECLowerLimit}", (coords.DEC - (radiusInDegrees / 2)).ToString(CultureInfo.InvariantCulture));
 
             var url = $"http://simbad.u-strasbg.fr/simbad/sim-script?script={WebUtility.UrlEncode(query)}";
 

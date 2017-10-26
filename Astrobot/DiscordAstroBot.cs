@@ -139,7 +139,7 @@ namespace DiscordAstroBot
                         var adminChannel = channels.FirstOrDefault(x => x.Name == "admin-chat");
                         if (adminChannel != null)
                         {
-                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"*WARNING*: Following message was deleted in channel {channel.Name}:\r\n```\r\nAuthor: {arg1.Value.Author.Username}\r\n{arg1.Value.Content}```");
+                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"__**WARNING:**__: Following message was deleted in channel {channel.Name}:\r\n```\r\nAuthor: {arg1.Value.Author.Username}\r\n{arg1.Value.Content}```");
                         }
                     }
                     else
@@ -151,7 +151,7 @@ namespace DiscordAstroBot
                         var adminChannel = channels.FirstOrDefault(x => x.Name == "admin-chat");
                         if (adminChannel != null)
                         {
-                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"*WARNING*: Deleted message in channel {channel.Name}");
+                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"__**WARNING:**__: Deleted message in channel {channel.Name}");
                         }
                     }
                 });

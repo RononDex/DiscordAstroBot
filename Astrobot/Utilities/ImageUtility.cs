@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -10,6 +11,11 @@ namespace DiscordAstroBot.Utilities
 {
     public static class ImageUtility
     {
+        /// <summary>
+        /// Creates a grey scale image out of a single channel RGB image (where only R channel has data)
+        /// </summary>
+        /// <param name="original"></param>
+        /// <returns></returns>
         public static Bitmap MakeGrayscaleFromRGB_R(Bitmap original)
         {
             //create a blank bitmap the same size as original
@@ -49,15 +55,53 @@ namespace DiscordAstroBot.Utilities
         /// Crops the given image to the defined parameters
         /// </summary>
         /// <param name="b"></param>
-        /// <param name="r"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
         /// <returns></returns>
-        public static Bitmap CropImage(this Bitmap b, int x, int y, int width, int height)
+        public static Bitmap CropImage(Bitmap b, int x, int y, int width, int height)
         {
             var r = new Rectangle(x, y, width, height);
             Bitmap nb = new Bitmap(r.Width, r.Height);
             Graphics g = Graphics.FromImage(nb);
             g.DrawImage(b, -r.X, -r.Y);
             return nb;
+        }
+
+        /// <summary>
+        /// Adds a cross marker into the image at the given position
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="sizeInPixels"></param>
+        public static void AddCrossMarker(Bitmap image, int x, int y)
+        {
+            var g = Graphics.FromImage(image);
+            float lineSize = image.Size.Width*0.01f;
+            var pen = (new Pen(Color.GhostWhite, 0.75f));
+
+            // Horizontal line
+            g.DrawLine(pen,  x - (lineSize / 2), Convert.ToSingle(y), x + (lineSize / 2), Convert.ToSingle(y));
+
+            // Vertical line
+            g.DrawLine(pen, Convert.ToSingle(x), y - (lineSize / 2), Convert.ToSingle(x), y + (lineSize / 2));
+        }
+
+        /// <summary>
+        /// Adds a label at the given position
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public static void AddLabel(Bitmap image, int x, int y, string text)
+        {
+            var g = Graphics.FromImage(image);
+            var font = new Font(FontFamily.GenericSansSerif, 8);
+            var brush = new SolidBrush(Color.GhostWhite);
+
+            g.DrawString(text, font, brush, x, y);
         }
     }
 }

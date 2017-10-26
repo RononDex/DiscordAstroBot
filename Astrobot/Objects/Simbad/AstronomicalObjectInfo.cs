@@ -203,18 +203,21 @@ namespace DiscordAstroBot.Objects.Simbad
             var dec = result.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.ToLower().StartsWith("dec:")).Replace("DEC: ", "").Replace("\n", "").Replace("\r", "");
             var ra = result.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.ToLower().StartsWith("ra:")).Replace("RA: ", "").Replace("\n", "").Replace("\r", "");
 
-            return new RADECCoords() { DEC = dec, RA = ra };
+            if (string.IsNullOrEmpty(dec) || string.IsNullOrEmpty(ra) || dec.Contains("~") || ra.Contains("~"))
+                return null;
+
+            return new RADECCoords() { DEC = Convert.ToSingle(dec), RA = Convert.ToSingle(ra) };
         }
 
         /// <summary>
         /// Right-ascension angle
         /// </summary>
-        public string RA { get; set; }
+        public float RA { get; set; }
 
         /// <summary>
         /// Declenation angle
         /// </summary>
-        public string DEC { get; set; }
+        public float DEC { get; set; }
 
         public override string ToString()
         {

@@ -26,10 +26,10 @@ namespace DiscordAstroBot.Helpers
         /// <param name="mimetype">mime type of image to downlaod, default: download-gif</param>
         /// <param name="catalogue">the catalogue to query, default: DSS2</param>
         /// <returns></returns>
-        public static byte[] GetImage(string ra, string dec, string size = "60", string mimetype = "download-gif", string catalogue = "DSS2")
+        public static byte[] GetImage(float ra, float dec, string size = "60", string mimetype = "download-gif", string catalogue = "DSS2")
         {
             var client = new WebClient();
-            var data   = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra)}&dec={HttpUtility.UrlEncode(dec)}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey={HttpUtility.UrlEncode(catalogue)}&equinox=J2000&statsmode=VO");
+            var data   = client.DownloadData($"{ServiceURL}?ra={HttpUtility.UrlEncode(ra.ToString())}&dec={HttpUtility.UrlEncode(dec.ToString())}&x={HttpUtility.UrlEncode(size)}&y={HttpUtility.UrlEncode(size)}&mime-type={HttpUtility.UrlEncode(mimetype)}&Sky-Survey={HttpUtility.UrlEncode(catalogue)}&equinox=J2000&statsmode=VO");
 
             using (var stream = new MemoryStream(data))
             {

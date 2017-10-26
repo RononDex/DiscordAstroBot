@@ -29,7 +29,7 @@ namespace DiscordAstroBot.Mappers.Simbad {
 set row limit 1
 format object f1 ""[[Main_id]]\n%IDLIST(1)\n"" +
 ""[[ObjectType]]\n%OTYPE(V)\n"" +
-""[[Coordinates]]\nRA: %COO(A)\nDEC: %COO(D)\n"" +
+""[[Coordinates]]\nRA: %COO(d;A)\nDEC: %COO(d;D)\n"" +
 ""[[Identifiers]]\n%IDLIST[%-20*\n]\n""+
 ""[[OtherTypes]]\n%OTYPELIST(V\n)\n""+
 ""[[ProperMotion]]\nRA: %PM(A)\nDEC: %PM(D)\n"" +
@@ -61,7 +61,7 @@ query id {0}")]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"format object f1 ""[[Main_id]]\n%IDLIST(1)\n"" +
 ""[[ObjectType]]\n%OTYPE(V)\n"" +
-""[[Coordinates]]\nRA: %COO(A)\nDEC: %COO(D)\n"" +
+""[[Coordinates]]\nRA: %COO(d;A)\nDEC: %COO(d;D)\n"" +
 ""[[Identifiers]]\n%IDLIST[%-20*\n]\n""+
 ""[[OtherTypes]]\n%OTYPELIST(V\n)\n""+
 ""[[ProperMotion]]\nRA: %PM(A)\nDEC: %PM(D)\n"" +
@@ -71,8 +71,7 @@ query id {0}")]
 ""[[Fluxes]]\n%FLUXLIST()[%*(N=F)\n]\n"" +
 ""[[end]]""
 
-set radius {0}d
-query coo {1}")]
+query sample ra > {RALowerLimit} & ra < {RAUpperLimit} & dec < {DECUpperLimit} & dec > {DECLowerLimit} & maintype != 'star'")]
         public string RegionQuery {
             get {
                 return ((string)(this["RegionQuery"]));

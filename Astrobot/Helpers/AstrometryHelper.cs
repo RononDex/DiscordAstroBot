@@ -16,6 +16,11 @@ namespace DiscordAstroBot.Helpers
     /// </summary>
     public static class AstrometryHelper
     {
+        /// <summary>
+        /// Logs into the Astrometry API using a private token, gets a sessionID in return
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static string LoginIntoAstrometry(string token)
         {
             Log<DiscordAstroBot>.InfoFormat("Login into Astrometry...");
@@ -53,6 +58,16 @@ namespace DiscordAstroBot.Helpers
             return jsonResult.session;
         }
 
+        /// <summary>
+        /// Upload a file for plate solving
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="file"></param>
+        /// <param name="fileName"></param>
+        /// <param name="paramName"></param>
+        /// <param name="contentType"></param>
+        /// <param name="nvc"></param>
+        /// <returns></returns>
         public static string HttpUploadFile(string url, Stream file, string fileName, string paramName, string contentType, NameValueCollection nvc)
         {
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
@@ -118,6 +133,13 @@ namespace DiscordAstroBot.Helpers
             return null;
         }
 
+        /// <summary>
+        /// Uploads a file from an url
+        /// </summary>
+        /// <param name="fileUrl"></param>
+        /// <param name="fileName"></param>
+        /// <param name="sessionID"></param>
+        /// <returns></returns>
         public static string UploadFile(string fileUrl, string fileName, string sessionID)
         {
             Log<DiscordAstroBot>.InfoFormat("Submitting a file to astrometry (SessionID: {0}, File: {1})", sessionID, fileUrl);
@@ -143,6 +165,11 @@ namespace DiscordAstroBot.Helpers
             return jsonResult.subid;
         }
 
+        /// <summary>
+        /// Gets the plate solving status for a given submission
+        /// </summary>
+        /// <param name="submissionID"></param>
+        /// <returns></returns>
         public static AstrometrySubmissionStatus GetSubmissionStatus(string submissionID)
         {
             Log<DiscordAstroBot>.InfoFormat("Getting submission status from astrometry for submission {0}", submissionID);
@@ -179,6 +206,11 @@ namespace DiscordAstroBot.Helpers
             return status;
         }
 
+        /// <summary>
+        /// Gets determined calibration data from a finished plate solving job
+        /// </summary>
+        /// <param name="jobID"></param>
+        /// <returns></returns>
         public static AstrometrySubmissionResult GetCalibrationFromFinishedJob(string jobID)
         {
             Log<DiscordAstroBot>.InfoFormat("Getting job result from astrometry for job {0}", jobID);
@@ -220,12 +252,22 @@ namespace DiscordAstroBot.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Gets the annoted image that belogns to the finished plate solving job
+        /// </summary>
+        /// <param name="jobID"></param>
+        /// <returns></returns>
         public static MemoryStream DownlaodAnnotatedImage(string jobID)
         {
             var wc = new WebClient();
             return new MemoryStream(wc.DownloadData(GetAnnotatedImageURL(jobID)));
         }
 
+        /// <summary>
+        /// Gets the Url to the annoted image
+        /// </summary>
+        /// <param name="jobID"></param>
+        /// <returns></returns>
         public static string GetAnnotatedImageURL(string jobID)
         {
             return string.Format("http://nova.astrometry.net/annotated_display/{0}", jobID);
