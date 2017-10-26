@@ -44,5 +44,20 @@ namespace DiscordAstroBot.Utilities
             g.Dispose();
             return newBitmap;
         }
+
+        /// <summary>
+        /// Crops the given image to the defined parameters
+        /// </summary>
+        /// <param name="b"></param>
+        /// <param name="r"></param>
+        /// <returns></returns>
+        public static Bitmap CropImage(this Bitmap b, int x, int y, int width, int height)
+        {
+            var r = new Rectangle(x, y, width, height);
+            Bitmap nb = new Bitmap(r.Width, r.Height);
+            Graphics g = Graphics.FromImage(nb);
+            g.DrawImage(b, -r.X, -r.Y);
+            return nb;
+        }
     }
 }

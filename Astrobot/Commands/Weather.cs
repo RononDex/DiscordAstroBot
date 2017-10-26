@@ -16,9 +16,9 @@ namespace DiscordAstroBot.Commands
     public class Weather : Command
     {
         public override string[] CommandSynonyms => new string[] {
-            @"(whats|what's|show\sme|how is|hows|how's|what is) the (weather|forcast) (like )?(in|for) (?'SearchLocation'.*\w)(\?)?",
-            @"(weather|forcast) (in|for) (?'SearchLocation'.*\w)(\?)?",
-            @"clearoutside (?'SearchLocationCL'.*\w)(\?)?"
+            @"(whats|what's|show\sme|how is|hows|how's|what is) the (weather|forcast) (like )?(in|for) (?'SearchLocationCL'.*\w)(\?)?",
+            @"(weather|forcast) (in|for) (?'SearchLocationCL'.*\w)(\?)?",
+            @"meteoblue (?'SearchLocation'.*\w)(\?)?"
         };
 
         public override string CommandName => "Weather";

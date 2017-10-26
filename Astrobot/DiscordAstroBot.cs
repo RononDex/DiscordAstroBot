@@ -132,14 +132,14 @@ namespace DiscordAstroBot
 
                     if (msg != null)
                     {
-                        Log<DiscordAstroBot>.Warn($"DELETED MESSAGE: The following message was deleted in channel {channel.Name} on server {channel.Guild.Name}:\r\n```\\nAuthor:{arg1.Value.Author.Username}\r\n{arg1.Value.Content}```");
+                        Log<DiscordAstroBot>.Warn($"DELETED MESSAGE: The following message was deleted in channel {channel.Name} on server {channel.Guild.Name}:\r\nAuthor:{arg1.Value.Author.Username}\r\n{arg1.Value.Content}");
 
                         // Find admin channel and if exists post warning there
                         var channels = await channel.Guild.GetChannelsAsync(CacheMode.CacheOnly);
                         var adminChannel = channels.FirstOrDefault(x => x.Name == "admin-chat");
                         if (adminChannel != null)
                         {
-                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"WARNING: Following message was deleted in channel {channel.Name}:\r\n```\r\nAuthor: {arg1.Value.Author.Username}\r\n{arg1.Value.Content}");
+                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"*WARNING*: Following message was deleted in channel {channel.Name}:\r\n```\r\nAuthor: {arg1.Value.Author.Username}\r\n{arg1.Value.Content}```");
                         }
                     }
                     else
@@ -151,7 +151,7 @@ namespace DiscordAstroBot
                         var adminChannel = channels.FirstOrDefault(x => x.Name == "admin-chat");
                         if (adminChannel != null)
                         {
-                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"WARNING: Deleted message in channel {channel.Name}");
+                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"*WARNING*: Deleted message in channel {channel.Name}");
                         }
                     }
                 });

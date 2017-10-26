@@ -3,12 +3,15 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using DiscordAstroBot.Utilities;
 
 namespace DiscordAstroBot.Helpers
 {
@@ -42,6 +45,30 @@ namespace DiscordAstroBot.Helpers
                 Screenshot ss                = driver.GetScreenshot();
                 string screenshot            = ss.AsBase64EncodedString;
                 byte[] screenshotAsByteArray = ss.AsByteArray;
+
+                // Crop the iamge
+                using (var stream = new MemoryStream(screenshotAsByteArray))
+                {
+                    var image = new Bitmap(stream);
+
+                    // Set bounds for the crop
+                    var croppedImage = ImageUtility.CropImage(image, 165, 265, 1170, 1575);
+
+                    // Convert image back to byte array
+                    var stream2 = new MemoryStream();
+                    croppedImage.Save(stream2, ImageFormat.Jpeg);
+                    stream2.Position = 0;
+                    byte[] buffer = new byte[16 * 1024];
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        int read;
+                        while ((read = stream2.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            ms.Write(buffer, 0, read);
+                        }
+                        screenshotAsByteArray = ms.ToArray();
+                    }
+                }
 
                 return new WeatherForcast()
                 {
@@ -78,6 +105,30 @@ namespace DiscordAstroBot.Helpers
                 Screenshot ss                = driver.GetScreenshot();
                 string screenshot            = ss.AsBase64EncodedString;
                 byte[] screenshotAsByteArray = ss.AsByteArray;
+
+                // Crop the iamge
+                using (var stream = new MemoryStream(screenshotAsByteArray))
+                {
+                    var image = new Bitmap(stream);
+
+                    // Set bounds for the crop
+                    var croppedImage = ImageUtility.CropImage(image, 295, 475, 1085, 2085);
+
+                    // Convert image back to byte array
+                    var stream2 = new MemoryStream();
+                    croppedImage.Save(stream2, ImageFormat.Jpeg);
+                    stream2.Position = 0;
+                    byte[] buffer = new byte[16 * 1024];
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        int read;
+                        while ((read = stream2.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            ms.Write(buffer, 0, read);
+                        }
+                        screenshotAsByteArray = ms.ToArray();
+                    }
+                }
 
                 return new WeatherForcast()
                 {
