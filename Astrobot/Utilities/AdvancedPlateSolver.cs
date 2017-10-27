@@ -85,7 +85,7 @@ namespace DiscordAstroBot.Utilities
         /// <param name="objects"></param>
         private static void ExportObjectsRADECCoordsToFile(List<AstronomicalObjectInfo> objects, string file)
         {
-            var csvFile = objects.Aggregate(string.Empty, (current, obj) => current + $"{obj.Coordinates.RA};{obj.Coordinates.DEC}\r\n");
+            var csvFile = objects.Aggregate(string.Empty, (current, obj) => current + $"{obj.Name};{obj.Coordinates.RA};{obj.Coordinates.DEC}\r\n");
             File.WriteAllText(file, csvFile);
         }
 

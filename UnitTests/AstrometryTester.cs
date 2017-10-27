@@ -31,7 +31,13 @@ namespace UnitTests
             if (result.State == AstrometrySubmissionState.JOB_FINISHED)
             {
                 var jobId = result.JobID.Value;
+
                 var calibData = AstrometryHelper.GetCalibrationFromFinishedJob(jobId.ToString());
+
+                // Mark stuff in the image
+                var img = new Bitmap("TestData/Astrometry/3882132.jpg");
+
+                DiscordAstroBot.Utilities.AdvancedPlateSolver.MarkObjectsOnImage(img, calibData);                
 
                 var objInImage = DiscordAstroBot.Mappers.Simbad.SimbadQuery.QueryAround(new RADECCoords()
                 {
@@ -39,8 +45,7 @@ namespace UnitTests
                     DEC = calibData.CalibrationData.DEC
                 }, calibData.CalibrationData.Radius * 1.5f);
 
-                // Mark stuff in the image
-                var img = new Bitmap("TestData/Astrometry/3882132.jpg");
+                
 
                 var angle = 360 - calibData.CalibrationData.Orientation;
                 var centerPoint = new PointF(img.Width / 2f, img.Height / 2f);
