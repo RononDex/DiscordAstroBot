@@ -65,7 +65,7 @@ namespace DiscordAstroBot.Utilities
             var r = new Rectangle(x, y, width, height);
             Bitmap nb = new Bitmap(r.Width, r.Height);
             Graphics g = Graphics.FromImage(nb);
-            g.DrawImage(b, -r.X, -r.Y);
+            g.DrawImage(b, 0, 0, r, GraphicsUnit.Pixel);
             return nb;
         }
 

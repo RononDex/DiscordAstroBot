@@ -188,7 +188,6 @@ namespace DiscordAstroBot
         /// <param name="e"></param>
         private void ExecuteTimerJobs(object sender, ElapsedEventArgs e)
         {
-
             foreach (var job in TimerJobs)
             {
                 // If the job has to be executed, execute it on all enabled servers
