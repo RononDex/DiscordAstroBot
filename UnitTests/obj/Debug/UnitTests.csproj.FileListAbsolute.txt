@@ -70,3 +70,5 @@ C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.csproj
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.pdb
 C:\Users\het\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\config\TimerJobExecutions.xml
+C:\Users\het\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\TestData\Astrometry\hx3KCaG.jpg
+C:\Users\het\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\TestData\Astrometry\w76hvjz.png

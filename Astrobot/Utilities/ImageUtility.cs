@@ -63,6 +63,7 @@ namespace DiscordAstroBot.Utilities
         public static Bitmap CropImage(Bitmap b, int x, int y, int width, int height)
         {
             var r = new Rectangle(x, y, width, height);
+            return b.Clone(r, b.PixelFormat);
             Bitmap nb = new Bitmap(r.Width, r.Height);
             Graphics g = Graphics.FromImage(nb);
             g.DrawImage(b, 0, 0, r, GraphicsUnit.Pixel);

@@ -217,6 +217,7 @@
     </Compile>
     <Compile Include="TimerJobs\LaunchNews.cs" />
     <Compile Include="TimerJobs\TimerJobBase.cs" />
+    <Compile Include="Utilities\AdvancedPlateSolver.cs" />
     <Compile Include="Utilities\CommandsUtility.cs" />
     <Compile Include="Utilities\DiscordUtility.cs" />
     <Compile Include="Utilities\ImageUtility.cs" />

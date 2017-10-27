@@ -237,6 +237,7 @@ namespace DiscordAstroBot.Helpers
             calibrationData.Radius      = Convert.ToSingle(jsonResult.calibration.radius);
 
             result.CalibrationData = calibrationData;
+            result.JobID = jobID;
 
             result.FileName = jsonResult.original_filename;
             
@@ -264,6 +265,17 @@ namespace DiscordAstroBot.Helpers
         }
 
         /// <summary>
+        /// Gets the WCS.fit file for transforming the coordinates of RA/DEC to x,y of the 2D-image
+        /// </summary>
+        /// <param name="jobID"></param>
+        /// <returns></returns>
+        public static MemoryStream DownloadWCSFitsFile(string jobID)
+        {
+            var wc = new WebClient();
+            return new MemoryStream(wc.DownloadData($"http://nova.astrometry.net/wcs_file/{jobID}"));
+        }
+
+        /// <summary>
         /// Gets the Url to the annoted image
         /// </summary>
         /// <param name="jobID"></param>
@@ -285,6 +297,8 @@ namespace DiscordAstroBot.Helpers
         public string FileName { get; set; }
 
         public List<string> ObjectsInfField { get; set; } = new List<string>();
+
+        public string JobID { get; set; }
     }
 
 

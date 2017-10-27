@@ -36,6 +36,7 @@ namespace DiscordAstroBot
             Log<DiscordAstroBot>.InfoFormat(" - ChatPrefix:               {0}", ConfigurationManager.AppSettings["ChatPrefix"]);
             Log<DiscordAstroBot>.InfoFormat(" - WhiteListEnabled:         {0}", ConfigurationManager.AppSettings["WhiteListEnabled"]);
             Log<DiscordAstroBot>.InfoFormat(" - OwnerName:                {0}", ConfigurationManager.AppSettings["OwnerName"]);
+            Log<DiscordAstroBot>.InfoFormat(" - AstropyWCSConverterPath:  {0}", ConfigurationManager.AppSettings["AstropyWCSConverterPath"]);
 
             if (!File.Exists(ConfigurationManager.AppSettings["TokenFilePath"]))
             {
