@@ -35,7 +35,7 @@ namespace DiscordAstroBot.Utilities
 
             // Find the logging channel on the server
             var channels = await server.GetChannelsAsync(Discord.CacheMode.CacheOnly);
-            var logChannel = channels.Where(x => x.Name == Mappers.Config.ServerConfig.Config.Servers.First(y => y.ServerID == server.Id).Configs.FirstOrDefault(y => y.Key == "BotLogChannel").Value) as Discord.ITextChannel;
+            var logChannel = channels.FirstOrDefault(x => x.Name == Mappers.Config.ServerConfig.Config.Servers.First(y => y.ServerID == server.Id).Configs.FirstOrDefault(y => y.Key == "BotLogChannel").Value) as Discord.ITextChannel;
 
             if (logChannel == null)
                 return;

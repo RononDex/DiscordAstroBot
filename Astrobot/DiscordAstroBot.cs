@@ -14,6 +14,7 @@ using DiscordAstroBot.Helpers;
 using DiscordAstroBot.Objects.Config;
 using System.Timers;
 using WhiteList = DiscordAstroBot.Mappers.Config.WhiteList;
+using DiscordAstroBot.Utilities;
 
 namespace DiscordAstroBot
 {
@@ -106,8 +107,39 @@ namespace DiscordAstroBot
             DiscordClient.UserJoined += DiscordClient_UserJoined;
             DiscordClient.JoinedGuild += DiscordClient_JoinedServer;
             DiscordClient.MessageDeleted += DiscordClient_MessageDeleted;
+            DiscordClient.UserLeft += DiscordClient_UserLeft;
+            DiscordClient.UserBanned += DiscordClient_UserBanned;
 
             Log<DiscordAstroBot>.InfoFormat("Login successfull");
+        }
+
+        /// <summary>
+        /// When a user gets banned
+        /// </summary>
+        /// <param name="arg1"></param>
+        /// <param name="arg2"></param>
+        /// <returns></returns>
+        private Task DiscordClient_UserBanned(SocketUser arg1, SocketGuild arg2)
+        {
+            Log<DiscordAstroBot>.Info($"User {arg1.Username} got banned on server {arg2.Name})");
+
+            DiscordUtility.LogToDiscord($"User {arg1.Username} got **banned** from the server!", arg2);
+
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// When a user leaves a server
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        private Task DiscordClient_UserLeft(SocketGuildUser arg)
+        {
+            Log<DiscordAstroBot>.Info($"User {arg.Username} left on server {arg.Guild.Name})");
+
+            DiscordUtility.LogToDiscord($"Oh no! User {arg.Username} **left** the server!\r\nHe / She was on the server since {arg.JoinedAt}", arg.Guild);
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
