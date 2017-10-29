@@ -13,7 +13,7 @@ namespace DiscordAstroBot.Utilities
 {
     /// <summary>
     /// AdvancePlateSolver that marks more custom objects on a plate solved image, using
-    /// SIMBAD to get the objects and WCS coordinate transformations from astrophy to 
+    /// SIMBAD to get the objects and WCS coordinate transformations from astropy to 
     /// map the objects onto the image
     /// </summary>
     public static class AdvancedPlateSolver

@@ -34,6 +34,7 @@ namespace DiscordAstroBot.Mappers.Config
             new CommandConfigServerCommand() {CommandName = "Version", Enabled = true},
             new CommandConfigServerCommand() {CommandName = "Weather", Enabled = true},
             new CommandConfigServerCommand() {CommandName = "DSS", Enabled = true},
+            new CommandConfigServerCommand() {CommandName = "UserCommands", Enabled = true},
         };
 
         /// <summary>

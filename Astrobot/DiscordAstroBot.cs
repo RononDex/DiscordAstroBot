@@ -192,6 +192,7 @@ namespace DiscordAstroBot
             Log<DiscordAstroBot>.InfoFormat("Registering TimerJobs...");
 
             TimerJobs.Add(new TimerJobs.LaunchNews());
+            TimerJobs.Add(new TimerJobs.IntermediateLaunchNotify());
 
             foreach (var job in TimerJobs)
             {
@@ -498,6 +499,7 @@ namespace DiscordAstroBot
             Commands.Add(new Commands.Simbad());
             Commands.Add(new Commands.Version());
             Commands.Add(new Commands.DSSCommand());
+            Commands.Add(new Commands.UserCommands());
             Commands.Add(new Commands.Help());
             Commands.Add(new Commands.TestCommand());
 
