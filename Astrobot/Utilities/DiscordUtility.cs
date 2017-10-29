@@ -21,5 +21,26 @@ namespace DiscordAstroBot.Utilities
 
             return user;
         }
+
+        /// <summary>
+        /// Logs a message into discord channel
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="server"></param>
+        public static async void LogToDiscord(string message, Discord.IGuild server)
+        {
+            // Check if discord logging is enabled for the server
+            if (string.IsNullOrEmpty(Mappers.Config.ServerConfig.Config.Servers.First(x => x.ServerID == server.Id).Configs.FirstOrDefault(x => x.Key == "BotLogChannel").Value))
+                return;
+
+            // Find the logging channel on the server
+            var channels = await server.GetChannelsAsync(Discord.CacheMode.CacheOnly);
+            var logChannel = channels.Where(x => x.Name == Mappers.Config.ServerConfig.Config.Servers.First(y => y.ServerID == server.Id).Configs.FirstOrDefault(y => y.Key == "BotLogChannel").Value) as Discord.ITextChannel;
+
+            if (logChannel == null)
+                return;
+
+            await logChannel.SendMessageAsync(message);
+        }
     }
 }

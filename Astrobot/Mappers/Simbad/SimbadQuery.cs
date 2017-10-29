@@ -68,7 +68,7 @@ namespace DiscordAstroBot.Mappers.Simbad
 
             var splitted = text.Split(new [] { "[[end]]" }, StringSplitOptions.RemoveEmptyEntries);
 
-            return splitted.Select(entry => new SimbadResult(entry)).ToList();
+            return splitted.Select(entry => new SimbadResult(entry + "\n[[end]]\n")).ToList();
         }
     }
 }

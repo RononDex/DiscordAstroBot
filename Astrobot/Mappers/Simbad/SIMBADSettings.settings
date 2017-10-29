@@ -15,7 +15,8 @@ format object f1 "[[Main_id]]\n%IDLIST(1)\n" +
 "[[RadialVelocity]]\nz: %RV(Z)\nError: %RV(E)\nv: %RV(V)\n" +
 "[[Distances]]\n%MEASLIST(distance)\n" +
 "[[Fluxes]]\n%FLUXLIST()[%*(N=F)\n]\n" +
-"[[end]]"
+"[[Dimensions]]\n%DIM(X Y A)\n\n" +
+"[[end]]\n"
 query id {0}</Value>
     </Setting>
     <Setting Name="IdentifierNotFoundMessage" Type="System.String" Scope="User">
@@ -32,9 +33,10 @@ query id {0}</Value>
 "[[RadialVelocity]]\nz: %RV(Z)\nError: %RV(E)\nv: %RV(V)\n" +
 "[[Distances]]\n%MEASLIST(distance)\n" +
 "[[Fluxes]]\n%FLUXLIST()[%*(N=F)\n]\n" +
-"[[end]]"
+"[[Dimensions]]\n%DIM(X Y A)\n\n" +
+"[[end]]\n"
 
-query sample ra &gt; {RALowerLimit} &amp; ra &lt; {RAUpperLimit} &amp; dec &lt; {DECUpperLimit} &amp; dec &gt; {DECLowerLimit} &amp; maintype != 'star'</Value>
+query sample ra &gt; {RALowerLimit} &amp; ra &lt; {RAUpperLimit} &amp; dec &lt; {DECUpperLimit} &amp; dec &gt; {DECLowerLimit} &amp; (maintype != 'star' | cat = "HD" | cat = "NAME")</Value>
     </Setting>
   </Settings>
 </SettingsFile>

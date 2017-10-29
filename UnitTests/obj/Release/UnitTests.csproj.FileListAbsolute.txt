@@ -35,3 +35,6 @@ C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.cspr
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.csproj.CoreCompileInputs.cache
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.pdb
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\TimerJobExecutions.xml
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\TestData\Astrometry\hx3KCaG.jpg
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\TestData\Astrometry\w76hvjz.png

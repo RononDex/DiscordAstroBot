@@ -2,4 +2,6 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/DiscordAstroBot/v15/Server/sqlite3
+/.vs/
+/Astrobot/bin/
+/Astrobot/obj/

@@ -45,9 +45,21 @@ namespace DiscordAstroBot.Utilities
                  Path.Combine(
                     new[] {
                         ConfigurationManager.AppSettings["AstropyWCSConverterPath"],
-                        "wcs.fit"
+                        "wcs.fits"
                     }));
-            
+
+            // Run the Python script to transform the coordinates
+            TransformRADECToXYCoords();
+
+            // Read output CSV from the python script
+            var transformedObjects = LoadTransformedObjets(Path.Combine(new[] {
+                        ConfigurationManager.AppSettings["AstropyWCSConverterPath"],
+                        "WCS_Transform_Output.csv"
+                    }), objects);
+
+            // Mark the objects on the image
+            MarkObjectsOnImage(plateSolvedImage, transformedObjects, astrometryResult.CalibrationData);
+
             return plateSolvedImage;
         }
 
@@ -97,10 +109,97 @@ namespace DiscordAstroBot.Utilities
         private static void DownloadAndSaveWCSFitFile(AstrometrySubmissionResult plateSolveResult, string targetFile)
         {
             // Get the file from the server
-            var memoryStream = AstrometryHelper.DownloadWCSFitsFile(plateSolveResult.JobID);
-
-            // Save to file to disk
-            memoryStream.WriteTo(File.Create(targetFile));
+            using (var memoryStream = AstrometryHelper.DownloadWCSFitsFile(plateSolveResult.JobID))
+            {
+                using (var fs = File.Create(targetFile))
+                {
+                    // Save to file to disk
+                    memoryStream.WriteTo(fs);
+                }
+            }
         }
+
+        /// <summary>
+        /// Call the python script to transform the coordinates
+        /// </summary>
+        private static void TransformRADECToXYCoords()
+        {
+            var process = new System.Diagnostics.Process()
+            {
+                StartInfo = new System.Diagnostics.ProcessStartInfo()
+                {
+                    WorkingDirectory = ConfigurationManager.AppSettings["AstropyWCSConverterPath"],
+                    FileName = "cmd",
+                    Arguments = "/c python " + Path.Combine(new[] { ConfigurationManager.AppSettings["AstropyWCSConverterPath"], "AstropyWCSConverter.py" }),
+                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                    CreateNoWindow = false,
+                },
+            };
+
+            process.Start();
+            process.WaitForExit();
+        }
+
+        /// <summary>
+        /// Load the transformed coordinates from the generated CSV file
+        /// </summary>
+        /// <returns></returns>
+        private static List<MappedAstroObject> LoadTransformedObjets(string file, List<AstronomicalObjectInfo> objects)
+        {
+            var fileText = File.OpenText(file);
+            var res = new List<MappedAstroObject>();
+
+            while (!fileText.EndOfStream)
+            {
+                var line = fileText.ReadLine();
+                var columns = line.Split(new[] { ';' });
+                res.Add(new MappedAstroObject()
+                {
+                    AstroObject = objects.FirstOrDefault(x => x.Name.Trim() == columns[0].Trim()),
+                    X = Convert.ToSingle(columns[3]),
+                    Y = Convert.ToSingle(columns[4])
+                });
+            }
+
+            return res;
+        }
+
+        /// <summary>
+        /// Marks the given objects on the image
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="objects"></param>
+        private static void MarkObjectsOnImage(Bitmap image, List<MappedAstroObject> objects, AstrometrySubmissionCalibrationData calibrationData)
+        {
+            foreach (var obj in objects.Where(x => x.AstroObject != null))
+            {
+                // If the object has known dimensions, add a ellipse around its
+                if (obj.AstroObject.AngularDimension != null)
+                {
+                    ImageUtility.AddEllipse(
+                        image,
+                        obj.X,
+                        obj.Y,
+                        obj.AstroObject.AngularDimension.XSize / (calibrationData.PixScale / 60),
+                        obj.AstroObject.AngularDimension.YSize / (calibrationData.PixScale / 60),
+                        +calibrationData.Orientation - obj.AstroObject.AngularDimension.Rotation);
+                }
+                // Per default mark objects with a crosshair + label
+                else
+                {
+                    ImageUtility.AddCrossMarker(image, Convert.ToInt32(obj.X), Convert.ToInt32(obj.Y));
+                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + 0.0015 * image.Width), Convert.ToInt32(obj.Y + 0.0015 * image.Height), 8, false, obj.AstroObject.Name);
+                }
+            }
+        }
+    }
+
+    public class MappedAstroObject
+    {
+        public float X { get; set; }
+
+        public float Y { get; set; }
+
+        public AstronomicalObjectInfo AstroObject { get; set; }
     }
 }

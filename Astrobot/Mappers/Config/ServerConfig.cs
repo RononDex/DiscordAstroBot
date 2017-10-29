@@ -26,7 +26,8 @@ namespace DiscordAstroBot.Mappers.Config
             new ServerSettingsServerConfig() { Key = "HailNewUsers", Value = "false" },
             new ServerSettingsServerConfig() { Key = "AdvancedPlateSolve", Value = "false" },
             new ServerSettingsServerConfig() { Key = "BotLaunchNewsEnabled", Value = "false" },
-            new ServerSettingsServerConfig() { Key = "BotNewsChannel", Value = "" }
+            new ServerSettingsServerConfig() { Key = "BotNewsChannel", Value = "" },
+            new ServerSettingsServerConfig() { Key = "BotLogChannel", Value = "" }
         };
 
         /// <summary>

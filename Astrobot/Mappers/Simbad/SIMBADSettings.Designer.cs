@@ -12,7 +12,7 @@ namespace DiscordAstroBot.Mappers.Simbad {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
     internal sealed partial class SIMBADSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static SIMBADSettings defaultInstance = ((SIMBADSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new SIMBADSettings())));
@@ -37,7 +37,8 @@ format object f1 ""[[Main_id]]\n%IDLIST(1)\n"" +
 ""[[RadialVelocity]]\nz: %RV(Z)\nError: %RV(E)\nv: %RV(V)\n"" +
 ""[[Distances]]\n%MEASLIST(distance)\n"" +
 ""[[Fluxes]]\n%FLUXLIST()[%*(N=F)\n]\n"" +
-""[[end]]""
+""[[Dimensions]]\n%DIM(X Y A)\n\n"" +
+""[[end]]\n""
 query id {0}")]
         public string ObjectQuery {
             get {
@@ -69,9 +70,10 @@ query id {0}")]
 ""[[RadialVelocity]]\nz: %RV(Z)\nError: %RV(E)\nv: %RV(V)\n"" +
 ""[[Distances]]\n%MEASLIST(distance)\n"" +
 ""[[Fluxes]]\n%FLUXLIST()[%*(N=F)\n]\n"" +
-""[[end]]""
+""[[Dimensions]]\n%DIM(X Y A)\n\n"" +
+""[[end]]\n""
 
-query sample ra > {RALowerLimit} & ra < {RAUpperLimit} & dec < {DECUpperLimit} & dec > {DECLowerLimit} & maintype != 'star'")]
+query sample ra > {RALowerLimit} & ra < {RAUpperLimit} & dec < {DECUpperLimit} & dec > {DECLowerLimit} & (maintype != 'star' | cat = ""HD"" | cat = ""NAME"")")]
         public string RegionQuery {
             get {
                 return ((string)(this["RegionQuery"]));

@@ -306,6 +306,10 @@ namespace DiscordAstroBot.Helpers
     {
         public float Parity { get; set; }
         public float Orientation { get; set; }
+
+        /// <summary>
+        /// The scale of the image in arcseconds / pixel
+        /// </summary>
         public float PixScale { get; set; }
         public float Radius { get; set; }
         public float RA { get; set; }

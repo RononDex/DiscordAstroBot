@@ -22,7 +22,7 @@ namespace DiscordAstroBot.Objects.Simbad
         {
             var obj = new AstronomicalObjectInfo();
             if (result.Sections.ContainsKey("Main_id"))
-                obj.Name = result.Sections["Main_id"];
+                obj.Name = result.Sections["Main_id"].Replace("\n", "").Replace("\r", "");
             if (result.Sections.ContainsKey("ObjectType"))
                 obj.ObjectType = result.Sections["ObjectType"];
             if (result.Sections.ContainsKey("Coordinates"))
@@ -57,6 +57,9 @@ namespace DiscordAstroBot.Objects.Simbad
                     obj.DistanceMeasurements.Add(DistanceMeasurement.FromSimbadString(line));
                 }
             }
+
+            if (result.Sections.ContainsKey("Dimensions"))
+                obj.AngularDimension = ObjectDimensions.FromSimbadString(result.Sections["Dimensions"]);
 
             if (result.Sections.ContainsKey("Fluxes"))
             {
@@ -121,6 +124,11 @@ namespace DiscordAstroBot.Objects.Simbad
         /// THe known magnitudes for this object
         /// </summary>
         public List<Magnitude> Magntiudes { get; set; } = new List<Magnitude>();
+
+        /// <summary>
+        /// The angular dimension of the object if known
+        /// </summary>
+        public ObjectDimensions AngularDimension { get; set; }
     }
 
     /// <summary>
@@ -190,6 +198,50 @@ namespace DiscordAstroBot.Objects.Simbad
                 error = $"    Error: {ErrPlus} {ErrMinus}";
 
             return $"{Distance} {Unit}{error}{method}";
+        }
+    }
+
+    /// <summary>
+    /// Describes the angular dimensions of an object (limited to mag25 dimension)
+    /// </summary>
+    public class ObjectDimensions
+    {
+        /// <summary>
+        /// Size in X axis in arcminutes
+        /// </summary>
+        public float XSize { get; set; }
+
+        /// <summary>
+        /// Size in Y axis in arcminutes
+        /// </summary>
+        public float YSize { get; set; }
+
+        /// <summary>
+        /// The rotation of the object in degrees (0-180°)
+        /// </summary>
+        public float Rotation { get; set; }
+
+        /// <summary>
+        /// Gets a ObjectDimensions object from a serialized SIMBAD string
+        /// </summary>
+        /// <param name="simbadValue"></param>
+        /// <returns></returns>
+        public static ObjectDimensions FromSimbadString(string simbadValue)
+        {
+            var segments = simbadValue.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (segments == null || segments.Length < 3)
+                return null;
+
+            if (segments[0] == "~")
+                return null;
+
+            var result = new ObjectDimensions();
+            result.XSize = Convert.ToSingle(segments[0]);
+            result.YSize = Convert.ToSingle(segments[1]);
+            result.Rotation = Convert.ToSingle(segments[2]);
+
+            return result;
         }
     }
 

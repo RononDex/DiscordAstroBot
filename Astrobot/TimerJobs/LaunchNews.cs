@@ -50,11 +50,11 @@ namespace DiscordAstroBot.TimerJobs
                         foreach (var launch in launches)
                         {
                             var message = "```python\r\n";
-                            message += $"Mission-Name:      {launch.Name}\r\n";
-                            message += $"Launch window:     {launch.WindowStart} - {launch.WindowEnd}\r\n";
-                            message += $"Rocket:            {launch.Rocket.Name}\r\n";
-                            message += $"Launch-Location:   {launch.Location.Name} - Pad: {launch.Location.LaunchPads.FirstOrDefault()}\r\n";
-                            message += $"Wath live here:    {(!string.IsNullOrEmpty(launch.VidURL) ? launch.VidURL : launch.VidURLs.FirstOrDefault())}\r\n";
+                            message += $"Mission-Name:          {launch.Name}\r\n";
+                            message += $"Launch window (UTC):   {launch.WindowStart} - {launch.WindowEnd}\r\n";
+                            message += $"Rocket:                {launch.Rocket.Name}\r\n";
+                            message += $"Launch-Location:       {launch.Location.Name} - Pad: {launch.Location.LaunchPads.FirstOrDefault()}\r\n";
+                            message += $"Wath live here:        {(!string.IsNullOrEmpty(launch.VidURL) ? launch.VidURL : launch.VidURLs.FirstOrDefault())}\r\n";
                             message += $"Description:\r\n{string.Join("\r\n - ", launch.Missions.Select(x => x.Description))}\r\n";
                             message += $"/*-----------------------------------------------------------------*/\r\n```";
                             await (channel as ISocketMessageChannel).SendMessageAsync(message);

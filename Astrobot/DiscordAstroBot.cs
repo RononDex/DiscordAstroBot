@@ -130,29 +130,20 @@ namespace DiscordAstroBot
                         msg = await arg2.GetMessageAsync(arg1.Id);
                     }
 
+                    // If the message is not cached by the bot, there is no way to recover it
                     if (msg != null)
                     {
                         Log<DiscordAstroBot>.Warn($"DELETED MESSAGE: The following message was deleted in channel {channel.Name} on server {channel.Guild.Name}:\r\nAuthor:{arg1.Value.Author.Username}\r\n{arg1.Value.Content}");
 
-                        // Find admin channel and if exists post warning there
-                        var channels = await channel.Guild.GetChannelsAsync(CacheMode.CacheOnly);
-                        var adminChannel = channels.FirstOrDefault(x => x.Name == "admin-chat");
-                        if (adminChannel != null)
-                        {
-                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"__**WARNING:**__: Following message was deleted in channel {channel.Name}:\r\n```\r\nAuthor: {arg1.Value.Author.Username}\r\n{arg1.Value.Content}```");
-                        }
+                        // Log message into discord
+                        Utilities.DiscordUtility.LogToDiscord($"__**WARNING:**__: Following message was deleted in channel {channel.Name}:\r\n```\r\nAuthor: {arg1.Value.Author.Username}\r\n{arg1.Value.Content}```", channel.Guild);
                     }
                     else
                     {
                         Log<DiscordAstroBot>.Warn($"DELETED MESSAGE in channel {channel.Name} on server {channel.Guild.Name}");
 
-                        // Find admin channel and if exists post warning there
-                        var channels = await channel.Guild.GetChannelsAsync(CacheMode.CacheOnly);
-                        var adminChannel = channels.FirstOrDefault(x => x.Name == "admin-chat");
-                        if (adminChannel != null)
-                        {
-                            await (adminChannel as ISocketMessageChannel).SendMessageAsync($"__**WARNING:**__: Deleted message in channel {channel.Name}");
-                        }
+                        // Log message into discord
+                        Utilities.DiscordUtility.LogToDiscord($"__**WARNING:**__: Deleted message in channel {channel.Name}", channel.Guild);
                     }
                 });
             }
