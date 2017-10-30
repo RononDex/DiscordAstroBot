@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +25,11 @@ namespace DiscordAstroBot.Commands
             "give me(( the)? role)? (?'GiveRoleName'.*)",
             "remove(( the)? role)?(from me)? (?'RemoveRoleName'.*)"
         };
+
+        /// <summary>
+        /// The description of this command, that is displayed when the help command is used
+        /// </summary>
+        public override string Description => $"User specific commands. Can assign custom roles to users.\r\nUsage:\r\n```    @Astro Bot give me <role>\r\n    @Astro Bot remove <role>\r\n```";
 
         /// <summary>
         /// Event when message was recieved
