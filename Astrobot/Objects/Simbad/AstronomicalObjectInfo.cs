@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -239,7 +239,9 @@ namespace DiscordAstroBot.Objects.Simbad
             var result = new ObjectDimensions();
             result.XSize = Convert.ToSingle(segments[0]);
             result.YSize = Convert.ToSingle(segments[1]);
-            result.Rotation = Convert.ToSingle(segments[2]);
+
+            if (!segments[2].StartsWith("~"))
+                result.Rotation = Convert.ToSingle(segments[2]);
 
             return result;
         }
