@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using DiscordAstroBot.Helpers;
 using DiscordAstroBot.Mappers.Simbad;
 using System;
@@ -22,10 +22,11 @@ namespace DiscordAstroBot.Commands
             @"how bright is (?'MagAstroObject'.*\w)(\?)?",
             @"what is the distance of (?'DistAstroObject'.*\w)(\?)?",
             @"how far (away )?is (?'DistAstroObject'\w*)( away)?( from earth| from us)?(\')?",
-            @"what is (?'AstroObject'.*\w)(\?)?"
+            @"what is (?'AstroObject'.*\w)(\?)?",
+            @"how big is (?'SizeAstroObject'.*\w)(\?)?"
         };
 
-        public override string Description => "Access data from SIMBAD. Usage: \r\n```    @Astro Bot What is M31\r\n    @Astro Bot How far away is M31```";
+        public override string Description => "Access data from SIMBAD. Usage: \r\n```    @Astro Bot What is M31\r\n    @Astro Bot How far away is M31\r\n    @Astro Bot how big is M31\r\n```";
 
         public override async Task<bool> MessageRecieved(Match matchedMessage, SocketMessage recievedMessage)
         {
@@ -43,11 +44,17 @@ namespace DiscordAstroBot.Commands
                 }
 
                 var obj = AstronomicalObjectInfo.FromSimbadResult(info);
+
+                var angularDistanceText = obj.AngularDimension != null
+                    ? $"{obj.AngularDimension.XSize}arcmin x {obj.AngularDimension.YSize}arcmin, rotated at {obj.AngularDimension.Rotation}°"
+                    : string.Empty;
+
                 await recievedMessage.Channel.SendMessageAsync($"This is what I found in the SIMBAD database:\r\n" +
                                     $"```\r\n" +
                                     $"Main Identifier: {obj.Name}\r\n" +
                                     $"MainType: {obj.ObjectType}\r\n" +
                                     $"Coordinates:\r\n{obj.Coordinates}\r\n\r\n" +
+                                    $"Angular Dimensions: {angularDistanceText}" +
                                     $"Magntidues:\r\n{string.Join("\r\n", obj.Magntiudes)}\r\n\r\n" +
                                     $"Distance: \r\n{string.Join("\r\n", obj.DistanceMeasurements)}\r\n\r\n" +
                                     $"Radial velocity:\r\n{obj.RadialVelocity}\r\n\r\n" +
@@ -104,6 +111,27 @@ namespace DiscordAstroBot.Commands
                 }
 
                 await recievedMessage.Channel.SendMessageAsync($"The object {matchedMessage.Groups["DistAstroObject"].Value} is approximatly `{obj.DistanceMeasurements[0].Distance} {obj.DistanceMeasurements[0].Unit} ± {obj.DistanceMeasurements[0].ErrPlus.Replace("+", "")}` away from earth.");
+            }
+
+            // What's the angular size of an object?
+            if (matchedMessage.Groups["SizeAstroObject"].Success)
+            {
+                var info = SimbadQuery.GetAstronomicalObjectInfo(matchedMessage.Groups["SizeAstroObject"].Value);
+
+                if (info == null)
+                {
+                    await recievedMessage.Channel.SendMessageAsync($"Could not find any object matching your search \"{matchedMessage.Groups["DistAstroObject"].Value}\" in the SIMBAD database");
+                    return true;
+                }
+
+                var obj = AstronomicalObjectInfo.FromSimbadResult(info);
+                if (obj.AngularDimension == null)
+                {
+                    await recievedMessage.Channel.SendMessageAsync($"The object {matchedMessage.Groups["SizeAstroObject"].Value} was found in the database, but no angular size measurements were found");
+                    return true;
+                }
+
+                await recievedMessage.Channel.SendMessageAsync($"The object {matchedMessage.Groups["SizeAstroObject"].Value} has an angular size of:\r\n```\r\n{obj.AngularDimension.XSize}arcmin x {obj.AngularDimension.YSize}arcmin\r\nat an angle of {obj.AngularDimension.Rotation}°\r\n```");
             }
 
             return true;
