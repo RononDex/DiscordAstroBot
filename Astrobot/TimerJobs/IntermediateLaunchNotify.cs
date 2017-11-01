@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
+using System.Runtime.Caching;
 
 namespace DiscordAstroBot.TimerJobs
 {
@@ -48,9 +49,10 @@ namespace DiscordAstroBot.TimerJobs
 
                     if (intermediateLaunches.Any())
                     {
-                        foreach (var item in intermediateLaunches)
+                        foreach (var item in intermediateLaunches.Where(x => !MemoryCache.Default.Any(y => y.Key == x.Name) ))
                         {
                             await (channel as ITextChannel).SendMessageAsync($"{role.Mention} upcoming launch within 1hour:\r\n**Name:** {item.Name}\r\nLivestream: {(!string.IsNullOrEmpty(item.VidURL) ? item.VidURL : item.VidURLs.FirstOrDefault())}");
+                            MemoryCache.Default.Add(new CacheItem(item.Name), new CacheItemPolicy() { AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(15) });
                         }
                     }
                 }
