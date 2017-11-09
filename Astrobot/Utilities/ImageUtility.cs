@@ -76,11 +76,11 @@ namespace DiscordAstroBot.Utilities
         public static void AddCrossMarker(Bitmap image, int x, int y)
         {
             var g = Graphics.FromImage(image);
-            float lineSize = image.Size.Width*0.01f;
+            float lineSize = image.Size.Width * 0.01f;
             var pen = (new Pen(Color.GhostWhite, 0.75f));
 
             // Horizontal line
-            g.DrawLine(pen,  x - (lineSize / 2), Convert.ToSingle(y), x + (lineSize / 2), Convert.ToSingle(y));
+            g.DrawLine(pen, x - (lineSize / 2), Convert.ToSingle(y), x + (lineSize / 2), Convert.ToSingle(y));
 
             // Vertical line
             g.DrawLine(pen, Convert.ToSingle(x), y - (lineSize / 2), Convert.ToSingle(x), y + (lineSize / 2));
@@ -95,7 +95,7 @@ namespace DiscordAstroBot.Utilities
         public static void AddLabel(Bitmap image, int x, int y, float fontSize, bool bold, string text)
         {
             var g = Graphics.FromImage(image);
-            var font = new Font(FontFamily.GenericSansSerif, 8);
+            var font = new Font(FontFamily.GenericSansSerif, fontSize, bold ? FontStyle.Bold : FontStyle.Regular);
             var brush = new SolidBrush(Color.GhostWhite);
 
             g.DrawString(text, font, brush, x, y);

@@ -3,8 +3,12 @@ C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\Command
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\MadUsers.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\ServerSettings.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\ServerWhiteList.xml
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\TimerJobExecutions.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\phantomjs-license.txt
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\TestData\Astrometry\3882132.jpg
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\TestData\Astrometry\hx3KCaG.jpg
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\TestData\Astrometry\PREVIEW_20171018-23h03m51s627ms.jpg
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\TestData\Astrometry\w76hvjz.png
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\UnitTests.dll.config
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\UnitTests.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\UnitTests.pdb
@@ -35,6 +39,3 @@ C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.cspr
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.csproj.CoreCompileInputs.cache
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.pdb
-C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\TimerJobExecutions.xml
-C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\TestData\Astrometry\hx3KCaG.jpg
-C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\TestData\Astrometry\w76hvjz.png

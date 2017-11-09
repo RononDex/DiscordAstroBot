@@ -176,13 +176,17 @@ namespace DiscordAstroBot.Utilities
                 // If the object has known dimensions, add a ellipse around its
                 if (obj.AstroObject.AngularDimension != null)
                 {
+                    var radius = new[] { obj.AstroObject.AngularDimension.XSize / (calibrationData.PixScale / 60), obj.AstroObject.AngularDimension.YSize / (calibrationData.PixScale / 60) }.Max();
+
                     ImageUtility.AddEllipse(
                         image,
                         obj.X,
                         obj.Y,
-                        obj.AstroObject.AngularDimension.XSize / (calibrationData.PixScale / 60),
-                        obj.AstroObject.AngularDimension.YSize / (calibrationData.PixScale / 60),
-                        +calibrationData.Orientation - obj.AstroObject.AngularDimension.Rotation);
+                        radius,
+                        radius,
+                        +calibrationData.Orientation - obj.AstroObject.AngularDimension.Rotation);                    
+
+                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + radius - 0.6 * radius), Convert.ToInt32(obj.Y + radius - 0.6 * radius), 14, true, obj.AstroObject.Name);
                 }
                 // Per default mark objects with a crosshair + label
                 else

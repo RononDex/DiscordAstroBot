@@ -196,7 +196,7 @@ namespace DiscordAstroBot
 
             foreach (var job in TimerJobs)
             {
-                Log<DiscordAstroBot>.InfoFormat($"TimerJob registered \"{0}\", Next execution: {job.NextExecutionTime}", job.Name);
+                Log<DiscordAstroBot>.InfoFormat($"TimerJob registered \"{0}\", Next execution: {job?.NextExecutionTime}", job.Name);
             }
 
             // Start the timer that will check periodically if a job has to be executed
@@ -306,7 +306,7 @@ namespace DiscordAstroBot
             // Send a welcome message in the default channel
             if (Mappers.Config.ServerConfig.Config.Servers.Single(x => x.ServerID == user.Guild.Id).Configs.Any(x => x.Key == "HailNewUsers" && bool.Parse(x.Value)))
             {
-                var rulesChannel = user.Guild.Channels.FirstOrDefault(x => x.Name != null && x.Name.ToLower() == "rules");
+                var rulesChannel = user.Guild.Channels.FirstOrDefault(x => x.Name != null && x.Name.ToLower().Contains("rules"));
                 if (rulesChannel != null)
                 {
                     user.Guild.DefaultChannel.SendMessageAsync($"A new user joined! Say hi to {user.Mention}\r\nMake sure to check out the {((ITextChannel)rulesChannel).Mention} channel!");
