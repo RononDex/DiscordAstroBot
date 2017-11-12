@@ -214,22 +214,29 @@ namespace DiscordAstroBot
         {
             foreach (var job in TimerJobs)
             {
-                // If the job has to be executed, execute it on all enabled servers
-                if (job.NextExecutionTime < DateTime.Now)
+                try
                 {
-                    foreach (var server in this.DiscordClient.Guilds)
+                    // If the job has to be executed, execute it on all enabled servers
+                    if (job.NextExecutionTime < DateTime.Now)
                     {
-                        try
+                        foreach (var server in this.DiscordClient.Guilds)
                         {
-                            Log<DiscordAstroBot>.Info($"Executing TimerJob {job.Name} on server {server.Name}");
-                            job.Execute(server);
-                            job.LastExecutionTime = DateTime.Now;
-                        }
-                        catch (Exception ex)
-                        {
-                            Log<DiscordAstroBot>.Error($"Error while executing timer job {job.Name}: {ex.Message}");
+                            try
+                            {
+                                Log<DiscordAstroBot>.Info($"Executing TimerJob {job.Name} on server {server.Name}");
+                                job.Execute(server);
+                                job.LastExecutionTime = DateTime.Now;
+                            }
+                            catch (Exception ex)
+                            {
+                                Log<DiscordAstroBot>.Error($"Error while executing timer job {job.Name}: {ex.Message}");
+                            }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Log<DiscordAstroBot>.Error($"Error executing TimerJob {job.Name}: {ex.Message}");
                 }
             }
         }

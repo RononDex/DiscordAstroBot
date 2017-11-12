@@ -50,7 +50,7 @@ namespace DiscordAstroBot.TimerJobs
                     // Search for intermediate launches
                     var upcomingLaunches = Mappers.LaunchLibrary.LaunchLibraryAPIHelper.GetNextLaunches();
 
-                    var intermediateLaunches = upcomingLaunches.Where(x => x.WindowStart < DateTime.Now.AddHours(1).AddMinutes(2) && x.WindowStart > DateTime.Now.AddHours(1));
+                    var intermediateLaunches = upcomingLaunches.Where(x => x.WindowStart < DateTime.Now.AddHours(1) && x.WindowStart > DateTime.Now);
 
                     if (intermediateLaunches.Any())
                     {
@@ -59,6 +59,10 @@ namespace DiscordAstroBot.TimerJobs
                             await (channel as ITextChannel).SendMessageAsync($"{role.Mention} upcoming launch within 1hour:\r\n**Name:** {item.Name}\r\nLivestream: {(!string.IsNullOrEmpty(item.VidURL) ? item.VidURL : item.VidURLs.FirstOrDefault())}");
                             NotifiedLaunches.Add(item.Name);
                         }
+                    }
+                    else
+                    {
+                        NotifiedLaunches.Clear();
                     }
                 }
             }
