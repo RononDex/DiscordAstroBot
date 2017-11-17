@@ -21,7 +21,7 @@ namespace DiscordAstroBot.TimerJobs
         /// <summary>
         /// Determines when this task has to be executed the next time
         /// </summary>
-        public override DateTime NextExecutionTime => LastExecutionTime == null ? DateTime.Today : LastExecutionTime.Value.Date.AddMinutes(5);
+        public override DateTime NextExecutionTime => LastExecutionTime == null ? DateTime.Today : LastExecutionTime.Value.AddMinutes(5);
 
         /// <summary>
         /// Cache so the bot knows which launches haven been notified already
@@ -36,13 +36,25 @@ namespace DiscordAstroBot.TimerJobs
         {
             try
             {
+                var serverCfg = Mappers.Config.ServerConfig.Config.Servers.First(x => x.ServerID == guild.Id);
+
                 // First check if intermediate launches are even enabled / configured on this server
-                var channelName = Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == guild.Id).Configs.FirstOrDefault(x => x.Key == "BotNewsChannel").Value;
+                var channelName = serverCfg?.Configs.FirstOrDefault(x => x.Key == "BotNewsChannel").Value;
+
+                //  If invalid config, channelName will be empty
+                if (string.IsNullOrEmpty(channelName))
+                {
+                    Log<DiscordAstroBot>.Warn($"Invalid BotNewsChannel Config found on server {guild.Name}");
+                    return;
+                }
+
+                // Load the channel on the discord server
                 var channels = await guild.GetChannelsAsync(CacheMode.CacheOnly);
                 var channel = channels.FirstOrDefault(x => !string.IsNullOrEmpty(x.Name) && x.Name.ToLower() == channelName.ToLower());
 
-                var roleName = Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == guild.Id).Configs.FirstOrDefault(x => x.Key == "IntermediateLaunchTagRole").Value;
-                var role = guild.Roles.FirstOrDefault(x => x.Name.ToLower() == roleName.ToLower());
+                // Find the role to notify
+                var roleName = serverCfg?.Configs.FirstOrDefault(x => x.Key == "IntermediateLaunchTagRole").Value;
+                var role = guild.Roles.FirstOrDefault(x => !string.IsNullOrEmpty(x.Name) && x.Name.ToLower() == roleName.ToLower());
 
                 if (!string.IsNullOrEmpty(channelName) && channel != null
                     && !string.IsNullOrEmpty(roleName) && role != null)
