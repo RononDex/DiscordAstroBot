@@ -196,7 +196,7 @@ namespace DiscordAstroBot
 
             foreach (var job in TimerJobs)
             {
-                Log<DiscordAstroBot>.InfoFormat($"TimerJob registered \"{0}\", Next execution: {job?.NextExecutionTime}", job.Name);
+                Log<DiscordAstroBot>.InfoFormat($"TimerJob registered \"{job.Name}\", Next execution: {job?.NextExecutionTime}");
             }
 
             // Start the timer that will check periodically if a job has to be executed
