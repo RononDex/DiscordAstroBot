@@ -26,7 +26,7 @@ namespace DiscordAstroBot.TimerJobs
         /// <summary>
         /// Cache so the bot knows which launches haven been notified already
         /// </summary>
-        public static List<string> NotifiedLaunches { get ; set;}
+        public static List<string> NotifiedLaunches { get; set; } = new List<string>();
 
         /// <summary>
         /// Executes the timer job

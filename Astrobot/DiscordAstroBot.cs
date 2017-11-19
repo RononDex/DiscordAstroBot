@@ -335,7 +335,7 @@ namespace DiscordAstroBot
         private Task DiscordClient_UserUpdated(SocketGuildUser beforeUser, SocketGuildUser afterUser)
         {
             // If astrobots best friend comes online (another bot) hail it
-            if (afterUser.Username.ToLower().Contains("eta") && afterUser.IsBot)
+            if (!string.IsNullOrEmpty(afterUser.Username) && afterUser.Username.ToLower().Contains("eta") && afterUser.IsBot)
             {
                 if (beforeUser.Status != UserStatus.Online && afterUser.Status == UserStatus.Online)
                 {
