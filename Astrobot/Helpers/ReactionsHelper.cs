@@ -28,7 +28,7 @@ namespace DiscordAstroBot.Helpers
                 foreach (var key in reaction.Key)
                 {
                     var regexTester = new Regex(key, RegexOptions.IgnoreCase);
-                    if (regexTester.IsMatch(message))
+                    if (regexTester.IsMatch(message.Trim()))
                     {
                         // Select one answer by random
                         var random = new Random();
