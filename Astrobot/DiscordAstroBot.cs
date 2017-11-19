@@ -411,7 +411,7 @@ namespace DiscordAstroBot
                         Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", recievedMessage.Content);
 
                         // Search for synonyms usind regex                       
-                        var message = recievedMessage.Content.Replace(ChatPrefix, "").Replace(DiscordClient.CurrentUser.Mention.Replace("!", ""), "").Trim();
+                        var message = recievedMessage.Content.Replace(ChatPrefix, "").Replace(DiscordClient.CurrentUser.Mention.Replace("!", ""), "").Replace(DiscordClient.CurrentUser.Mention, "").Trim();
                         Task.Run(() =>
                         {
                             // Set threading culture for parsing floating numbers
