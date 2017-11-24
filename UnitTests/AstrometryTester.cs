@@ -18,7 +18,7 @@ namespace UnitTests
         public void PlateSolverTest()
         {
             var token = File.ReadAllText(@"C:\Users\tinoh\Desktop\astroToken.txt");
-
+            -
             // Login into Astrometry
             var sessionID = DiscordAstroBot.Helpers.AstrometryHelper.LoginIntoAstrometry(token);
             var submissionID = "1791271";
