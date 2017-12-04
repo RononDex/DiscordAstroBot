@@ -24,7 +24,7 @@ namespace DiscordAstroBot.Utilities
         /// <param name="plateSolvedImage"></param>
         /// <param name="astrometryResult"></param>
         /// <returns></returns>
-        public static Bitmap MarkObjectsOnImage(Bitmap plateSolvedImage,
+        public static PlateSolvedAndMarkedImage MarkObjectsOnImage(Bitmap plateSolvedImage,
             AstrometrySubmissionResult astrometryResult)
         {
             // First, lets find all the objects that are inside the picture
@@ -60,7 +60,7 @@ namespace DiscordAstroBot.Utilities
             // Mark the objects on the image
             MarkObjectsOnImage(plateSolvedImage, transformedObjects, astrometryResult.CalibrationData);
 
-            return plateSolvedImage;
+            return new PlateSolvedAndMarkedImage() { MappedObjectsInImage = transformedObjects, MarkedImage = plateSolvedImage };
         }
 
         /// <summary>
@@ -186,24 +186,49 @@ namespace DiscordAstroBot.Utilities
                         radius,
                         +calibrationData.Orientation - obj.AstroObject.AngularDimension.Rotation);                    
 
-                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + radius - 0.6 * radius), Convert.ToInt32(obj.Y + radius - 0.6 * radius), 14, true, obj.AstroObject.Name);
+                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + radius - 0.6 * radius), Convert.ToInt32(obj.Y + radius - 0.6 * radius), image.Width / 250, true, obj.AstroObject.Name);
                 }
                 // Per default mark objects with a crosshair + label
                 else
                 {
                     ImageUtility.AddCrossMarker(image, Convert.ToInt32(obj.X), Convert.ToInt32(obj.Y));
-                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + 0.0015 * image.Width), Convert.ToInt32(obj.Y + 0.0015 * image.Height), 8, false, obj.AstroObject.Name);
+                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + 0.0015 * image.Width), Convert.ToInt32(obj.Y + 0.0015 * image.Height), image.Width / 550, false, obj.AstroObject.Name);
                 }
             }
         }
     }
 
+    /// <summary>
+    /// Value object to describe a mapped object on the image
+    /// </summary>
     public class MappedAstroObject
     {
+        /// <summary>
+        /// The X position on the image
+        /// </summary>
         public float X { get; set; }
 
+        /// <summary>
+        /// The y position on the image
+        /// </summary>
         public float Y { get; set; }
 
+        /// <summary>
+        /// A reference to the astronomical object mapped to the coordinates on the image
+        /// </summary>
         public AstronomicalObjectInfo AstroObject { get; set; }
+    }
+
+    public class PlateSolvedAndMarkedImage
+    {
+        /// <summary>
+        /// A list of mapped object on the image including their x/y coordinates on the image
+        /// </summary>
+        public List<MappedAstroObject> MappedObjectsInImage { get; set; }
+
+        /// <summary>
+        /// Image with markings
+        /// </summary>
+        public Bitmap MarkedImage { get; set; }
     }
 }
