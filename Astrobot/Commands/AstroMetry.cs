@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Threading;
 using System.Text.RegularExpressions;
 using Discord.WebSocket;
+using System.Net;
 
 namespace DiscordAstroBot.Commands
 {
@@ -78,21 +79,45 @@ namespace DiscordAstroBot.Commands
                 var objectsInImage = string.Join(", ", calibrationData.ObjectsInfField);
                 var tags = string.Join(", ", calibrationData.Tags);
 
-                var builder = new EmbedBuilder();
-               
+                // Check if image size is under a certain threshold and AdvancedPlateSolve is enabled on the server, and if so, use the custom advanced platesolve marker
+                // For this purpose we use a threshold of 2 degrees
+                if (calibrationData.CalibrationData.Radius < 1
+                    && Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == ((SocketGuildChannel)recievedMessage.Channel).Guild.Id).Configs.Any(x => x.Key == "AdvancedPlateSolve" && Convert.ToBoolean(x.Value)))
+                {
+                    // Use the original image
+                    var image = new MemoryStream(new WebClient().DownloadData(recievedMessage.Attachments.First().Url));
 
-                await recievedMessage.Channel.SendMessageAsync(     $"```python\r\n" + 
-                                                                    $"RA:             {calibrationData.CalibrationData.RA}\r\n" + 
-                                                                    $"DEC:            {calibrationData.CalibrationData.DEC}\r\n" + 
-                                                                    $"Orientation:    up is {calibrationData.CalibrationData.Orientation} deg\r\n" + 
-                                                                    $"Radius:         {calibrationData.CalibrationData.Radius} deg\r\n" + 
-                                                                    $"PixelScale:     {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\n" + 
-                                                                    $"ObjectsInImage: {objectsInImage}\r\n" + 
-                                                                    $"Tags:           {tags}\r\n```");
+                    // Mark the stuff in the image
+                    var advancedImage = Utilities.AdvancedPlateSolver.MarkObjectsOnImage(new System.Drawing.Bitmap(image), calibrationData);
 
-                await recievedMessage.Channel.SendFileAsync(Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString()), $"annoated_{calibrationData.FileName}");
-                await recievedMessage.Channel.SendMessageAsync($"Link to astrometry job result: http://nova.astrometry.net/status/{submissionID}");
 
+                    await recievedMessage.Channel.SendMessageAsync($"```python\r\n" +
+                                                                        $"RA:             {calibrationData.CalibrationData.RA}\r\n" +
+                                                                        $"DEC:            {calibrationData.CalibrationData.DEC}\r\n" +
+                                                                        $"Orientation:    up is {calibrationData.CalibrationData.Orientation} deg\r\n" +
+                                                                        $"Radius:         {calibrationData.CalibrationData.Radius} deg\r\n" +
+                                                                        $"PixelScale:     {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\n" +
+                                                                        $"ObjectsInImage: {objectsInImage}\r\n```");
+                    var ms = new MemoryStream();
+                    advancedImage.MarkedImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    await recievedMessage.Channel.SendFileAsync(ms, $"annoated_{calibrationData.FileName}");
+                }
+                else
+                {
+                    var builder = new EmbedBuilder();
+
+
+                    await recievedMessage.Channel.SendMessageAsync($"```python\r\n" +
+                                                                        $"RA:             {calibrationData.CalibrationData.RA}\r\n" +
+                                                                        $"DEC:            {calibrationData.CalibrationData.DEC}\r\n" +
+                                                                        $"Orientation:    up is {calibrationData.CalibrationData.Orientation} deg\r\n" +
+                                                                        $"Radius:         {calibrationData.CalibrationData.Radius} deg\r\n" +
+                                                                        $"PixelScale:     {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\n" +
+                                                                        $"ObjectsInImage: {objectsInImage}\r\n```");
+
+                    await recievedMessage.Channel.SendFileAsync(Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString()), $"annoated_{calibrationData.FileName}");
+                    await recievedMessage.Channel.SendMessageAsync($"Link to astrometry job result: http://nova.astrometry.net/status/{submissionID}");
+                }
                 return true;
             }
             catch (Exception ex)
