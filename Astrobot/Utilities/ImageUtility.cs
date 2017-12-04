@@ -110,21 +110,12 @@ namespace DiscordAstroBot.Utilities
         /// <param name="sizeX"></param>
         /// <param name="sizeY"></param>
         /// <param name="rotation"></param>
-        public static void AddEllipse(Bitmap image, float x, float y, float sizeX, float sizeY, float rotation)
+        public static void AddEllipse(Bitmap image, float x, float y, float sizeX, float sizeY, float rotation, float thickness)
         {
             var g = Graphics.FromImage(image);
 
             var radius = new[] { sizeX, sizeY }.Max();
-            g.DrawEllipse(new Pen(Color.GhostWhite, 2.5f), x - radius / 2, y - radius / 2, radius, radius);
-
-            //var angleInRadians = Convert.ToSingle(Math.PI * (rotation / 180.0f));
-
-            //g.DrawClosedCurve(new Pen(Color.GhostWhite, 1.0f), new[] {
-            //    new PointF(x + (-Convert.ToSingle(Math.Cos(angleInRadians)) * sizeX), y + (Convert.ToSingle(Math.Sin(angleInRadians)) * sizeX)),
-            //    new PointF(x + (Convert.ToSingle(Math.Sin(angleInRadians)) * sizeY), y + (Convert.ToSingle(Math.Cos(angleInRadians)) * sizeY)),
-            //    new PointF(x + (Convert.ToSingle(Math.Cos(angleInRadians)) * sizeX), y + (-Convert.ToSingle(Math.Sin(angleInRadians)) * sizeX)),
-            //    new PointF(x + (Convert.ToSingle(-Math.Sin(angleInRadians)) * sizeY), y + (-Convert.ToSingle(Math.Cos(angleInRadians)) * sizeY)),
-            //}, 0.4f, System.Drawing.Drawing2D.FillMode.Alternate);
+            g.DrawEllipse(new Pen(Color.GhostWhite, thickness), x - radius / 2, y - radius / 2, radius, radius);
         }
     }
 }

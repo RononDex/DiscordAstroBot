@@ -184,15 +184,16 @@ namespace DiscordAstroBot.Utilities
                         obj.Y,
                         radius,
                         radius,
-                        +calibrationData.Orientation - obj.AstroObject.AngularDimension.Rotation);                    
+                        +calibrationData.Orientation - obj.AstroObject.AngularDimension.Rotation,
+                        image.Width / 1500);                    
 
-                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + radius - 0.6 * radius), Convert.ToInt32(obj.Y + radius - 0.6 * radius), image.Width / 250, true, obj.AstroObject.Name);
+                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + radius - 0.6 * radius), Convert.ToInt32(obj.Y + radius - 0.6 * radius), image.Width / 225, true, obj.AstroObject.Name);
                 }
                 // Per default mark objects with a crosshair + label
                 else
                 {
                     ImageUtility.AddCrossMarker(image, Convert.ToInt32(obj.X), Convert.ToInt32(obj.Y));
-                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + 0.0015 * image.Width), Convert.ToInt32(obj.Y + 0.0015 * image.Height), image.Width / 550, false, obj.AstroObject.Name);
+                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + 0.0015 * image.Width), Convert.ToInt32(obj.Y + 0.0015 * image.Height), image.Width / 500, false, obj.AstroObject.Name);
                 }
             }
         }
