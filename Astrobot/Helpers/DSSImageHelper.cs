@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using RestSharp.Extensions.MonoHttp;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Web;
 
 namespace DiscordAstroBot.Helpers
 {

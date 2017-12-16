@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SkiaSharp;
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Drawing;
@@ -73,17 +74,24 @@ namespace DiscordAstroBot.Utilities
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="sizeInPixels"></param>
-        public static void AddCrossMarker(Bitmap image, int x, int y)
+        public static void AddCrossMarker(SKBitmap image, int x, int y, float width)
         {
-            var g = Graphics.FromImage(image);
-            float lineSize = image.Size.Width * 0.01f;
-            var pen = (new Pen(Color.GhostWhite, 0.75f));
+            using (var canvas = new SKCanvas(image))
+            {
+                using (var paint = new SKPaint())
+                {
+                    paint.Style = SKPaintStyle.Stroke;
+                    paint.IsAntialias = true;
+                    paint.Color = SKColors.GhostWhite;
+                    paint.StrokeWidth = width;
+                    paint.StrokeCap = SKStrokeCap.Round;
 
-            // Horizontal line
-            g.DrawLine(pen, x - (lineSize / 2), Convert.ToSingle(y), x + (lineSize / 2), Convert.ToSingle(y));
+                    var lineSize = image.Width * 0.01f;
 
-            // Vertical line
-            g.DrawLine(pen, Convert.ToSingle(x), y - (lineSize / 2), Convert.ToSingle(x), y + (lineSize / 2));
+                    canvas.DrawLine(Convert.ToSingle(x - (lineSize / 2)), Convert.ToSingle(y), x + (lineSize / 2), Convert.ToSingle(y), paint);
+                    canvas.DrawLine(Convert.ToSingle(x), Convert.ToSingle(y - (lineSize / 2)), Convert.ToSingle(x), y + (lineSize / 2), paint);
+                }                
+            }
         }
 
         /// <summary>
@@ -92,13 +100,22 @@ namespace DiscordAstroBot.Utilities
         /// <param name="image"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public static void AddLabel(Bitmap image, int x, int y, float fontSize, bool bold, string text)
+        public static void AddLabel(SKBitmap image, int x, int y, float fontSize, bool bold, string text)
         {
-            var g = Graphics.FromImage(image);
-            var font = new Font(FontFamily.GenericSansSerif, fontSize, bold ? FontStyle.Bold : FontStyle.Regular);
-            var brush = new SolidBrush(Color.GhostWhite);
+            using (var canvas = new SKCanvas(image))
+            {
+                using (var paint = new SKPaint())
+                {
+                    paint.Style = SKPaintStyle.Fill;
+                    paint.IsAntialias = true;
+                    paint.Color = SKColors.GhostWhite;
+                    paint.TextAlign = SKTextAlign.Left;
+                    paint.TextSize = fontSize;
+                    paint.FakeBoldText = bold;
 
-            g.DrawString(text, font, brush, x, y);
+                    canvas.DrawText(text, x, y, paint);
+                }
+            }
         }
 
         /// <summary>
@@ -110,12 +127,21 @@ namespace DiscordAstroBot.Utilities
         /// <param name="sizeX"></param>
         /// <param name="sizeY"></param>
         /// <param name="rotation"></param>
-        public static void AddEllipse(Bitmap image, float x, float y, float sizeX, float sizeY, float rotation, float thickness)
+        public static void AddEllipse(SKBitmap image, float x, float y, float sizeX, float sizeY, float rotation, float thickness)
         {
-            var g = Graphics.FromImage(image);
+            using (var canvas = new SKCanvas(image))
+            {
+                using (var paint = new SKPaint())
+                {
+                    paint.Style = SKPaintStyle.Stroke;
+                    paint.IsAntialias = true;
+                    paint.Color = SKColors.GhostWhite;
+                    paint.StrokeWidth = thickness;
 
-            var radius = new[] { sizeX, sizeY }.Max();
-            g.DrawEllipse(new Pen(Color.GhostWhite, thickness), x - radius / 2, y - radius / 2, radius, radius);
+                    canvas.RotateDegrees(rotation, x, y);
+                    canvas.DrawOval(x, y, sizeX, sizeY, paint);
+                }
+            }
         }
     }
 }

@@ -7,13 +7,13 @@ using System.Threading;
 using DiscordAstroBot.Helpers;
 using DiscordAstroBot.Objects.Simbad;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SkiaSharp;
 
 namespace UnitTests
 {
     [TestClass]
     public class AstrometryTester
-    {
-
+    { 
         [TestMethod]
         public void PlateSolverTest()
         {
@@ -21,7 +21,7 @@ namespace UnitTests
             
             // Login into Astrometry
             var sessionID = DiscordAstroBot.Helpers.AstrometryHelper.LoginIntoAstrometry(token);
-            var submissionID = "1791271";
+            var submissionID = "1844860";
 
             // Wait for completion (around 60s)
             //Thread.Sleep(60 * 1000);
@@ -33,13 +33,19 @@ namespace UnitTests
                 var jobId = result.JobID.Value;
 
                 var calibData = AstrometryHelper.GetCalibrationFromFinishedJob(jobId.ToString());
+                using (var stream = new SKManagedStream(new FileStream(@"E:\Astro\2017-11-21_NGC891\edit1.jpg", FileMode.Open)))
+                using (var bitmap = SKBitmap.Decode(stream))
+                {
+                    var res = DiscordAstroBot.Utilities.AdvancedPlateSolver.MarkObjectsOnImage(bitmap, calibData);
+                    File.WriteAllBytes(@"C:\Users\tinoh\Desktop\test.csv", res.InfoCSV);
 
-                // Mark stuff in the image
-                var img = new Bitmap("TestData/Astrometry/w76hvjz.png");
+                    using (Stream s = File.OpenWrite(@"C:\Users\tinoh\Desktop\test.jpg"))
+                    {
+                        var d = SKImage.FromBitmap(bitmap).Encode(SKEncodedImageFormat.Jpeg, 80);
+                        d.SaveTo(s);
+                    }
 
-                DiscordAstroBot.Utilities.AdvancedPlateSolver.MarkObjectsOnImage(img, calibData);
-
-                img.Save(@"C:\Users\tinoh\Desktop\test.jpg", ImageFormat.Jpeg);
+                }
             }
         }
     }

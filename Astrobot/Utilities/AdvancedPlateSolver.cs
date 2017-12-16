@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DiscordAstroBot.Helpers;
 using DiscordAstroBot.Objects.Simbad;
+using SkiaSharp;
 
 namespace DiscordAstroBot.Utilities
 {
@@ -24,7 +25,7 @@ namespace DiscordAstroBot.Utilities
         /// <param name="plateSolvedImage"></param>
         /// <param name="astrometryResult"></param>
         /// <returns></returns>
-        public static PlateSolvedAndMarkedImage MarkObjectsOnImage(Bitmap plateSolvedImage,
+        public static PlateSolvedAndMarkedImage MarkObjectsOnImage(SKBitmap plateSolvedImage,
             AstrometrySubmissionResult astrometryResult)
         {
             // First, lets find all the objects that are inside the picture
@@ -60,7 +61,10 @@ namespace DiscordAstroBot.Utilities
             // Mark the objects on the image
             MarkObjectsOnImage(plateSolvedImage, transformedObjects, astrometryResult.CalibrationData);
 
-            return new PlateSolvedAndMarkedImage() { MappedObjectsInImage = transformedObjects, MarkedImage = plateSolvedImage };
+            // Get CSV for objects
+            var csv = CreateCSV(transformedObjects);
+
+            return new PlateSolvedAndMarkedImage() { MappedObjectsInImage = transformedObjects, MarkedImage = plateSolvedImage, InfoCSV = csv };
         }
 
         /// <summary>
@@ -74,7 +78,7 @@ namespace DiscordAstroBot.Utilities
             // Use Radius * 1.8 to make sure to catch every object even if its at the edge of a non-quadratic image
             var objects = Mappers.Simbad.SimbadQuery.QueryAround(
                 new RADECCoords() { DEC = calibrationData.DEC, RA = calibrationData.RA },
-                calibrationData.Radius * 1.8f);
+                calibrationData.Radius * 3.0f);
 
             var result = new List<AstronomicalObjectInfo>();
 
@@ -146,7 +150,7 @@ namespace DiscordAstroBot.Utilities
         /// <returns></returns>
         private static List<MappedAstroObject> LoadTransformedObjets(string file, List<AstronomicalObjectInfo> objects)
         {
-            var fileText = File.OpenText(file);
+            var fileText = new StreamReader(File.OpenRead(file));
             var res = new List<MappedAstroObject>();
 
             while (!fileText.EndOfStream)
@@ -161,6 +165,8 @@ namespace DiscordAstroBot.Utilities
                 });
             }
 
+            fileText.Dispose();
+
             return res;
         }
 
@@ -169,14 +175,14 @@ namespace DiscordAstroBot.Utilities
         /// </summary>
         /// <param name="image"></param>
         /// <param name="objects"></param>
-        private static void MarkObjectsOnImage(Bitmap image, List<MappedAstroObject> objects, AstrometrySubmissionCalibrationData calibrationData)
+        private static void MarkObjectsOnImage(SKBitmap image, List<MappedAstroObject> objects, AstrometrySubmissionCalibrationData calibrationData)
         {
             foreach (var obj in objects.Where(x => x.AstroObject != null))
             {
                 // If the object has known dimensions, add a ellipse around its
                 if (obj.AstroObject.AngularDimension != null)
                 {
-                    var radius = new[] { obj.AstroObject.AngularDimension.XSize / (calibrationData.PixScale / 60), obj.AstroObject.AngularDimension.YSize / (calibrationData.PixScale / 60) }.Max();
+                    var radius = new[] { obj.AstroObject.AngularDimension.XSize / (calibrationData.PixScale / 60), obj.AstroObject.AngularDimension.YSize / (calibrationData.PixScale / 60) }.Max() / 2;
 
                     ImageUtility.AddEllipse(
                         image,
@@ -185,17 +191,63 @@ namespace DiscordAstroBot.Utilities
                         radius,
                         radius,
                         +calibrationData.Orientation - obj.AstroObject.AngularDimension.Rotation,
-                        image.Width / 1500);                    
+                        image.Width / 1750);                    
 
-                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + radius - 0.6 * radius), Convert.ToInt32(obj.Y + radius - 0.6 * radius), image.Width / 225, true, obj.AstroObject.Name);
+                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + (Math.Sqrt(2) / 2 * radius * 1.2) + image.Width*0.0002f), Convert.ToInt32(obj.Y + (Math.Sqrt(2) / 2 * radius * 1.2) + image.Width * 0.0002f), 30 + (image.Width / 180), true, obj.AstroObject.Name);
                 }
                 // Per default mark objects with a crosshair + label
                 else
                 {
-                    ImageUtility.AddCrossMarker(image, Convert.ToInt32(obj.X), Convert.ToInt32(obj.Y));
-                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + 0.0015 * image.Width), Convert.ToInt32(obj.Y + 0.0015 * image.Height), image.Width / 500, false, obj.AstroObject.Name);
+                    var sizeSmallFont = 20 + (image.Width / 550);
+                    var sizeLargeFont = 30 + (image.Width / 100);
+                    var lineWidthSmall = 0.75f + (image.Width / 3000f);
+                    var lineWidthLarge = 1.25f + (image.Width / 1000f);
+
+                    var isSmall = true;
+                    if (obj.AstroObject.Name.StartsWith("HD"))
+                        isSmall = false;
+
+                    var bold = !isSmall;
+
+                    ImageUtility.AddCrossMarker(image, Convert.ToInt32(obj.X), Convert.ToInt32(obj.Y), isSmall ? lineWidthSmall : lineWidthLarge);
+                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + 0.0025 * image.Width), Convert.ToInt32(obj.Y + 0.0025 * image.Height), isSmall ? sizeSmallFont : sizeLargeFont, bold, obj.AstroObject.Name);
                 }
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="objects"></param>
+        /// <returns></returns>
+        private static byte[] CreateCSV(List<MappedAstroObject> objects)
+        {
+            var csvString = "Object;Type;Angular Size X [arcmin];Angular Size Y [arcmin];Distance;Distance Unit;Distance Error;Distance measurement method;Distance measurement reference;Redshift (z);Velocity [km/s];Error Velocity or z;RA;DEC;X;Y\r\n";
+
+            foreach (var obj in objects)
+            {
+                if (obj.AstroObject == null)
+                    continue;
+
+                csvString += $"{obj.AstroObject.Name};"+
+                             $"{obj.AstroObject.ObjectType};" +
+                             $"{obj.AstroObject.AngularDimension?.XSize};" +
+                             $"{obj.AstroObject.AngularDimension?.YSize};" +
+                             $"{obj.AstroObject.DistanceMeasurements.FirstOrDefault()?.Distance};" +
+                             $"{obj.AstroObject.DistanceMeasurements.FirstOrDefault()?.Unit};" +
+                             $"{obj.AstroObject.DistanceMeasurements.FirstOrDefault()?.ErrMinus};" +
+                             $"{obj.AstroObject.DistanceMeasurements.FirstOrDefault()?.Method};" +
+                             $"{obj.AstroObject.DistanceMeasurements.FirstOrDefault()?.Reference};" +
+                             $"{obj.AstroObject.RadialVelocity.Redshift};" +
+                             $"{obj.AstroObject.RadialVelocity.Velocity};" +
+                             $"{(!string.IsNullOrEmpty(obj.AstroObject.RadialVelocity.Velocity) ? obj.AstroObject.RadialVelocity.Error : string.Empty)};" +
+                             $"{obj.AstroObject.Coordinates.RA};" +
+                             $"{obj.AstroObject.Coordinates.DEC};" +
+                             $"{obj.X};" +
+                             $"{obj.Y}".Replace("\r", "").Replace("\n", "")  + "\r\n";
+            }
+
+            return Encoding.ASCII.GetBytes(csvString);
         }
     }
 
@@ -230,6 +282,11 @@ namespace DiscordAstroBot.Utilities
         /// <summary>
         /// Image with markings
         /// </summary>
-        public Bitmap MarkedImage { get; set; }
+        public SKBitmap MarkedImage { get; set; }
+
+        /// <summary>
+        /// CSV that contains all the objects with properties 
+        /// </summary>
+        public byte[] InfoCSV { get; set; }
     }
 }

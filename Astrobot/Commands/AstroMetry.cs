@@ -10,6 +10,7 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using Discord.WebSocket;
 using System.Net;
+using SkiaSharp;
 
 namespace DiscordAstroBot.Commands
 {
@@ -79,6 +80,14 @@ namespace DiscordAstroBot.Commands
                 var objectsInImage = string.Join(", ", calibrationData.ObjectsInfField);
                 var tags = string.Join(", ", calibrationData.Tags);
 
+                var msg =   $"```python\r\n" +
+                            $"RA:             {calibrationData.CalibrationData.RA}\r\n" +
+                            $"DEC:            {calibrationData.CalibrationData.DEC}\r\n" +
+                            $"Orientation:    up is {calibrationData.CalibrationData.Orientation} deg\r\n" +
+                            $"Radius:         {calibrationData.CalibrationData.Radius} deg\r\n" +
+                            $"PixelScale:     {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\n" +
+                            $"ObjectsInImage: {objectsInImage}\r\n```";
+
                 // Check if image size is under a certain threshold and AdvancedPlateSolve is enabled on the server, and if so, use the custom advanced platesolve marker
                 // For this purpose we use a threshold of 2 degrees
                 if (calibrationData.CalibrationData.Radius < 1
@@ -88,32 +97,24 @@ namespace DiscordAstroBot.Commands
                     var image = new MemoryStream(new WebClient().DownloadData(recievedMessage.Attachments.First().Url));
 
                     // Mark the stuff in the image
-                    var advancedImage = Utilities.AdvancedPlateSolver.MarkObjectsOnImage(new System.Drawing.Bitmap(image), calibrationData);
+                    var advancedImage = Utilities.AdvancedPlateSolver.MarkObjectsOnImage(SKBitmap.Decode(image), calibrationData);
 
+                    await recievedMessage.Channel.SendMessageAsync(msg);
 
-                    await recievedMessage.Channel.SendMessageAsync($"```python\r\n" +
-                                                                        $"RA:             {calibrationData.CalibrationData.RA}\r\n" +
-                                                                        $"DEC:            {calibrationData.CalibrationData.DEC}\r\n" +
-                                                                        $"Orientation:    up is {calibrationData.CalibrationData.Orientation} deg\r\n" +
-                                                                        $"Radius:         {calibrationData.CalibrationData.Radius} deg\r\n" +
-                                                                        $"PixelScale:     {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\n" +
-                                                                        $"ObjectsInImage: {objectsInImage}\r\n```");
+                    // Load the image into a memorystream
                     var ms = new MemoryStream();
-                    advancedImage.MarkedImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+
+                    SKData d = SKImage.FromBitmap(advancedImage.MarkedImage).Encode(SKEncodedImageFormat.Jpeg, 80);
+                    d.SaveTo(ms);
+
+                    ms.Seek(0, SeekOrigin.Begin);  // Reset the memory stream to position 0
                     await recievedMessage.Channel.SendFileAsync(ms, $"annoated_{calibrationData.FileName}");
+                    await recievedMessage.Channel.SendFileAsync(new MemoryStream(advancedImage.InfoCSV), $"Objects_{calibrationData.FileName}.csv");
+                    ms.Dispose();
                 }
                 else
                 {
-                    var builder = new EmbedBuilder();
-
-
-                    await recievedMessage.Channel.SendMessageAsync($"```python\r\n" +
-                                                                        $"RA:             {calibrationData.CalibrationData.RA}\r\n" +
-                                                                        $"DEC:            {calibrationData.CalibrationData.DEC}\r\n" +
-                                                                        $"Orientation:    up is {calibrationData.CalibrationData.Orientation} deg\r\n" +
-                                                                        $"Radius:         {calibrationData.CalibrationData.Radius} deg\r\n" +
-                                                                        $"PixelScale:     {calibrationData.CalibrationData.PixScale} arcsec/pixel\r\n" +
-                                                                        $"ObjectsInImage: {objectsInImage}\r\n```");
+                    await recievedMessage.Channel.SendMessageAsync(msg);
 
                     await recievedMessage.Channel.SendFileAsync(Helpers.AstrometryHelper.DownlaodAnnotatedImage(jobId.ToString()), $"annoated_{calibrationData.FileName}");
                     await recievedMessage.Channel.SendMessageAsync($"Link to astrometry job result: http://nova.astrometry.net/status/{submissionID}");

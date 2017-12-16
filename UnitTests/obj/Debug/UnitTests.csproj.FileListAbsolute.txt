@@ -55,10 +55,8 @@ C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\Discord.Net.WebS
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\Discord.Net.Core.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\Discord.Net.Rest.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\log4net.dll
-C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\WebDriver.Support.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\WebDriver.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\Newtonsoft.Json.dll
-C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\RestSharp.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\System.Collections.Immutable.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\System.Interactive.Async.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\DiscordAstroBot.pdb
@@ -67,11 +65,8 @@ C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\Discord.Net.WebS
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\Discord.Net.Core.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\Discord.Net.Rest.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\log4net.xml
-C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\WebDriver.Support.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\WebDriver.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\Newtonsoft.Json.xml
-C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\RestSharp.xml
-C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\System.Collections.Immutable.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\System.Interactive.Async.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.csprojResolveAssemblyReference.cache
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.csproj.CoreCompileInputs.cache
@@ -117,3 +112,12 @@ C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.csprojRe
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.dll
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.pdb
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\config\SocialMediaAccounts.xml
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\config\SocialMediaAccounts.xml
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\SkiaSharp.dll.config
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\libSkiaSharp.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\libSkiaSharp.dylib
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\x86\libSkiaSharp.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\x64\libSkiaSharp.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\SkiaSharp.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\SkiaSharp.Extended.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\SkiaSharp.xml

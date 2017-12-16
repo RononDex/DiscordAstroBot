@@ -50,19 +50,19 @@ namespace DiscordAstroBot.Commands
                     : string.Empty;
 
                 await recievedMessage.Channel.SendMessageAsync($"This is what I found in the SIMBAD database:\r\n" +
-                                    $"```\r\n" +
+                                    $"```python\r\n" +
                                     $"Main Identifier: {obj.Name}\r\n" +
                                     $"MainType: {obj.ObjectType}\r\n" +
                                     $"Coordinates:\r\n{obj.Coordinates}\r\n\r\n" +
-                                    $"Angular Dimensions: {angularDistanceText}" +
+                                    $"Angular Dimensions: {angularDistanceText}\r\n\r\n" +
                                     $"Magntidues:\r\n{string.Join("\r\n", obj.Magntiudes)}\r\n\r\n" +
                                     $"Distance: \r\n{string.Join("\r\n", obj.DistanceMeasurements)}\r\n\r\n" +
-                                    $"Radial velocity:\r\n{obj.RadialVelocity}\r\n\r\n" +
+                                    $"adial velocity:\r\n{obj.RadialVelocity}\r\n\r\n" +
                                     $"Parallax:\r\n{obj.Parallax}\r\n\r\n" +
                                     $"Proper motion:\r\n{obj.ProperMotion}\r\n\r\n" +
                                     $"```\r\n");
 
-                await recievedMessage.Channel.SendMessageAsync($"```\r\n" +
+                await recievedMessage.Channel.SendMessageAsync($"```python\r\n" +
                                     $"SecondaryTypes:\r\n{string.Join(", ", obj.SecondaryTypes.Select(x => x.Replace("\n", "").Replace("\r", "")))}\r\n\r\n" +
                                     $"Also known as: \r\n{string.Join(", ", obj.AlsoKnownAs)}\r\n\r\n" +
                                     $"```\r\n");

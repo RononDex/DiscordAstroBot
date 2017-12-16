@@ -24,7 +24,7 @@ namespace DiscordAstroBot.Objects.Simbad
             if (result.Sections.ContainsKey("Main_id"))
                 obj.Name = result.Sections["Main_id"].Replace("\n", "").Replace("\r", "");
             if (result.Sections.ContainsKey("ObjectType"))
-                obj.ObjectType = result.Sections["ObjectType"];
+                obj.ObjectType = result.Sections["ObjectType"].Replace("\n", "").Replace("\r", "").Trim();
             if (result.Sections.ContainsKey("Coordinates"))
                 obj.Coordinates = RADECCoords.FromSimbadString(result.Sections["Coordinates"]);
 
@@ -244,6 +244,14 @@ namespace DiscordAstroBot.Objects.Simbad
                 result.Rotation = Convert.ToSingle(segments[2]);
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            if (XSize != 0)
+                return $"{XSize} arcmin x {YSize} arcmin";
+            else
+                return "";
         }
     }
 
