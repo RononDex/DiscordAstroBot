@@ -199,7 +199,7 @@ namespace DiscordAstroBot.Utilities
                 else
                 {
                     var sizeSmallFont = 20 + (image.Width / 550);
-                    var sizeLargeFont = 30 + (image.Width / 100);
+                    var sizeLargeFont = 30 + (image.Width / 150);
                     var lineWidthSmall = 0.75f + (image.Width / 3000f);
                     var lineWidthLarge = 1.25f + (image.Width / 1000f);
 
