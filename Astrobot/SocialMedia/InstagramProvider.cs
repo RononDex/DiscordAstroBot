@@ -1,4 +1,5 @@
 ﻿using InstaSharp;
+using InstaSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DiscordAstroBot.SocialMedia
@@ -16,6 +18,10 @@ namespace DiscordAstroBot.SocialMedia
     /// </summary>
     public class InstagramProvider : SocialMediaProviderBase
     {
+        private bool UploadCompleted { get; set; } = false;
+
+        private string UploadedPostUrl { get; set; }
+
         public InstagramProvider()
         {
             // Read the credentials file for instagramm and extract the user / password from it
@@ -26,7 +32,7 @@ namespace DiscordAstroBot.SocialMedia
 
             var fileText = File.ReadAllLines(ConfigurationManager.AppSettings["InstagramAPIKeyPath"]);
             if (fileText.Length < 2)
-                throw new ArgumentException($"The file holding the credentials for instagramm has less 2 lines (needs at least username and password)");
+                throw new ArgumentException($"The file holding the credentials for instagramm has less than 2 lines (needs at least username and password)");
 
             paramsDict.Add("user", fileText[0]);
             paramsDict.Add("password", fileText[1]);
@@ -39,7 +45,7 @@ namespace DiscordAstroBot.SocialMedia
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static SecureString ToSecureString(string source)
+        private static SecureString ToSecureString(string source)
         {
             if (string.IsNullOrWhiteSpace(source))
                 return null;
@@ -61,6 +67,38 @@ namespace DiscordAstroBot.SocialMedia
         {
             var uploader = new InstagramUploader(Parameters["user"], ToSecureString(Parameters["password"]));
 
+            var tempFile = Path.GetTempFileName();
+            File.WriteAllBytes(tempFile, post.Image);
+
+            uploader.OnCompleteEvent += Uploader_OnCompleteEvent;
+            uploader.UploadImage(tempFile, post.Content, true, false);
+
+            var waitStep = 100;
+            var maxWait = 120000;
+            var curWait = 0;
+
+            while (!this.UploadCompleted)
+            {
+                if (curWait > maxWait)
+                    throw new TimeoutException("The upload to instagram timed out!");
+
+                Thread.Sleep(waitStep);
+
+                curWait += waitStep;
+            }
+
+            return this.UploadedPostUrl;
+        }
+
+        private void Uploader_OnCompleteEvent(object sender, EventArgs e)
+        {
+            Console.WriteLine("Image posted to Instagram, here are all the urls");
+            foreach (var image in ((UploadResponse)e).Images)
+            {
+                this.UploadedPostUrl = image.Url;
+                this.UploadCompleted = true;
+                break; // Only store first image (bot can only post 1 image at a time either way)
+            }
         }
     }
 }

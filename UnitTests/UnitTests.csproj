@@ -65,6 +65,7 @@
     <Compile Include="AstrometryTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimbadTester.cs" />
+    <Compile Include="SocialMediaTester.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestData\Astrometry\3882132.jpg">
@@ -78,6 +79,9 @@
     </Content>
     <Content Include="TestData\Astrometry\w76hvjz.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\testimage.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
