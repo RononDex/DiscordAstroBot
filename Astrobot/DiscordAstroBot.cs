@@ -430,7 +430,7 @@ namespace DiscordAstroBot
                                 // Check if there is a synonym that matches the message
                                 foreach (var synonym in command.CommandSynonyms)
                                 {
-                                    var regex = new Regex(synonym, RegexOptions.IgnoreCase);
+                                    var regex = new Regex(synonym.Synonym, RegexOptions.IgnoreCase);
                                     if (regex.IsMatch(message))
                                     {
                                         var match = regex.Match(message);

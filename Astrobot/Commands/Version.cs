@@ -17,9 +17,9 @@ namespace DiscordAstroBot.Commands
     {
         public override string CommandName => "Version";
 
-        public override string[] CommandSynonyms => new[] {
-            @"what('s|s| is)? your version(\?)?",
-            @"version(\?)?"
+        public override CommandSynonym[] CommandSynonyms => new[] {
+            new CommandSynonym() { Synonym = @"what('s|s| is)? your version(\?)?" },
+            new CommandSynonym() { Synonym = @"version(\?)?" }
         };
 
         public override string Description => "Checks for the version of this bot and shows when the last update happend. Usage: \r\n```    @Astro Bot version```";

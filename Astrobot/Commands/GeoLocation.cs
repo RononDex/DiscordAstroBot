@@ -22,15 +22,15 @@ namespace DiscordAstroBot.Commands
         /// <summary>
         /// Define the synonyms for this command
         /// </summary>
-        public override string[] CommandSynonyms => new string[] {
-            @"What are the coordinates of (?'SearchLocation'.*\w)(\?)?",
-            @"Tell me the coordinates of (?'SearchLocation'.*\w)(\?)?",
-            @"Find the coordinates of (?'SearchLocation'.*\w)(\?)?",
-            @"Find the coordinates from (?'SearchLocation'.*\w)(\?)?",
-            @"Where is (?'SearchLocation'.*\w)(\?)?",
-            @"Get the coordinates from (?'SearchLocation'.*\w)(\?)?",
-            @"Get the coordinates of (?'SearchLocation'.*\w)(\?)?",
-            @"Do you know the location of (?'SearchLocation'.*\w)(\?)?" };
+        public override CommandSynonym[] CommandSynonyms => new [] {
+            new CommandSynonym() { Synonym = @"What are the coordinates of (?'SearchLocation'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"Tell me the coordinates of (?'SearchLocation'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"Find the coordinates of (?'SearchLocation'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"Find the coordinates from (?'SearchLocation'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"Where is (?'SearchLocation'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"Get the coordinates from (?'SearchLocation'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"Get the coordinates of (?'SearchLocation'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"Do you know the location of (?'SearchLocation'.*\w)(\?)?" } };
 
         public override string Description => "Used to find out the coordinates of a place (needed to align telescopes properly). Usage:\r\n```    @Astro Bot Where is Zürich?```";
 
@@ -50,4 +50,4 @@ namespace DiscordAstroBot.Commands
             return true;
         }
     }
-}
+} 

@@ -16,13 +16,13 @@ namespace DiscordAstroBot.Commands
     {
         public override string CommandName => "Launches";
 
-        public override string[] CommandSynonyms => new string[] {
-            @"what do you know about (?'AgencySearchName'.*\w)(\?)?",
-            @"what are the (next|upcoming) (launches|missions) for (?'NextLaunchesQuery'(\w*\s*)*)(\?)?",
-            @"what are the (next|upcoming) (?'NextLaunchesQuery'(\w*\s*)*) (launches|missions) (\?)?",
-            @"what (launches|missions) are planned (for|by) (?'NextLaunchesQuery'(\w*\s*)*)(\?)?",
-            @"what are the upcoming launches(?'NextLaunches')(\?)?",
-            @"what is (?'AgencySearchName'.*\w)(\?)?",
+        public override CommandSynonym[] CommandSynonyms => new [] {
+            new CommandSynonym() { Synonym = @"what do you know about (?'AgencySearchName'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"what are the (next|upcoming) (launches|missions) for (?'NextLaunchesQuery'(\w*\s*)*)(\?)?" },
+            new CommandSynonym() { Synonym = @"what are the (next|upcoming) (?'NextLaunchesQuery'(\w*\s*)*) (launches|missions) (\?)?" },
+            new CommandSynonym() { Synonym = @"what (launches|missions) are planned (for|by) (?'NextLaunchesQuery'(\w*\s*)*)(\?)?" },
+            new CommandSynonym() { Synonym = @"what are the upcoming launches(?'NextLaunches')(\?)?" },
+            new CommandSynonym() { Synonym = @"what is (?'AgencySearchName'.*\w)(\?)?" },
         };
 
         public override string Description => "Can give info on upcoming rocket launches. Usage:\r\n```    @Astro Bot What are the upcoming launches?```";

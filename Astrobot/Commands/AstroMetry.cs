@@ -16,11 +16,11 @@ namespace DiscordAstroBot.Commands
 {
     public class AstroMetry : Command
     {
-        public override string[] CommandSynonyms => new string[]
+        public override CommandSynonym[] CommandSynonyms => new []
         {
-            @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this (image|photo)(\?)?",
-            @"what can you (find|figure) out (about|on|from|for) this (image|photo)(\?)?",
-            @"what (space )?(objects|DSO) (are|do you know) in this (image|photo)(\?)?"
+            new CommandSynonym() { Synonym = @"(can (you )?)?(please )?(analy(s|z)e|plate(-|\s)?solve) this (image|photo)(\?)?" },
+            new CommandSynonym() { Synonym = @"what can you (find|figure) out (about|on|from|for) this (image|photo)(\?)?" },
+            new CommandSynonym() { Synonym = @"what (space )?(objects|DSO) (are|do you know) in this (image|photo)(\?)?" }
         };
 
         public override string CommandName => "Astrometry";

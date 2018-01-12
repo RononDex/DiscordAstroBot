@@ -14,7 +14,7 @@ namespace DiscordAstroBot.Commands
     {
         public override string CommandName => "test";
 
-        public override string[] CommandSynonyms => new[] { "test" };
+        public override CommandSynonym[] CommandSynonyms => new[] { new CommandSynonym() { Synonym = "test" } };
 
         public override string Description => "Just some testing. Usage: \r\n```    @Astro Bot test```";
 

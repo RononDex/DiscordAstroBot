@@ -16,14 +16,14 @@ namespace DiscordAstroBot.Commands
     {
         public override string CommandName => "Simbad";
 
-        public override string[] CommandSynonyms => new string[] {
-            @"what do you know about (?'AstroObject'.*\w)(\?)?",
-            @"what (is|are) the (magnitude|magnitudes|brightness|brightnes|fluxes|flux) of (?'MagAstroObject'.*\w)(\?)?",
-            @"how bright is (?'MagAstroObject'.*\w)(\?)?",
-            @"what is the distance of (?'DistAstroObject'.*\w)(\?)?",
-            @"how far (away )?is (?'DistAstroObject'\w*)( away)?( from earth| from us)?(\')?",
-            @"what is (?'AstroObject'.*\w)(\?)?",
-            @"how big is (?'SizeAstroObject'.*\w)(\?)?"
+        public override CommandSynonym[] CommandSynonyms => new [] {
+            new CommandSynonym() { Synonym = @"what do you know about (?'AstroObject'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"what (is|are) the (magnitude|magnitudes|brightness|brightnes|fluxes|flux) of (?'MagAstroObject'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"how bright is (?'MagAstroObject'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"what is the distance of (?'DistAstroObject'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"how far (away )?is (?'DistAstroObject'\w*)( away)?( from earth| from us)?(\')?" },
+            new CommandSynonym() { Synonym = @"what is (?'AstroObject'.*\w)(\?)?" },
+            new CommandSynonym() { Synonym = @"how big is (?'SizeAstroObject'.*\w)(\?)?" }
         };
 
         public override string Description => "Access data from SIMBAD. Usage: \r\n```    @Astro Bot What is M31\r\n    @Astro Bot How far away is M31\r\n    @Astro Bot how big is M31\r\n```";

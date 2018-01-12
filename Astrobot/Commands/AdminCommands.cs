@@ -17,18 +17,17 @@ namespace DiscordAstroBot.Commands
     {
         public override string CommandName => "AdminCommands";
 
-        public override string[] CommandSynonyms => new[]
+        public override CommandSynonym[] CommandSynonyms => new[]
         {
-            @"toggle mad mode for (?'MadUser'.*)",
-            @"who are you mad at(?'MadUserList')(\?)?",
-            @"(what|which) commands are enabled(?'EnabledCommandsList')( on this server)?(\?)?",
-            @"(what|which) commands are (available|registered)(?'AvailableCommandList')( on this server)?(\?)?",
-            @"enable all commands(?'EnableAllCommands')",
-            @"enable( command)? (?'EnableCommandName'[^\s]+)",
-            @"disable( command)? (?'DisableCommandName'[^\s]+)",
-            @"(?'ListSettings'show config)",
-            @"setconfig (?'SetConfigKey'[^\s]*) (?'SetConfigValue'[^.*]*)"
-
+            new CommandSynonym() { Synonym = @"toggle mad mode for (?'MadUser'.*)" },
+            new CommandSynonym() { Synonym = @"who are you mad at(?'MadUserList')(\?)?" },
+            new CommandSynonym() { Synonym = @"(what|which) commands are enabled(?'EnabledCommandsList')( on this server)?(\?)?" },
+            new CommandSynonym() { Synonym = @"(what|which) commands are (available|registered)(?'AvailableCommandList')( on this server)?(\?)?" },
+            new CommandSynonym() { Synonym = @"enable all commands(?'EnableAllCommands')" },
+            new CommandSynonym() { Synonym = @"enable( command)? (?'EnableCommandName'[^\s]+)" },
+            new CommandSynonym() { Synonym = @"disable( command)? (?'DisableCommandName'[^\s]+)" },
+            new CommandSynonym() { Synonym = @"(?'ListSettings'show config)" },
+            new CommandSynonym() { Synonym = @"setconfig (?'SetConfigKey'[^\s]*) (?'SetConfigValue'[^.*]*)" }
         };
 
         public override string Description => "Just some admin stuff";

@@ -209,6 +209,7 @@
     <Compile Include="Commands\AdminCommands.cs" />
     <Compile Include="Commands\Simbad.cs" />
     <Compile Include="Commands\SmallTalkCommand.cs" />
+    <Compile Include="Commands\SocialMediaCommands.cs" />
     <Compile Include="Commands\TestCommand.cs" />
     <Compile Include="Commands\UserCommands.cs" />
     <Compile Include="Commands\Version.cs" />

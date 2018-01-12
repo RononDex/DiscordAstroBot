@@ -71,7 +71,7 @@ namespace DiscordAstroBot.SocialMedia
             File.WriteAllBytes(tempFile, post.Image);
 
             uploader.OnCompleteEvent += Uploader_OnCompleteEvent;
-            uploader.UploadImage(tempFile, post.Content, true, false);
+            uploader.UploadImage(tempFile, post.Content, false, true);
 
             var waitStep = 100;
             var maxWait = 120000;

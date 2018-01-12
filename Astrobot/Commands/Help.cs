@@ -16,7 +16,9 @@ namespace DiscordAstroBot.Commands
     {
         public override string CommandName => "Help";
 
-        public override string[] CommandSynonyms => new [] { "help" };
+        public override CommandSynonym[] CommandSynonyms => new [] {
+            new CommandSynonym() { Synonym = "help" }
+        };
 
         public override string Description => "Displays this help";
 
