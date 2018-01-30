@@ -15,7 +15,7 @@ namespace DiscordAstroBot.Mappers.Config
         /// <summary>
         /// Path to the config file
         /// </summary>
-        public const string XmlFile = "config/ServerSettings.xml";
+        public const string XmlFile = "config/SocialMediaAccounts.xml";
 
         /// <summary>
         /// The configuration of the commands per server

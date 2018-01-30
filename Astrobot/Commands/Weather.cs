@@ -46,7 +46,7 @@ namespace DiscordAstroBot.Commands
                 return true;
             }
 
-            await recievedMessage.Channel.SendMessageAsync($"Hold on, searching a weather forcast for {location}. This might take a moment...");
+            await recievedMessage.Channel.SendMessageAsync($"Hold on, searching a weather forcast for {location}.\r\nThis might take a moment...");
             Helpers.WeatherForcast forcast;
             if (matchedMessage.Groups["SearchLocation"].Success)
                 forcast = Helpers.WeatherHelper.GetWeatherForcastMeteoBlue(location);

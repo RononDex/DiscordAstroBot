@@ -23,7 +23,7 @@ namespace DiscordAstroBot.Commands
         /// </summary>
         public override CommandSynonym[] CommandSynonyms => new[] {
             new CommandSynonym() { Synonym = "give( me(( the)? role)?)? (?'GiveRoleName'.*)" },
-            new CommandSynonym() { Synonym = "remove(( the)? role)?(from me)? (?'RemoveRoleName'.*)" }
+            new CommandSynonym() { Synonym = "remove(( the)? role)?(from me)? (?'RemoveRoleName'.*)" },
         };
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace DiscordAstroBot.Commands
                 await recievedMessage.Channel.SendMessageAsync($"Done, you are now assigned the role {role}");
             }
 
-            // Remove a user role
+            // Remove a role from a user
             if (matchedMessage.Groups["RemoveRoleName"].Success)
             {
                 var role = matchedMessage.Groups["RemoveRoleName"].Value;
@@ -77,7 +77,7 @@ namespace DiscordAstroBot.Commands
                 }
             }
 
-            return true ;
+            return true;
         }
     }
 }

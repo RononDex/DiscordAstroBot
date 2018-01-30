@@ -218,6 +218,7 @@
     <Compile Include="Helpers\AstrometryHelper.cs" />
     <Compile Include="Helpers\DSSImageHelper.cs" />
     <Compile Include="Helpers\GeoLocationHelper.cs" />
+    <Compile Include="Helpers\SocialMediaHelper.cs" />
     <Compile Include="Mappers\Config\MadUsers.cs" />
     <Compile Include="Mappers\Config\ServerCommands.cs" />
     <Compile Include="Mappers\Config\ServerConfig.cs" />

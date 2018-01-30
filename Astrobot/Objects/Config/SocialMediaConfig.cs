@@ -35,7 +35,7 @@ namespace DiscordAstroBot.Objects.Config
         /// Social Media user settings
         /// </summary>
         [XmlElement("User")]
-        public List<SocialMediaServerUserConfig> UserEntries { get; set; }
+        public List<SocialMediaServerUserConfig> UserEntries { get; set; } = new List<SocialMediaServerUserConfig>();
     }
 
     /// <summary>

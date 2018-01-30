@@ -24,8 +24,8 @@ namespace DiscordAstroBot.Commands
             new CommandSynonym() { Synonym = @"(what|which) commands are enabled(?'EnabledCommandsList')( on this server)?(\?)?" },
             new CommandSynonym() { Synonym = @"(what|which) commands are (available|registered)(?'AvailableCommandList')( on this server)?(\?)?" },
             new CommandSynonym() { Synonym = @"enable all commands(?'EnableAllCommands')" },
-            new CommandSynonym() { Synonym = @"enable( command)? (?'EnableCommandName'[^\s]+)" },
-            new CommandSynonym() { Synonym = @"disable( command)? (?'DisableCommandName'[^\s]+)" },
+            new CommandSynonym() { Synonym = @"enable command (?'EnableCommandName'[^\s]+)" },
+            new CommandSynonym() { Synonym = @"disable command (?'DisableCommandName'[^\s]+)" },
             new CommandSynonym() { Synonym = @"(?'ListSettings'show config)" },
             new CommandSynonym() { Synonym = @"setconfig (?'SetConfigKey'[^\s]*) (?'SetConfigValue'[^.*]*)" }
         };
@@ -158,7 +158,7 @@ namespace DiscordAstroBot.Commands
                 {
                     var configs = Mappers.Config.ServerConfig.Config.Servers.Single(x => x.ServerID == ((SocketGuildChannel) recievedMessage.Channel).Guild.Id).Configs;
 
-                    var output = string.Join("\r\n", configs.Select(x => $"{x.Key.PadLeft(32)}: {x.Value}"));
+                    var output = string.Join("\r\n", configs.Select(x => $"{x.Key.PadLeft(38)}: {x.Value}"));
 
                     await recievedMessage.Channel.SendMessageAsync($"These settings are available on this server:\r\n```\r\n{output}\r\n```\r\nUse \"setconfig <key> <value>\" to set a configuration value");
                 }

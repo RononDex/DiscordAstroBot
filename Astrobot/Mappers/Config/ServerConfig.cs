@@ -29,7 +29,10 @@ namespace DiscordAstroBot.Mappers.Config
             new ServerSettingsServerConfig() { Key = "BotNewsChannel", Value = "" },
             new ServerSettingsServerConfig() { Key = "BotLogChannel", Value = "" }, 
             new ServerSettingsServerConfig() { Key = "UserAssignableRoles", Value = "LaunchNotify" },
-            new ServerSettingsServerConfig() { Key = "IntermediateLaunchTagRole", Value = "LaunchNotify" }
+            new ServerSettingsServerConfig() { Key = "IntermediateLaunchTagRole", Value = "LaunchNotify" },
+            new ServerSettingsServerConfig() { Key = "SocialMediaPublishingEnabled", Value = "false" },
+            new ServerSettingsServerConfig() { Key = "SocialMediaPublishingWatchChannel", Value = "gallery" },
+            new ServerSettingsServerConfig() { Key = "SocialMediaPublishingModerationChannel", Value = "bot-socialmod" },
         };
 
         /// <summary>

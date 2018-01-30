@@ -502,6 +502,7 @@ namespace DiscordAstroBot
             Commands.Add(new Commands.SmallTalkCommand());
             Commands.Add(new Commands.AstroMetry());
             Commands.Add(new Commands.GeoLocation());
+            Commands.Add(new Commands.SocialMediaCommands());
             Commands.Add(new Commands.Weather());
             Commands.Add(new Commands.Launches());
             Commands.Add(new Commands.Simbad());
