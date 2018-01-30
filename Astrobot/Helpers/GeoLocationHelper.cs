@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,7 +19,9 @@ namespace DiscordAstroBot.Helpers
         {
             Log<DiscordAstroBot>.InfoFormat("Requesting GeoLocation for {0}", address);
 
-            var webRequest = WebRequest.Create(string.Format("http://maps.googleapis.com/maps/api/geocode/json?address={0}", WebUtility.UrlEncode(address)));
+            var geoLocationKey = File.ReadAllLines(ConfigurationManager.AppSettings["GoogleGeoLocationApiKey"]).FirstOrDefault();
+
+            var webRequest = WebRequest.Create(string.Format("https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}", WebUtility.UrlEncode(address), geoLocationKey));
             var response   = (HttpWebResponse)webRequest.GetResponse();
 
             string text;

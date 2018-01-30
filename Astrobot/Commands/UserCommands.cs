@@ -22,7 +22,7 @@ namespace DiscordAstroBot.Commands
         /// Synonyms that trigger the command
         /// </summary>
         public override CommandSynonym[] CommandSynonyms => new[] {
-            new CommandSynonym() { Synonym = "give me(( the)? role)? (?'GiveRoleName'.*)" },
+            new CommandSynonym() { Synonym = "give( me(( the)? role)?)? (?'GiveRoleName'.*)" },
             new CommandSynonym() { Synonym = "remove(( the)? role)?(from me)? (?'RemoveRoleName'.*)" }
         };
 

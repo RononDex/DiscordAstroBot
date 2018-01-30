@@ -38,7 +38,11 @@ namespace DiscordAstroBot.Commands
             // If no loacation with that name found, stop searching for a weather forcast
             if (location == null)
             {
-                await recievedMessage.Channel.SendMessageAsync($"I don't know any place on this planet that is called \"{matchedMessage.Groups["SearchLocation"].Value}\"");
+                var searchTerm = matchedMessage.Groups["SearchLocation"].Value;
+                if (!matchedMessage.Groups["SearchLocation"].Success)
+                    searchTerm = matchedMessage.Groups["SearchLocationCL"].Value;
+
+                await recievedMessage.Channel.SendMessageAsync($"I don't know any place on this planet that is called \"{searchTerm}\"");
                 return true;
             }
 

@@ -17,11 +17,12 @@ namespace UnitTests
         [TestMethod]
         public void PlateSolverTest()
         {
-            var token = File.ReadAllText(@"C:\Users\tinoh\Desktop\astroToken.txt");
+            var token = File.ReadAllText(@"\\10.0.0.2\Documents\Tino\AstrometryToken.txt");
             
             // Login into Astrometry
             var sessionID = DiscordAstroBot.Helpers.AstrometryHelper.LoginIntoAstrometry(token);
-            var submissionID = "1844860";
+            //var submissionID = "1844860";
+            var submissionID = AstrometryHelper.UploadFile("https://cdn.discordapp.com/attachments/254942175387713537/403469836300320768/IMG_0754_Large.jpg", "test.jpg", sessionID);
 
             // Wait for completion (around 60s)
             //Thread.Sleep(60 * 1000);
