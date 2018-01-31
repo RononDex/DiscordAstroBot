@@ -44,7 +44,7 @@ namespace DiscordAstroBot.TimerJobs
                 //  If invalid config, channelName will be empty
                 if (string.IsNullOrEmpty(channelName))
                 {
-                    Log<DiscordAstroBot>.Warn($"Invalid BotNewsChannel Config found on server {guild.Name}");
+                    //Log<DiscordAstroBot>.Warn($"Invalid BotNewsChannel Config found on server {guild.Name}");
                     return;
                 }
 

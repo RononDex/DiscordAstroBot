@@ -72,5 +72,26 @@ namespace DiscordAstroBot.Mappers.Config
         {
             XmlSerialization.XmlStateController.SaveObject(Config, XmlFile);
         }
+
+        /// <summary>
+        /// Get the server settings for the given server
+        /// </summary>
+        /// <param name="serverID"></param>
+        /// <returns></returns>
+        public static ServerSettingsServer GetServerSetings(ulong serverID)
+        {
+            var serverConfig = Config.Servers.FirstOrDefault(x => x.ServerID == serverID);
+
+            if (serverConfig == null)
+            {
+                serverConfig = new ServerSettingsServer();
+                serverConfig.ServerID = serverID;
+                SetDefaultValues(serverConfig);
+                Config.Servers.Add(serverConfig);
+                SaveConfig();
+            }
+
+            return serverConfig;
+        }
     }
 }

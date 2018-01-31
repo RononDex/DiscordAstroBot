@@ -23,6 +23,19 @@ namespace DiscordAstroBot.Utilities
         }
 
         /// <summary>
+        /// Tries to resolve a channel on the given discord server
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public static ISocketMessageChannel ResolveChannel(SocketGuild server, string channelName)
+        {
+            var channel = server.Channels.FirstOrDefault(x => x.Name.ToLower().Contains(channelName.ToLower()));
+
+            return channel as ISocketMessageChannel;
+        }
+
+        /// <summary>
         /// Logs a message into discord channel
         /// </summary>
         /// <param name="message"></param>

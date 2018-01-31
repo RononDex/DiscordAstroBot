@@ -32,7 +32,7 @@ namespace DiscordAstroBot.Commands
         /// <summary>
         /// The description of this command, that is displayed when the help command is used
         /// </summary>
-        public override string Description => $"Social media specific commands. Used for auto publishing of gallery posts\r\nUsage:\r\n```    @Astro Bot enable/disable social media publishing\r\n    @Astro Bot set instagram/facebook username to <Username>\r\n```";
+        public override string Description => $"Social media specific commands. Used for auto publishing of gallery posts\r\nUsage:\r\n```    @Astro Bot enable/disable social media publishing\r\n    @Astro Bot set instagram/facebook username to <Username>\r\n    @Astro Bot show me my social media settings\r\n```";
 
         /// <summary>
         /// Gets called when this command gets triggered
@@ -91,24 +91,58 @@ namespace DiscordAstroBot.Commands
         }
 
         /// <summary>
+        /// Handle a new post in the social media channel
+        /// </summary>
+        /// <param name="recievedMessage"></param>
+        public static async void HandleNewSocialMediaPost(SocketMessage recievedMessage)
+        {
+            // Check if author has social media publishing activated
+            var serverId = ((SocketTextChannel)recievedMessage.Channel).Guild.Id;
+            var settings = Helpers.SocialMediaHelper.GetUserSocialMediaSettings(serverId, recievedMessage.Author.Id);
+            if (settings.SocialMediaPublishingEnabled && recievedMessage.Attachments.Count > 0)
+            {
+                // Resolve the moderation channel
+                var moderationChannelName = Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingModerationChannel")?.Value;
+                var channel = Utilities.DiscordUtility.ResolveChannel(((SocketTextChannel)recievedMessage.Channel).Guild, moderationChannelName);
+
+                if (channel == null)
+                {
+                    Log<DiscordAstroBot>.Warn($"Invalid SocialeMedia moderation channel configured on server {((SocketTextChannel)recievedMessage.Channel).Guild.Name}");
+                    return;
+                }
+
+                await Mappers.Config.SocialMediaModQueue.CreateNewModQueueEntry(serverId,
+                    recievedMessage.Id,
+                    recievedMessage.Author,
+                    recievedMessage.Attachments.First().Url,
+                    recievedMessage.Content,
+                    channel);
+            }
+        }
+
+        /// <summary>
         /// Checks wether social media publishing is activated on the current server and writes an error message if not active
         /// </summary>
         /// <param name="recievedMessage"></param>
         /// <returns></returns>
-        private bool IsSocialMediaPublishingActivated(SocketMessage recievedMessage)
+        private bool IsSocialMediaPublishingActivated(SocketMessage recievedMessage, bool writeError = true)
         {
             var msg = "Social media publishing is not active on this server!";
             var serverConfig = Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == (recievedMessage.Channel as SocketGuildChannel).Id);
 
             if (serverConfig == null)
             {
-                recievedMessage.Channel.SendMessageAsync(msg);
+                if (writeError)
+                    recievedMessage.Channel.SendMessageAsync(msg);
+
                 return false;
             }
 
             if (!Convert.ToBoolean(serverConfig.Configs.First(x => x.Key == "SocialMediaPublishingEnabled").Value))
             {
-                recievedMessage.Channel.SendMessageAsync(msg);
+                if (writeError)
+                    recievedMessage.Channel.SendMessageAsync(msg);
+
                 return false;
             }
 
