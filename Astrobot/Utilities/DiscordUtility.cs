@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,11 +29,12 @@ namespace DiscordAstroBot.Utilities
         /// <param name="serverId"></param>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public static ISocketMessageChannel ResolveChannel(SocketGuild server, string channelName)
+        public static async Task<ITextChannel> ResolveChannel(Discord.IGuild server, string channelName)
         {
-            var channel = server.Channels.FirstOrDefault(x => x.Name.ToLower().Contains(channelName.ToLower()));
+            var channels = await server.GetChannelsAsync(Discord.CacheMode.CacheOnly);
+            var channel = channels.FirstOrDefault(x => x.Name.ToLower().Contains(channelName.ToLower()));
 
-            return channel as ISocketMessageChannel;
+            return channel as ITextChannel;
         }
 
         /// <summary>

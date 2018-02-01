@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
+using Discord;
 
 namespace DiscordAstroBot.Mappers.Config
 {
@@ -88,7 +89,7 @@ namespace DiscordAstroBot.Mappers.Config
         /// <param name="postID"></param>
         /// <param name="imageUrl"></param>
         /// <param name="contents"></param>
-        public static async Task<SocialMediaModQueueEntry> CreateNewModQueueEntry(ulong serverID, ulong postID, SocketUser author, string imageUrl, string contents, ISocketMessageChannel modChannel)
+        public static async Task<SocialMediaModQueueEntry> CreateNewModQueueEntry(ulong serverID, ulong postID, SocketUser author, string imageUrl, string contents, ITextChannel modChannel)
         {
             var serverEntry = GetModQueueForServer(serverID);
             var newEntry = new Objects.Config.SocialMediaModQueueEntry()

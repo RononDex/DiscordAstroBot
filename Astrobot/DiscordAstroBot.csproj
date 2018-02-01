@@ -294,7 +294,9 @@
     <Content Include="config\SocialMediaAccounts.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="config\SocialMediaModQueue.xml" />
+    <Content Include="config\SocialMediaModQueue.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="config\TimerJobExecutions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

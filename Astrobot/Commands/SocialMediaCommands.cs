@@ -103,7 +103,7 @@ namespace DiscordAstroBot.Commands
             {
                 // Resolve the moderation channel
                 var moderationChannelName = Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingModerationChannel")?.Value;
-                var channel = Utilities.DiscordUtility.ResolveChannel(((SocketTextChannel)recievedMessage.Channel).Guild, moderationChannelName);
+                var channel = await Utilities.DiscordUtility.ResolveChannel(((SocketTextChannel)recievedMessage.Channel).Guild, moderationChannelName);
 
                 if (channel == null)
                 {

@@ -410,31 +410,32 @@ namespace DiscordAstroBot
 
                     var serverId = ((SocketTextChannel)recievedMessage.Channel).Guild.Id;
 
+                    // Check wether this was posted in the social media channel, if so execute the SocialMediaComamnd
+                    // YES I KNOW THIS IS AN UGLY WORKAROUND, but it works so who cares? :P
+                    // Check first if we are in the social media channel and if the server has the feature enabled
+                    if (Convert.ToBoolean(Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingEnabled")?.Value)
+                        && recievedMessage.Channel.Name.ToLower() == Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingWatchChannel")?.Value)
+                    {
+                        Log<DiscordAstroBot>.InfoFormat($"New post {recievedMessage.Id} for social media publishing");
+                        try
+                        {
+                            Task.Run(() =>
+                            {
+                                SocialMediaCommands.HandleNewSocialMediaPost(recievedMessage);
+                            });
+                            return Task.CompletedTask;
+                        }
+                        catch (Exception ex)
+                        {
+                            DiscordUtility.LogToDiscord($"Error in trying creating new sociale media moderation queue item for post {recievedMessage.Id}: {ex.Message}", ((SocketTextChannel)recievedMessage.Channel).Guild);
+                            return Task.CompletedTask;
+                        }
+                    }
+
                     var splitted = recievedMessage.Content.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     if (splitted.Length > 0 && splitted[0].ToLower() == this.ChatPrefix || recievedMessage.MentionedUsers.Any(x => x.Id == DiscordClient.CurrentUser.Id))
                     {
                         Log<DiscordAstroBot>.InfoFormat("Message recieved: {0}", recievedMessage.Content);
-
-                        // Check wether this was posted in the social media channel, if so execute the SocialMediaComamnd
-                        // YES I KNOW THIS IS AN UGLY WORKAROUND, but it works so who cares? :P
-                        // Check first if we are in the social media channel and if the server has the feature enabled
-                        if (Convert.ToBoolean(Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingEnabled")?.Value)
-                            &&  recievedMessage.Channel.Name.ToLower() == Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingWatchChannel")?.Value)
-                        {
-                            try
-                            {
-                                Task.Run(() =>
-                                {
-                                    SocialMediaCommands.HandleNewSocialMediaPost(recievedMessage);
-                                });
-                                return Task.CompletedTask;
-                            }
-                            catch(Exception ex)
-                            {
-                                DiscordUtility.LogToDiscord($"Error in trying creating new sociale media moderation queue item for post {recievedMessage.Id}: {ex.Message}", ((SocketTextChannel)recievedMessage.Channel).Guild);
-                                return Task.CompletedTask;
-                            }
-                        }
 
                         // Search for synonyms usind regex                       
                         var message = recievedMessage.Content.Replace(ChatPrefix, "").Replace(DiscordClient.CurrentUser.Mention.Replace("!", ""), "").Replace(DiscordClient.CurrentUser.Mention, "").Trim();
