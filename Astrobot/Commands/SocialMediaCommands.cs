@@ -128,7 +128,7 @@ namespace DiscordAstroBot.Commands
         private bool IsSocialMediaPublishingActivated(SocketMessage recievedMessage, bool writeError = true)
         {
             var msg = "Social media publishing is not active on this server!";
-            var serverConfig = Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == (recievedMessage.Channel as SocketGuildChannel).Id);
+            var serverConfig = Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == (recievedMessage.Channel as SocketGuildChannel).Guild.Id);
 
             if (serverConfig == null)
             {

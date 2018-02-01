@@ -101,6 +101,7 @@ namespace DiscordAstroBot.Helpers
                 userEntry = new Objects.Config.SocialMediaServerUserConfig();
                 userEntry.User = userID;
                 server.UserEntries.Add(userEntry);
+                Mappers.Config.SocialMediaConfig.SaveConfig();
             }
 
             return userEntry;
@@ -122,6 +123,7 @@ namespace DiscordAstroBot.Helpers
                 server = new Objects.Config.SocialMediaServerConfig();
                 server.ServerID = serverID;
                 Mappers.Config.SocialMediaConfig.Config.ServerEntries.Add(server);
+                Mappers.Config.SocialMediaConfig.SaveConfig();
             }
 
             return server;
