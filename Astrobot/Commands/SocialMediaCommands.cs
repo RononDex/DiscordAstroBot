@@ -26,7 +26,8 @@ namespace DiscordAstroBot.Commands
             new CommandSynonym() { Synonym = "(disable|deactivate) social([-\\s])?media([-\\s])?publishing(?'DisableSocialMediaPublishingUser')" },
             new CommandSynonym() { Synonym = "set (my )?instagram user(\\s)?(name)? to (?'SetInstagramUserName'.*)" },
             new CommandSynonym() { Synonym = "set (my )?facebook user(\\s)?(name)? to (?'SetFacebookUserName'.*)" },
-            new CommandSynonym() { Synonym = "show (me )?my social([-\\s])?media([-\\s])?(publishing )?settings(?'ShowSocialMediaSettings')" }
+            new CommandSynonym() { Synonym = "show (me )?my social([-\\s])?media([-\\s])?(publishing )?settings(?'ShowSocialMediaSettings')" },
+            new CommandSynonym() { Synonym = "approve post (?'ApproveSocialMediaPost'.*)" }
         };
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace DiscordAstroBot.Commands
             {
                 if (!IsSocialMediaPublishingActivated(recievedMessage)) return true;
 
-                Helpers.SocialMediaHelper.EnableSocialMediaPublishingForUser((recievedMessage.Channel as SocketGuildChannel).Id, recievedMessage.Author.Id);
+                Helpers.SocialMediaHelper.EnableSocialMediaPublishingForUser((recievedMessage.Channel as SocketGuildChannel).Guild.Id, recievedMessage.Author.Id);
                 await recievedMessage.Channel.SendMessageAsync("Social media publishing is now **activated** for your account!");
             }
 
@@ -56,7 +57,7 @@ namespace DiscordAstroBot.Commands
             {
                 if (!IsSocialMediaPublishingActivated(recievedMessage)) return true;
 
-                Helpers.SocialMediaHelper.DisableSocialMediaPublishingForUser((recievedMessage.Channel as SocketGuildChannel).Id, recievedMessage.Author.Id);
+                Helpers.SocialMediaHelper.DisableSocialMediaPublishingForUser((recievedMessage.Channel as SocketGuildChannel).Guild.Id, recievedMessage.Author.Id);
                 await recievedMessage.Channel.SendMessageAsync("Social media publishing is now **deactivated** for your account!");
             }
 
@@ -65,7 +66,7 @@ namespace DiscordAstroBot.Commands
             {
                 if (!IsSocialMediaPublishingActivated(recievedMessage)) return true;
 
-                Helpers.SocialMediaHelper.SetInstagrammUser((recievedMessage.Channel as SocketGuildChannel).Id, recievedMessage.Author.Id, matchedMessage.Groups["SetInstagramUserName"].Value);
+                Helpers.SocialMediaHelper.SetInstagrammUser((recievedMessage.Channel as SocketGuildChannel).Guild.Id, recievedMessage.Author.Id, matchedMessage.Groups["SetInstagramUserName"].Value);
                 await recievedMessage.Channel.SendMessageAsync($"Instagram user name is now set to **\"{matchedMessage.Groups["SetInstagramUserName"].Value}\"**");
             }
 
@@ -74,7 +75,7 @@ namespace DiscordAstroBot.Commands
             {
                 if (!IsSocialMediaPublishingActivated(recievedMessage)) return true;
 
-                Helpers.SocialMediaHelper.SetFacebookUser((recievedMessage.Channel as SocketGuildChannel).Id, recievedMessage.Author.Id, matchedMessage.Groups["SetFacebookUserName"].Value);
+                Helpers.SocialMediaHelper.SetFacebookUser((recievedMessage.Channel as SocketGuildChannel).Guild.Id, recievedMessage.Author.Id, matchedMessage.Groups["SetFacebookUserName"].Value);
                 await recievedMessage.Channel.SendMessageAsync($"Facebook user name is now set to **\"{matchedMessage.Groups["SetFacebookUserName"].Value}\"**");
             }
 
@@ -83,8 +84,23 @@ namespace DiscordAstroBot.Commands
             {
                 if (!IsSocialMediaPublishingActivated(recievedMessage)) return true;
 
-                var settings = Helpers.SocialMediaHelper.GetUserSocialMediaSettings((recievedMessage.Channel as SocketGuildChannel).Id, recievedMessage.Author.Id);
+                var settings = Helpers.SocialMediaHelper.GetUserSocialMediaSettings((recievedMessage.Channel as SocketGuildChannel).Guild.Id, recievedMessage.Author.Id);
                 await recievedMessage.Channel.SendMessageAsync($"Your current social media settings are:\r\n```\r\nEnabled: {settings.SocialMediaPublishingEnabled}\r\nInstagram user: {settings.InstagramUserName}\r\nFacebook user: {settings.FacebookUserName}\r\n```");
+            }
+
+            // When a post is being approved for publishing
+            if (matchedMessage.Groups["ApproveSocialMediaPost"].Success)
+            {
+                // First, check if the user has the permissions for this command
+                var guildUser = recievedMessage.Author as SocketGuildUser;
+                var serverId = (recievedMessage.Channel as SocketGuildChannel).Guild.Id;
+                var serverSettings = Mappers.Config.ServerConfig.GetServerSetings(serverId);
+
+                if (!guildUser.Roles.Any(x => x.Name.ToLower() == serverSettings.Configs.FirstOrDefault(y => y.Key == "SocialMediaPublishingModGroup").Value.ToLower()))
+                {
+                    await recievedMessage.Channel.SendMessageAsync("WARNING! Security breach detected!\r\nYou don't have access to this command!");
+                    return true;
+                }
             }
 
             return true;
