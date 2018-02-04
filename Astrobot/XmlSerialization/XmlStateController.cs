@@ -33,7 +33,7 @@ namespace DiscordAstroBot.XmlSerialization
             {
                 Log<DiscordAstroBot>.Info($"Saving xml file {xmlFile}");
                 var serializer = new XmlSerializer(typeof (T));
-                using (var fileStream = new FileStream(xmlFile, FileMode.OpenOrCreate))
+                using (var fileStream = new FileStream(xmlFile, FileMode.Create))
                 {
                     serializer.Serialize(fileStream, obj);
                 }
