@@ -253,6 +253,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>SIMBADSettings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SocialMedia\FacebookProvider.cs" />
     <Compile Include="SocialMedia\InstagramProvider.cs" />
     <Compile Include="SocialMedia\SocialMediaProviderBase.cs" />
     <Compile Include="TimerJobs\IntermediateLaunchNotify.cs" />

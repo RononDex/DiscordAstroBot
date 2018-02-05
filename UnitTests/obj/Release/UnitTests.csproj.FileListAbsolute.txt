@@ -90,3 +90,4 @@ C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.csproj
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.csproj.CoreCompileInputs.cache
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.dll
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.pdb
+C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\SocialMediaModQueue.xml

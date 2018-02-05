@@ -60,7 +60,8 @@ namespace DiscordAstroBot.Mappers.Config
         }
 
         /// <summary>
-        /// Gets the mod queue entry with the given id
+        /// Gets the mod queue entry with the given id.
+        /// Return NULL if entry does not exist
         /// </summary>
         /// <param name="serverId"></param>
         /// <param name="id"></param>
@@ -113,6 +114,46 @@ namespace DiscordAstroBot.Mappers.Config
             await dmChannel.SendMessageAsync($"Your new post with ID **{postID}** is now awaiting moderation to be published to social media.\r\nIf you have questions during the process please provide this ID as reference for the mods");
 
             return newEntry;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <param name="postId"></param>
+        public static async void ApprovePost(ulong serverId, ulong entryId, SocketMessage recievedMessage)
+        {
+            // First, check if the user has the permissions for this command
+            var guildUser = recievedMessage.Author as SocketGuildUser;
+            var serverSettings = Mappers.Config.ServerConfig.GetServerSetings(serverId);
+
+            if (!guildUser.Roles.Any(x => x.Name.ToLower() == serverSettings.Configs.FirstOrDefault(y => y.Key == "SocialMediaPublishingModGroup").Value.ToLower()))
+            {
+                await recievedMessage.Channel.SendMessageAsync("WARNING! Security breach detected!\r\nYou don't have access to this command!");
+                return;
+            }
+
+            var queueEntry = Mappers.Config.SocialMediaModQueue.GetEntryById(serverId, entryId);
+            if (queueEntry == null)
+            {
+                await recievedMessage.Channel.SendMessageAsync($"No queue entry found with ID **{entryId}**");
+                return;
+            }
+
+            if (queueEntry.Status != Objects.Config.SocialMediaModQueueStatus.AWAITINGREVIEW)
+            {
+                await recievedMessage.Channel.SendMessageAsync($"The queue entry with ID **{entryId}** has already been **{queueEntry.Status}**");
+                return;
+            }
+
+            // Set the state of the entry to approved
+            queueEntry.Status = SocialMediaModQueueStatus.APPROVED;
+            SaveConfig();
+            await recievedMessage.Channel.SendMessageAsync($"The entry with id {entryId} has been approved for social media");
+
+            // Notify the author of the post
+            var pmChannel = await recievedMessage.Author.GetOrCreateDMChannelAsync();
+            await pmChannel.SendMessageAsync($"**Congratulations!**\r\nYour post {entryId} has been approved by the mods to appear on the social media account of server **{( recievedMessage.Channel as IGuildChannel).Guild.Name}**");
         }
     }
 }

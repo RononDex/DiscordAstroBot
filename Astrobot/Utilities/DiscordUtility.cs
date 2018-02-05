@@ -29,9 +29,9 @@ namespace DiscordAstroBot.Utilities
         /// <param name="serverId"></param>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public static async Task<ITextChannel> ResolveChannel(Discord.IGuild server, string channelName)
+        public static async Task<ITextChannel> ResolveChannel(IGuild server, string channelName)
         {
-            var channels = await server.GetChannelsAsync(Discord.CacheMode.CacheOnly);
+            var channels = await server.GetChannelsAsync(Discord.CacheMode.AllowDownload);
             var channel = channels.FirstOrDefault(x => x.Name.ToLower().Contains(channelName.ToLower()));
 
             return channel as ITextChannel;
@@ -42,7 +42,7 @@ namespace DiscordAstroBot.Utilities
         /// </summary>
         /// <param name="message"></param>
         /// <param name="server"></param>
-        public static async void LogToDiscord(string message, Discord.IGuild server)
+        public static async void LogToDiscord(string message, IGuild server)
         {
             // Check if discord logging is enabled for the server
             if (string.IsNullOrEmpty(Mappers.Config.ServerConfig.Config.Servers.First(x => x.ServerID == server.Id).Configs.FirstOrDefault(x => x.Key == "BotLogChannel").Value))

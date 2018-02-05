@@ -427,7 +427,7 @@ namespace DiscordAstroBot
                         }
                         catch (Exception ex)
                         {
-                            DiscordUtility.LogToDiscord($"Error in trying creating new sociale media moderation queue item for post {recievedMessage.Id}: {ex.Message}", ((SocketTextChannel)recievedMessage.Channel).Guild);
+                            DiscordUtility.LogToDiscord($"Error in trying creating new social media moderation queue item for post {recievedMessage.Id}: {ex.Message}", ((SocketTextChannel)recievedMessage.Channel).Guild);
                             return Task.CompletedTask;
                         }
                     }
@@ -467,6 +467,7 @@ namespace DiscordAstroBot
                                         }
                                         catch (Exception ex)
                                         {
+                                            commandExecuted = true;
                                             recievedMessage.Channel.SendMessageAsync($"Oh noes! Something you did caused me to crash: {ex.Message}");
                                             Log<DiscordAstroBot>.ErrorFormat("Error for message: {0}: {1}", recievedMessage.Content, ex.Message);
                                         }

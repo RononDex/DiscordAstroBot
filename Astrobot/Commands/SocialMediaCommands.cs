@@ -27,7 +27,7 @@ namespace DiscordAstroBot.Commands
             new CommandSynonym() { Synonym = "set (my )?instagram user(\\s)?(name)? to (?'SetInstagramUserName'.*)" },
             new CommandSynonym() { Synonym = "set (my )?facebook user(\\s)?(name)? to (?'SetFacebookUserName'.*)" },
             new CommandSynonym() { Synonym = "show (me )?my social([-\\s])?media([-\\s])?(publishing )?settings(?'ShowSocialMediaSettings')" },
-            new CommandSynonym() { Synonym = "approve post (?'ApproveSocialMediaPost'.*)" }
+            new CommandSynonym() { Synonym = "approve post (?'ApproveSocialMediaPost'[0-9]*)" }
         };
 
         /// <summary>
@@ -92,15 +92,10 @@ namespace DiscordAstroBot.Commands
             if (matchedMessage.Groups["ApproveSocialMediaPost"].Success)
             {
                 // First, check if the user has the permissions for this command
-                var guildUser = recievedMessage.Author as SocketGuildUser;
                 var serverId = (recievedMessage.Channel as SocketGuildChannel).Guild.Id;
-                var serverSettings = Mappers.Config.ServerConfig.GetServerSetings(serverId);
+                var entryId = Convert.ToUInt32(matchedMessage.Groups["ApproveSocialMediaPost"].Value);
 
-                if (!guildUser.Roles.Any(x => x.Name.ToLower() == serverSettings.Configs.FirstOrDefault(y => y.Key == "SocialMediaPublishingModGroup").Value.ToLower()))
-                {
-                    await recievedMessage.Channel.SendMessageAsync("WARNING! Security breach detected!\r\nYou don't have access to this command!");
-                    return true;
-                }
+                Mappers.Config.SocialMediaModQueue.ApprovePost(serverId, entryId, recievedMessage);
             }
 
             return true;
@@ -112,27 +107,34 @@ namespace DiscordAstroBot.Commands
         /// <param name="recievedMessage"></param>
         public static async void HandleNewSocialMediaPost(SocketMessage recievedMessage)
         {
-            // Check if author has social media publishing activated
-            var serverId = ((SocketTextChannel)recievedMessage.Channel).Guild.Id;
-            var settings = Helpers.SocialMediaHelper.GetUserSocialMediaSettings(serverId, recievedMessage.Author.Id);
-            if (settings.SocialMediaPublishingEnabled && recievedMessage.Attachments.Count > 0)
+            try
             {
-                // Resolve the moderation channel
-                var moderationChannelName = Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingModerationChannel")?.Value;
-                var channel = await Utilities.DiscordUtility.ResolveChannel(((SocketTextChannel)recievedMessage.Channel).Guild, moderationChannelName);
-
-                if (channel == null)
+                // Check if author has social media publishing activated
+                var serverId = ((SocketTextChannel)recievedMessage.Channel).Guild.Id;
+                var settings = Helpers.SocialMediaHelper.GetUserSocialMediaSettings(serverId, recievedMessage.Author.Id);
+                if (settings.SocialMediaPublishingEnabled && recievedMessage.Attachments.Count > 0)
                 {
-                    Log<DiscordAstroBot>.Warn($"Invalid SocialeMedia moderation channel configured on server {((SocketTextChannel)recievedMessage.Channel).Guild.Name}");
-                    return;
-                }
+                    // Resolve the moderation channel
+                    var moderationChannelName = Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingModerationChannel")?.Value;
+                    var channel = await Utilities.DiscordUtility.ResolveChannel(((SocketGuildChannel)recievedMessage.Channel).Guild, moderationChannelName);
 
-                await Mappers.Config.SocialMediaModQueue.CreateNewModQueueEntry(serverId,
-                    recievedMessage.Id,
-                    recievedMessage.Author,
-                    recievedMessage.Attachments.First().Url,
-                    recievedMessage.Content,
-                    channel);
+                    if (channel == null)
+                    {
+                        Log<DiscordAstroBot>.Warn($"Invalid SocialeMedia moderation channel configured on server {((SocketTextChannel)recievedMessage.Channel).Guild.Name}");
+                        return;
+                    }
+
+                    await Mappers.Config.SocialMediaModQueue.CreateNewModQueueEntry(serverId,
+                        recievedMessage.Id,
+                        recievedMessage.Author,
+                        recievedMessage.Attachments.First().Url,
+                        recievedMessage.Content,
+                        channel);
+                }
+            }
+            catch (Exception ex)
+            {
+                await recievedMessage.Channel.SendMessageAsync($"Oh noes! Something you did caused me to crash: {ex.Message}");
             }
         }
 
