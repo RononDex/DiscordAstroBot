@@ -105,9 +105,14 @@ namespace DiscordAstroBot.Mappers.Config
             serverEntry.QueueEntries.Add(newEntry);
             SaveConfig();
 
+            var users = await modChannel.Guild.GetUsersAsync();
+
             // Notify mods on the moderation channel that a new post is awaiting moderation
             if (modChannel != null)
+            {
+                var newEntryInfo = $"ID: {newEntry.ID}\r\nAuthor: {newEntry.Author} ({users.FirstOrDefault(x => x.Id == newEntry.ID)?.Nickname})\r\nStatus: {newEntry.Status}\r\nImage: {newEntry.ImageUrl}\r\nContents:\r\n```\r\n{newEntry.Content}\r\n```";
                 await modChannel.SendMessageAsync($"New social media post awaiting moderation:\r\n{newEntry}");
+            }
 
             // Send private message to user
             var dmChannel = await author.GetOrCreateDMChannelAsync();
@@ -117,11 +122,12 @@ namespace DiscordAstroBot.Mappers.Config
         }
 
         /// <summary>
-        /// 
+        /// Checks wether the user that sent a message  has moderator permissions for the queue
         /// </summary>
         /// <param name="serverId"></param>
-        /// <param name="postId"></param>
-        public static async void ApprovePost(ulong serverId, ulong entryId, SocketMessage recievedMessage)
+        /// <param name="recievedMessage"></param>
+        /// <returns></returns>
+        public static async Task<bool> CheckIfUserHasModeratorPermissions(ulong serverId, SocketMessage recievedMessage)
         {
             // First, check if the user has the permissions for this command
             var guildUser = recievedMessage.Author as SocketGuildUser;
@@ -130,8 +136,47 @@ namespace DiscordAstroBot.Mappers.Config
             if (!guildUser.Roles.Any(x => x.Name.ToLower() == serverSettings.Configs.FirstOrDefault(y => y.Key == "SocialMediaPublishingModGroup").Value.ToLower()))
             {
                 await recievedMessage.Channel.SendMessageAsync("WARNING! Security breach detected!\r\nYou don't have access to this command!");
-                return;
+                return false;
             }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Lists all the posts that are currently awaiting moderation
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <param name="recievedMessage"></param>
+        public static async void ListOpenQueueItems(ulong serverId, SocketMessage recievedMessage)
+        {
+            if (! await CheckIfUserHasModeratorPermissions(serverId, recievedMessage))
+                return;
+
+            // List all the entries
+            var entries = GetPendingEntries(serverId);
+
+            var msg = "Following posts are awaiting moderation, use \"queue status <postid>\" to see the details for a certain post:\r\n```";
+            foreach (var entry in entries)
+            {
+                msg += $"\r\n{entry.ID}";
+            }
+            msg += "\r\n```";
+
+            if (entries.Count == 0)
+                msg = "No entries awaiting moderation";
+
+            await recievedMessage.Channel.SendMessageAsync(msg);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <param name="postId"></param>
+        public static async void ApprovePost(ulong serverId, ulong entryId, SocketMessage recievedMessage)
+        {
+            if (!await CheckIfUserHasModeratorPermissions(serverId, recievedMessage))
+                return;
 
             var queueEntry = Mappers.Config.SocialMediaModQueue.GetEntryById(serverId, entryId);
             if (queueEntry == null)
@@ -153,7 +198,7 @@ namespace DiscordAstroBot.Mappers.Config
 
             // Notify the author of the post
             var pmChannel = await recievedMessage.Author.GetOrCreateDMChannelAsync();
-            await pmChannel.SendMessageAsync($"**Congratulations!**\r\nYour post {entryId} has been approved by the mods to appear on the social media account of server **{( recievedMessage.Channel as IGuildChannel).Guild.Name}**");
+            await pmChannel.SendMessageAsync($"**Congratulations!**\r\nYour post **{entryId}** has been approved by the mods to appear on the social media account of server **{( recievedMessage.Channel as IGuildChannel).Guild.Name}**\r\nYour post will be posted shortly!");
         }
     }
 }

@@ -27,6 +27,7 @@ namespace DiscordAstroBot.Commands
             new CommandSynonym() { Synonym = "set (my )?instagram user(\\s)?(name)? to (?'SetInstagramUserName'.*)" },
             new CommandSynonym() { Synonym = "set (my )?facebook user(\\s)?(name)? to (?'SetFacebookUserName'.*)" },
             new CommandSynonym() { Synonym = "show (me )?my social([-\\s])?media([-\\s])?(publishing )?settings(?'ShowSocialMediaSettings')" },
+            new CommandSynonym() { Synonym = "show (me )?(the )?(mod queue|sociale media queue)( list)?(?'ShowModQueueList')" },
             new CommandSynonym() { Synonym = "approve post (?'ApproveSocialMediaPost'[0-9]*)" }
         };
 
@@ -93,9 +94,15 @@ namespace DiscordAstroBot.Commands
             {
                 // First, check if the user has the permissions for this command
                 var serverId = (recievedMessage.Channel as SocketGuildChannel).Guild.Id;
-                var entryId = Convert.ToUInt32(matchedMessage.Groups["ApproveSocialMediaPost"].Value);
+                var entryId = Convert.ToUInt64(matchedMessage.Groups["ApproveSocialMediaPost"].Value);
 
                 Mappers.Config.SocialMediaModQueue.ApprovePost(serverId, entryId, recievedMessage);
+            }
+            if (matchedMessage.Groups["ShowModQueueList"].Success)
+            {
+                var serverId = (recievedMessage.Channel as SocketGuildChannel).Guild.Id;
+
+                Mappers.Config.SocialMediaModQueue.ListOpenQueueItems(serverId, recievedMessage);
             }
 
             return true;

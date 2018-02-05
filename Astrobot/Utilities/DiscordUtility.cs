@@ -32,7 +32,7 @@ namespace DiscordAstroBot.Utilities
         public static async Task<ITextChannel> ResolveChannel(IGuild server, string channelName)
         {
             var channels = await server.GetChannelsAsync(Discord.CacheMode.AllowDownload);
-            var channel = channels.FirstOrDefault(x => x.Name.ToLower().Contains(channelName.ToLower()));
+            var channel = channels.FirstOrDefault(x => !string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(channelName.ToLower()));
 
             return channel as ITextChannel;
         }
