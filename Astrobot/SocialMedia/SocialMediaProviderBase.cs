@@ -14,6 +14,8 @@ namespace DiscordAstroBot.SocialMedia
     {
         protected IReadOnlyDictionary<string, string> Parameters { get; set; }
 
+        public virtual string Name { get; set; }
+
         /// <summary>
         /// Initialize the provider with some parameters
         /// </summary>
@@ -37,8 +39,19 @@ namespace DiscordAstroBot.SocialMedia
     /// </summary>
     public class SocialMediaPost
     {
+        /// <summary>
+        /// Content of the post (text)
+        /// </summary>
         public string Content { get; set; }
 
-        public byte[] Image { get; set; }
+        /// <summary>
+        /// URL of the image to post
+        /// </summary>
+        public string ImageUrl { get; set; }
+
+        /// <summary>
+        /// UserID of the author of the post
+        /// </summary>
+        public ulong Author { get; set; }
     }
 }

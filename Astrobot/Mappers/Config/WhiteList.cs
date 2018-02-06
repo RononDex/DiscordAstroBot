@@ -36,5 +36,19 @@ namespace DiscordAstroBot.Mappers.Config
         {
             XmlSerialization.XmlStateController.SaveObject(WhitelistedServers, XmlFile);
         }
+
+        /// <summary>
+        /// Checks wether the given server is whitelisted to use the Social media commands
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <returns></returns>
+        public static bool ServerIsSocialMediaWhitelisted(ulong serverId)
+        {
+            var serverEntry = WhitelistedServers.Entries.FirstOrDefault(x => x.ServerID == serverId);
+            if (serverEntry != null)
+                return serverEntry.SocialMediaEnabled;
+
+            return false;
+        }
     }
 }

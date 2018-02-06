@@ -14,6 +14,8 @@ namespace DiscordAstroBot.SocialMedia
         /// </summary>
         private const string CREATE_PAGE_POST_URL = "https://graph.intern.facebook.com/v2.11/me/photos?access_token={ACCESSTOKEN}&published=true&url={IMAGEURL}&caption={CONTENT}";
 
+        public override string Name => "Facebook";
+
         public override string PublishPost(SocialMediaPost post)
         {
             return string.Empty;

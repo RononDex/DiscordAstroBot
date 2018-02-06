@@ -116,7 +116,7 @@ namespace DiscordAstroBot.Mappers.Config
 
             // Send private message to user
             var dmChannel = await author.GetOrCreateDMChannelAsync();
-            await dmChannel.SendMessageAsync($"Your new post with ID **{postID}** is now awaiting moderation to be published to social media.\r\nIf you have questions during the process please provide this ID as reference for the mods");
+            await dmChannel.SendMessageAsync($"Your new post with ID **{postID}** is now awaiting moderation on server **{modChannel.Guild.Name}** to be published to social media.\r\nIf you have questions during the process please provide this ID as a reference for the mods.\r\nUse the command `status for post <postId>` to check the status.");
 
             return newEntry;
         }
@@ -135,7 +135,7 @@ namespace DiscordAstroBot.Mappers.Config
 
             if (!guildUser.Roles.Any(x => x.Name.ToLower() == serverSettings.Configs.FirstOrDefault(y => y.Key == "SocialMediaPublishingModGroup").Value.ToLower()))
             {
-                await recievedMessage.Channel.SendMessageAsync("WARNING! Security breach detected!\r\nYou don't have access to this command!");
+                await recievedMessage.Channel.SendMessageAsync("**__WARNING!__** Security breach detected!\r\nYou don't have access to this command!");
                 return false;
             }
 
@@ -147,7 +147,7 @@ namespace DiscordAstroBot.Mappers.Config
         /// </summary>
         /// <param name="serverId"></param>
         /// <param name="recievedMessage"></param>
-        public static async void ListOpenQueueItems(ulong serverId, SocketMessage recievedMessage)
+        public static async Task ListOpenQueueItems(ulong serverId, SocketMessage recievedMessage)
         {
             if (! await CheckIfUserHasModeratorPermissions(serverId, recievedMessage))
                 return;
@@ -169,16 +169,50 @@ namespace DiscordAstroBot.Mappers.Config
         }
 
         /// <summary>
-        /// 
+        /// Declines the given queue entry from being posted to social media
         /// </summary>
         /// <param name="serverId"></param>
-        /// <param name="postId"></param>
-        public static async void ApprovePost(ulong serverId, ulong entryId, SocketMessage recievedMessage)
+        /// <param name="entryId"></param>
+        /// <param name="recievedMessage"></param>
+        public static async Task DeclinePost(ulong serverId, ulong entryId, SocketMessage recievedMessage)
         {
             if (!await CheckIfUserHasModeratorPermissions(serverId, recievedMessage))
                 return;
 
-            var queueEntry = Mappers.Config.SocialMediaModQueue.GetEntryById(serverId, entryId);
+            var queueEntry = GetEntryById(serverId, entryId);
+            if (queueEntry == null)
+            {
+                await recievedMessage.Channel.SendMessageAsync($"No queue entry found with ID **{entryId}**");
+                return;
+            }
+
+            if (queueEntry.Status != Objects.Config.SocialMediaModQueueStatus.AWAITINGREVIEW)
+            {
+                await recievedMessage.Channel.SendMessageAsync($"The queue entry with ID **{entryId}** has already been **{queueEntry.Status}**");
+                return;
+            }
+
+            // Set the state of the entry to declined
+            queueEntry.Status = SocialMediaModQueueStatus.DECLINED;
+            SaveConfig();
+            await recievedMessage.Channel.SendMessageAsync($"The entry with id {entryId} has been **declined** for social media");
+
+            // Notify the author of the post
+            var pmChannel = await recievedMessage.Author.GetOrCreateDMChannelAsync();
+            await pmChannel.SendMessageAsync($"Your post **{entryId}** has been **declined** to be published on the social media accounts of server **{(recievedMessage.Channel as IGuildChannel).Guild.Name}**");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <param name="postId"></param>
+        public static async Task ApprovePost(ulong serverId, ulong entryId, SocketMessage recievedMessage)
+        {
+            if (!await CheckIfUserHasModeratorPermissions(serverId, recievedMessage))
+                return;
+
+            var queueEntry = GetEntryById(serverId, entryId);
             if (queueEntry == null)
             {
                 await recievedMessage.Channel.SendMessageAsync($"No queue entry found with ID **{entryId}**");
@@ -194,11 +228,55 @@ namespace DiscordAstroBot.Mappers.Config
             // Set the state of the entry to approved
             queueEntry.Status = SocialMediaModQueueStatus.APPROVED;
             SaveConfig();
-            await recievedMessage.Channel.SendMessageAsync($"The entry with id {entryId} has been approved for social media");
+            await recievedMessage.Channel.SendMessageAsync($"The entry with id {entryId} has been **approved** for social media");
 
             // Notify the author of the post
             var pmChannel = await recievedMessage.Author.GetOrCreateDMChannelAsync();
-            await pmChannel.SendMessageAsync($"**Congratulations!**\r\nYour post **{entryId}** has been approved by the mods to appear on the social media account of server **{( recievedMessage.Channel as IGuildChannel).Guild.Name}**\r\nYour post will be posted shortly!");
+            await pmChannel.SendMessageAsync($"**__Congratulations!__**\r\nYour post **{entryId}** has been **approved** to be published on the social media accounts of server **{( recievedMessage.Channel as IGuildChannel).Guild.Name}**\r\nYour post will be posted shortly!");
+
+            await PublishPost(serverId, entryId, recievedMessage);
+        }
+
+        /// <summary>
+        /// Publishes the given post to social media
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <param name="entryId"></param>
+        public static async Task PublishPost(ulong serverId, ulong entryId, SocketMessage recievedMessage)
+        {
+            Log<DiscordAstroBot>.Info($"Publishing post {entryId} to social media");
+            var queueEntry = GetEntryById(serverId, entryId);
+
+            // Prepare the social media post
+            var post = new SocialMedia.SocialMediaPost()
+            {
+                Content = queueEntry.Content,
+                ImageUrl = queueEntry.ImageUrl,
+                Author = queueEntry.Author
+            };
+
+            var socialMediaLinks = "";
+
+            foreach (var provider in DiscordAstroBot.SocialMediaProviders)
+            {
+                var url = provider.PublishPost(post);
+                socialMediaLinks += $"{provider.Name}:  {url}\r\n";
+            }
+
+            queueEntry.Status = SocialMediaModQueueStatus.PUBLISHED;
+            SaveConfig();
+
+            await recievedMessage.Channel.SendMessageAsync($"The post has been **successfully** published to social media:\r\n{socialMediaLinks}");
+
+            // Notify the author of the post
+            var users = await (recievedMessage.Channel as ITextChannel).Guild.GetUsersAsync();
+            var pmChannel = await users.FirstOrDefault(x => x.Id == queueEntry.Author)?.GetOrCreateDMChannelAsync();
+
+            // The channel can be NULL if user left the server for example
+            if (pmChannel != null)
+            {
+                await pmChannel.SendMessageAsync($"Your post **{entryId}** has been posted to the social media accounts of server {(recievedMessage.Channel as ITextChannel).Guild.Name}:\r\n{socialMediaLinks}");
+            }
         }
     }
 }

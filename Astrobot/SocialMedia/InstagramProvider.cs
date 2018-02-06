@@ -22,6 +22,8 @@ namespace DiscordAstroBot.SocialMedia
 
         private string UploadedPostUrl { get; set; }
 
+        public override string Name => "Instagram";
+
         public InstagramProvider()
         {
             // Read the credentials file for instagramm and extract the user / password from it

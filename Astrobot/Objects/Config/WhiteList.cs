@@ -27,5 +27,11 @@ namespace DiscordAstroBot.Objects.Config
         /// </summary>
         [XmlAttribute("ServerID")]
         public ulong ServerID { get; set; }
+
+        /// <summary>
+        /// Wether social media posting is allowed from this server or not
+        /// </summary>
+        [XmlAttribute("SocialMediaEnabled")]
+        public bool SocialMediaEnabled { get; set; }
     }
 }

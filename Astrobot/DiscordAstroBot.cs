@@ -16,6 +16,7 @@ using System.Timers;
 using WhiteList = DiscordAstroBot.Mappers.Config.WhiteList;
 using DiscordAstroBot.Utilities;
 using DiscordAstroBot.Commands;
+using DiscordAstroBot.SocialMedia;
 
 namespace DiscordAstroBot
 {
@@ -37,6 +38,11 @@ namespace DiscordAstroBot
         public static List<Command> Commands { get; set; }
 
         /// <summary>
+        /// The list of registered social media providers
+        /// </summary>
+        public static List<SocialMediaProviderBase> SocialMediaProviders { get; set; }
+
+        /// <summary>
         /// Holds all the timer jobs
         /// </summary>
         public static List<TimerJobs.TimerJobBase> TimerJobs { get; set; } = new List<TimerJobs.TimerJobBase>();
@@ -50,12 +56,12 @@ namespace DiscordAstroBot
         /// If whitelist is enabled, only servers on the whitelist may use the bot
         /// (measure to limit hardware usage of bot to only whitelisted servers)
         /// </summary>
-        public bool WhiteListEnabled { get; set; }
+        public static bool WhiteListEnabled { get; set; }
 
         /// <summary>
         /// The name of the bot owner, used to tell people how to contact the owner if needed
         /// </summary>
-        public string OwnerName { get; set; }
+        public static string OwnerName { get; set; }
 
         /// <summary>
         /// Timer that executes the timer jobs
@@ -103,6 +109,7 @@ namespace DiscordAstroBot
 
             RegisterCommands();
             SetupTimerJobs();
+            RegisterSocialMediaProviders();
 
             DiscordClient.MessageReceived += MessageReceived;
             DiscordClient.GuildAvailable += DiscordClient_ServerAvailable;
@@ -414,7 +421,8 @@ namespace DiscordAstroBot
                     // YES I KNOW THIS IS AN UGLY WORKAROUND, but it works so who cares? :P
                     // Check first if we are in the social media channel and if the server has the feature enabled
                     if (Convert.ToBoolean(Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingEnabled")?.Value)
-                        && recievedMessage.Channel.Name.ToLower() == Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingWatchChannel")?.Value)
+                        && recievedMessage.Channel.Name.ToLower() == Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingWatchChannel")?.Value
+                        && ((WhiteListEnabled && Mappers.Config.WhiteList.ServerIsSocialMediaWhitelisted(serverId)) || !WhiteListEnabled))
                     {
                         Log<DiscordAstroBot>.InfoFormat($"New post {recievedMessage.Id} for social media publishing");
                         try
@@ -543,6 +551,22 @@ namespace DiscordAstroBot
             foreach (var command in Commands)
             {
                 Log<DiscordAstroBot>.InfoFormat("Command registered \"{0}\"", command.CommandName);
+            }
+        }
+
+        /// <summary>
+        /// Registers all the social media providers
+        /// </summary>
+        private void RegisterSocialMediaProviders()
+        {
+            Log<DiscordAstroBot>.InfoFormat("Registering social media providers...");
+
+            SocialMediaProviders.Add(new InstagramProvider());
+            SocialMediaProviders.Add(new FacebookProvider());
+
+            foreach (var provider in SocialMediaProviders)
+            {
+                Log<DiscordAstroBot>.InfoFormat($"SocialMediaProvider \"{provider.Name}\" registered");
             }
         }
 
