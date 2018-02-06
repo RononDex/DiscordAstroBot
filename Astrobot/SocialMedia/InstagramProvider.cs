@@ -69,25 +69,25 @@ namespace DiscordAstroBot.SocialMedia
         {
             var uploader = new InstagramUploader(Parameters["user"], ToSecureString(Parameters["password"]));
 
-            var tempFile = Path.GetTempFileName();
-            File.WriteAllBytes(tempFile, post.Image);
+            //var tempFile = Path.GetTempFileName();
+            //File.WriteAllBytes(tempFile, post.ImageUrl);
 
-            uploader.OnCompleteEvent += Uploader_OnCompleteEvent;
-            uploader.UploadImage(tempFile, post.Content, false, true);
+            //uploader.OnCompleteEvent += Uploader_OnCompleteEvent;
+            //uploader.UploadImage(tempFile, post.Content, false, true);
 
-            var waitStep = 100;
-            var maxWait = 120000;
-            var curWait = 0;
+            //var waitStep = 100;
+            //var maxWait = 120000;
+            //var curWait = 0;
 
-            while (!this.UploadCompleted)
-            {
-                if (curWait > maxWait)
-                    throw new TimeoutException("The upload to instagram timed out!");
+            //while (!this.UploadCompleted)
+            //{
+            //    if (curWait > maxWait)
+            //        throw new TimeoutException("The upload to instagram timed out!");
 
-                Thread.Sleep(waitStep);
+            //    Thread.Sleep(waitStep);
 
-                curWait += waitStep;
-            }
+            //    curWait += waitStep;
+            //}
 
             return this.UploadedPostUrl;
         }

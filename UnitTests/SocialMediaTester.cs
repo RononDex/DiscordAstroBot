@@ -17,7 +17,7 @@ namespace UnitTests
         {
             var instaProvider = new InstagramProvider();
 
-            var postUrl = instaProvider.PublishPost(new SocialMediaPost() { Content = "", Image = File.ReadAllBytes("TestData/testimage.jpg") });
+            var postUrl = instaProvider.PublishPost(new SocialMediaPost() { Content = "", ImageUrl = "TestData/testimage.jpg" });
         }
     }
 }

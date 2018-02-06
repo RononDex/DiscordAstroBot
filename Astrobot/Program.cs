@@ -61,8 +61,8 @@ namespace DiscordAstroBot
             Log<DiscordAstroBot>.InfoFormat("Launching Astro bot...");
 
             var discoBot = new DiscordAstroBot();
-            discoBot.WhiteListEnabled = bool.Parse(ConfigurationManager.AppSettings["WhiteListEnabled"]);
-            discoBot.OwnerName = ConfigurationManager.AppSettings["OwnerName"];
+            DiscordAstroBot.WhiteListEnabled = bool.Parse(ConfigurationManager.AppSettings["WhiteListEnabled"]);
+            DiscordAstroBot.OwnerName = ConfigurationManager.AppSettings["OwnerName"];
 
             await discoBot.InitDiscordClient(token, chatPrefix);
 
