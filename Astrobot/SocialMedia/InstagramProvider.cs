@@ -1,4 +1,5 @@
-﻿using InstaSharp;
+﻿using DiscordAstroBot.Helpers;
+using InstaSharp;
 using InstaSharp.Models;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security;
 using System.Text;
 using System.Threading;
@@ -69,25 +71,33 @@ namespace DiscordAstroBot.SocialMedia
         {
             var uploader = new InstagramUploader(Parameters["user"], ToSecureString(Parameters["password"]));
 
-            //var tempFile = Path.GetTempFileName();
-            //File.WriteAllBytes(tempFile, post.ImageUrl);
+            //var image = new System.Net.WebClient().DownloadData(post.ImageUrl);
 
-            //uploader.OnCompleteEvent += Uploader_OnCompleteEvent;
-            //uploader.UploadImage(tempFile, post.Content, false, true);
+            var userSettings = SocialMediaHelper.GetUserSocialMediaSettings(post.ServerID, post.Author);
+            var instagramAuthorHandle = userSettings.InstagramUserName;
+            var serverSettings = Mappers.Config.ServerConfig.GetServerSetings(post.ServerID);
+            var serverTags = string.Join(" ", serverSettings.Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingInstagramHashtags").Value?.Split(';'));
+            var userTags = userSettings.InstagramHashtags;
 
-            //var waitStep = 100;
-            //var maxWait = 120000;
-            //var curWait = 0;
+            var content = $"{post.Content}\r\n\r\nImage credit: @{instagramAuthorHandle}\r\n\r\n"
+                 + $"{serverTags} {userTags}";
 
-            //while (!this.UploadCompleted)
-            //{
-            //    if (curWait > maxWait)
-            //        throw new TimeoutException("The upload to instagram timed out!");
+            uploader.OnCompleteEvent += Uploader_OnCompleteEvent;
+            uploader.UploadImage(post.ImageUrl, content, false, true);
 
-            //    Thread.Sleep(waitStep);
+            var waitStep = 100;
+            var maxWait = 120000;
+            var curWait = 0;
 
-            //    curWait += waitStep;
-            //}
+            while (!this.UploadCompleted)
+            {
+                if (curWait > maxWait)
+                    throw new TimeoutException("The upload to instagram timed out!");
+
+                Thread.Sleep(waitStep);
+
+                curWait += waitStep;
+            }
 
             return this.UploadedPostUrl;
         }

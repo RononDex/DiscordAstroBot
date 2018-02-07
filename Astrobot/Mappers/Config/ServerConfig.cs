@@ -34,6 +34,7 @@ namespace DiscordAstroBot.Mappers.Config
             new ServerSettingsServerConfig() { Key = "SocialMediaPublishingWatchChannel", Value = "gallery" },
             new ServerSettingsServerConfig() { Key = "SocialMediaPublishingModerationChannel", Value = "bot-socialmod" },
             new ServerSettingsServerConfig() { Key = "SocialMediaPublishingModGroup", Value = "Moderators" },
+            new ServerSettingsServerConfig() { Key = "SocialMediaPublishingInstagramHashtags", Value = "#test;#test2;#test123" },
         };
 
         /// <summary>

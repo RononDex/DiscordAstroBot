@@ -252,7 +252,8 @@ namespace DiscordAstroBot.Mappers.Config
             {
                 Content = queueEntry.Content,
                 ImageUrl = queueEntry.ImageUrl,
-                Author = queueEntry.Author
+                Author = queueEntry.Author,
+                ServerID = serverId
             };
 
             var socialMediaLinks = "";

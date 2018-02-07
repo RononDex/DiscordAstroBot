@@ -67,5 +67,11 @@ namespace DiscordAstroBot.Objects.Config
         /// </summary>
         [XmlElement("InstagramUserName")]
         public string InstagramUserName { get; set; }
+
+        /// <summary>
+        /// The user defined hashtags
+        /// </summary>
+        [XmlElement("InstagramHashtags")]
+        public string InstagramHashtags { get; set; }
     }
 }

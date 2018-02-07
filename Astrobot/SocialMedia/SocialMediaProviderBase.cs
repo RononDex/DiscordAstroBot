@@ -53,5 +53,10 @@ namespace DiscordAstroBot.SocialMedia
         /// UserID of the author of the post
         /// </summary>
         public ulong Author { get; set; }
+
+        /// <summary>
+        /// Discord server ID from which this post is being posted
+        /// </summary>
+        public ulong ServerID { get; set; }
     }
 }
