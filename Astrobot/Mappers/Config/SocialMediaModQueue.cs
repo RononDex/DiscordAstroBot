@@ -232,7 +232,7 @@ namespace DiscordAstroBot.Mappers.Config
 
             // Notify the author of the post
             var pmChannel = await recievedMessage.Author.GetOrCreateDMChannelAsync();
-            await pmChannel.SendMessageAsync($"**__Congratulations!__**\r\nYour post **{entryId}** has been **approved** to be published on the social media accounts of server **{( recievedMessage.Channel as IGuildChannel).Guild.Name}**\r\nYour post will be posted shortly!");
+            await pmChannel.SendMessageAsync($"**__Congratulations!__**\r\nYour post **{entryId}** has been **approved** to be published on the social media accounts of server **{( recievedMessage.Channel as IGuildChannel).Guild.Name}**");
 
             await PublishPost(serverId, entryId, recievedMessage);
         }
@@ -270,14 +270,11 @@ namespace DiscordAstroBot.Mappers.Config
             await recievedMessage.Channel.SendMessageAsync($"The post has been **successfully** published to social media:\r\n{socialMediaLinks}");
 
             // Notify the author of the post
-            var users = await (recievedMessage.Channel as ITextChannel).Guild.GetUsersAsync();
-            var pmChannel = await users.FirstOrDefault(x => x.Id == queueEntry.Author)?.GetOrCreateDMChannelAsync();
+            var user = (recievedMessage.Channel as SocketGuildChannel).Guild.Users.FirstOrDefault( x => x.Id == queueEntry.Author);
 
-            // The channel can be NULL if user left the server for example
-            if (pmChannel != null)
-            {
-                await pmChannel.SendMessageAsync($"Your post **{entryId}** has been posted to the social media accounts of server {(recievedMessage.Channel as ITextChannel).Guild.Name}:\r\n{socialMediaLinks}");
-            }
+            // The user can be NULL if user left the server for example
+            if (user != null)
+                await user.SendMessageAsync($"Your post **{entryId}** has been posted to the social media accounts of server **{(recievedMessage.Channel as ITextChannel).Guild.Name}**:\r\n{socialMediaLinks}");
         }
     }
 }

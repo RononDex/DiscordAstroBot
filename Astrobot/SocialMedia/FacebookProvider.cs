@@ -19,6 +19,6 @@ namespace DiscordAstroBot.SocialMedia
         public override string PublishPost(SocialMediaPost post)
         {
             return string.Empty;
-        }
+        } 
     }
 }

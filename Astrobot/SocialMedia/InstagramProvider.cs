@@ -71,7 +71,9 @@ namespace DiscordAstroBot.SocialMedia
         {
             var uploader = new InstagramUploader(Parameters["user"], ToSecureString(Parameters["password"]));
 
-            //var image = new System.Net.WebClient().DownloadData(post.ImageUrl);
+            var image = new System.Net.WebClient().DownloadData(post.ImageUrl);
+            var tempFile = Path.GetTempFileName();
+            File.WriteAllBytes(tempFile, image);
 
             var userSettings = SocialMediaHelper.GetUserSocialMediaSettings(post.ServerID, post.Author);
             var instagramAuthorHandle = userSettings.InstagramUserName;
@@ -83,7 +85,7 @@ namespace DiscordAstroBot.SocialMedia
                  + $"{serverTags} {userTags}";
 
             uploader.OnCompleteEvent += Uploader_OnCompleteEvent;
-            uploader.UploadImage(post.ImageUrl, content, false, true);
+            uploader.UploadImage(tempFile, content, false, true);
 
             var waitStep = 100;
             var maxWait = 120000;
@@ -99,7 +101,10 @@ namespace DiscordAstroBot.SocialMedia
                 curWait += waitStep;
             }
 
-            return this.UploadedPostUrl;
+            // Clean up the temp file
+            File.Delete(tempFile);
+
+            return $"https://www.instagram.com/{Parameters["user"]}/";
         }
 
         private void Uploader_OnCompleteEvent(object sender, EventArgs e)

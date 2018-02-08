@@ -61,6 +61,22 @@ namespace DiscordAstroBot.Helpers
         /// </summary>
         /// <param name="serverID"></param>
         /// <param name="userID"></param>
+        public static void SetInstagrammUserHastTags(ulong serverID, ulong userID, string tags)
+        {
+            var server = EnsureServerEntryExists(serverID);
+
+            var user = EnsureUserEntryExists(server, userID);
+
+            user.InstagramHashtags = tags;
+            Mappers.Config.SocialMediaConfig.SaveConfig();
+        }
+
+
+        /// <summary>
+        /// Sets the InstagramUser handle for social media publishing for the given user
+        /// </summary>
+        /// <param name="serverID"></param>
+        /// <param name="userID"></param>
         public static void SetFacebookUser(ulong serverID, ulong userID, string facebookUser)
         {
             var server = EnsureServerEntryExists(serverID);

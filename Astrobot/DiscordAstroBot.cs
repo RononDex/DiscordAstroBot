@@ -40,7 +40,7 @@ namespace DiscordAstroBot
         /// <summary>
         /// The list of registered social media providers
         /// </summary>
-        public static List<SocialMediaProviderBase> SocialMediaProviders { get; set; }
+        public static List<SocialMediaProviderBase> SocialMediaProviders { get; set; } = new List<SocialMediaProviderBase>();
 
         /// <summary>
         /// Holds all the timer jobs

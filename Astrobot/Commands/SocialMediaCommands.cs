@@ -26,6 +26,7 @@ namespace DiscordAstroBot.Commands
             new CommandSynonym() { Synonym = "(enable|actrivate) social([-\\s])?media([-\\s])?publishing(?'EnableSocialMediaPublishingUser')" },
             new CommandSynonym() { Synonym = "(disable|deactivate) social([-\\s])?media([-\\s])?publishing(?'DisableSocialMediaPublishingUser')" },
             new CommandSynonym() { Synonym = "set (my )?instagram user(\\s)?(name)? to (?'SetInstagramUserName'.*)" },
+            new CommandSynonym() { Synonym = "set (my )?instagram (hash)?tags to (?'SetInstagramUserHashTags'.*)" },
             new CommandSynonym() { Synonym = "set (my )?facebook user(\\s)?(name)? to (?'SetFacebookUserName'.*)" },
             new CommandSynonym() { Synonym = "show (me )?my social([-\\s])?media([-\\s])?(publishing )?settings(?'ShowSocialMediaSettings')" },
             new CommandSynonym() { Synonym = "show (me )?(the )?(mod queue|sociale media queue)( list)?(?'ShowModQueueList')" },
@@ -52,7 +53,7 @@ namespace DiscordAstroBot.Commands
             // First check if whitelist is enabled and if this server is whitelisted to have social media enabled
             if (DiscordAstroBot.WhiteListEnabled && !Mappers.Config.WhiteList.ServerIsSocialMediaWhitelisted(serverId))
             {
-                await recievedMessage.Channel.SendMessageAsync($"This is server is not whitelisted to have access to the social media feature. Please contact the owner {DiscordAstroBot.OwnerName}");
+                await recievedMessage.Channel.SendMessageAsync($"This is server is **not** whitelisted to have access to the social media feature. Please contact the owner {DiscordAstroBot.OwnerName}");
                 return true;
             }
 
@@ -83,6 +84,15 @@ namespace DiscordAstroBot.Commands
                 await recievedMessage.Channel.SendMessageAsync($"Instagram user name is now set to **\"{matchedMessage.Groups["SetInstagramUserName"].Value}\"**");
             }
 
+            // Set instagram user hash tags
+            if (matchedMessage.Groups["SetInstagramUserHashTags"].Success)
+            {
+                if (!IsSocialMediaPublishingActivated(recievedMessage)) return true;
+
+                Helpers.SocialMediaHelper.SetInstagrammUserHastTags((recievedMessage.Channel as SocketGuildChannel).Guild.Id, recievedMessage.Author.Id, matchedMessage.Groups["SetInstagramUserHashTags"].Value);
+                await recievedMessage.Channel.SendMessageAsync($"Instagram user hash tags are now set to `{matchedMessage.Groups["SetInstagramUserHashTags"].Value}`");
+            }
+
             // Set instagram user name
             if (matchedMessage.Groups["SetFacebookUserName"].Success)
             {
@@ -98,7 +108,7 @@ namespace DiscordAstroBot.Commands
                 if (!IsSocialMediaPublishingActivated(recievedMessage)) return true;
 
                 var settings = Helpers.SocialMediaHelper.GetUserSocialMediaSettings((recievedMessage.Channel as SocketGuildChannel).Guild.Id, recievedMessage.Author.Id);
-                await recievedMessage.Channel.SendMessageAsync($"Your current social media settings are:\r\n```\r\nEnabled: {settings.SocialMediaPublishingEnabled}\r\nInstagram user: {settings.InstagramUserName}\r\nFacebook user: {settings.FacebookUserName}\r\n```");
+                await recievedMessage.Channel.SendMessageAsync($"Your current social media settings are:\r\n```\r\nEnabled: {settings.SocialMediaPublishingEnabled}\r\nInstagram user: {settings.InstagramUserName}\r\nInstagram Hashtags: {settings.InstagramHashtags}\r\nFacebook user: {settings.FacebookUserName}\r\n```");
             }
 
             // When a post is being approved for publishing
@@ -107,7 +117,7 @@ namespace DiscordAstroBot.Commands
                 // First, check if the user has the permissions for this command
                 var entryId = Convert.ToUInt64(matchedMessage.Groups["ApproveSocialMediaPost"].Value);
 
-                Mappers.Config.SocialMediaModQueue.ApprovePost(serverId, entryId, recievedMessage);
+                await Mappers.Config.SocialMediaModQueue.ApprovePost(serverId, entryId, recievedMessage);
             }
 
             // When a post is being declined for publishing
@@ -116,13 +126,13 @@ namespace DiscordAstroBot.Commands
                 // First, check if the user has the permissions for this command
                 var entryId = Convert.ToUInt64(matchedMessage.Groups["DeclineSocialMediaPost"].Value);
 
-                Mappers.Config.SocialMediaModQueue.DeclinePost(serverId, entryId, recievedMessage);
+                await Mappers.Config.SocialMediaModQueue.DeclinePost(serverId, entryId, recievedMessage);
             }
 
             // List all posts awaiting review
             if (matchedMessage.Groups["ShowModQueueList"].Success)
             {
-                Mappers.Config.SocialMediaModQueue.ListOpenQueueItems(serverId, recievedMessage);
+                await Mappers.Config.SocialMediaModQueue.ListOpenQueueItems(serverId, recievedMessage);
             }
 
             // Show details of a certain post
@@ -136,8 +146,8 @@ namespace DiscordAstroBot.Commands
                 }
                 else
                 {
-                    var users = await (recievedMessage.Channel as ITextChannel).Guild.GetUsersAsync();
-                    var newEntryInfo = $"ID: {entry.ID}\r\nAuthor: {entry.Author} ({users.FirstOrDefault(x => x.Id == entry.ID)?.Nickname})\r\nStatus: {entry.Status}\r\nImage: {entry.ImageUrl}\r\nContents:\r\n```\r\n{entry.Content}\r\n```";
+                    var users = (recievedMessage.Channel as SocketGuildChannel).Guild.Users;
+                    var newEntryInfo = $"ID: {entry.ID}\r\nAuthor: {entry.Author} ({users.FirstOrDefault(x => x.Id == entry.Author)?.Nickname})\r\nStatus: {entry.Status}\r\nImage: {entry.ImageUrl}\r\nContents:\r\n```\r\n{entry.Content}\r\n```";
                 }
             }
 
@@ -211,3 +221,4 @@ namespace DiscordAstroBot.Commands
         }
     }
 }
+
