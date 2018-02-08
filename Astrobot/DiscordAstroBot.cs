@@ -421,7 +421,7 @@ namespace DiscordAstroBot
                     // YES I KNOW THIS IS AN UGLY WORKAROUND, but it works so who cares? :P
                     // Check first if we are in the social media channel and if the server has the feature enabled
                     if (Convert.ToBoolean(Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingEnabled")?.Value)
-                        && recievedMessage.Channel.Name.ToLower() == Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingWatchChannel")?.Value
+                        && recievedMessage.Channel.Name.ToLower() == Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingWhatchChannel")?.Value
                         && ((WhiteListEnabled && Mappers.Config.WhiteList.ServerIsSocialMediaWhitelisted(serverId)) || !WhiteListEnabled))
                     {
                         Log<DiscordAstroBot>.InfoFormat($"New post {recievedMessage.Id} for social media publishing");
