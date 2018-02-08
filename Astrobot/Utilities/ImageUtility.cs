@@ -52,6 +52,14 @@ namespace DiscordAstroBot.Utilities
             return newBitmap;
         }
 
+        public static void ConvertImageToJpg(string filePath, string savePath)
+        {
+            using (var image = Image.FromFile(filePath))
+            {
+                image.Save(savePath, ImageFormat.Jpeg);
+            }
+        }
+
         /// <summary>
         /// Crops the given image to the defined parameters
         /// </summary>

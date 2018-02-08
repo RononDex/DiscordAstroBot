@@ -1,4 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ServerConfig>
-   
+<?xml version="1.0"?>
+<ServerConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Server ID="0">
+    <Config Key="HailNewUsers" Value="false" />
+    <Config Key="AdvancedPlateSolve" Value="false" />
+    <Config Key="BotLaunchNewsEnabled" Value="false" />
+    <Config Key="BotNewsChannel" Value="" />
+    <Config Key="BotLogChannel" Value="" />
+    <Config Key="UserAssignableRoles" Value="LaunchNotify" />
+    <Config Key="IntermediateLaunchTagRole" Value="LaunchNotify" />
+    <Config Key="SocialMediaPublishingEnabled" Value="false" />
+    <Config Key="SocialMediaPublishingWhatchChannel" Value="gallery" />
+    <Config Key="SocialMediaPublishingModerationChannel" Value="bot-socialmod" />
+    <Config Key="SocialMediaPublishingModGroup" Value="Moderators" />
+    <Config Key="SocialMediaPublishingInstagramHashtags" Value="#test;#test2;#test123" />
+  </Server>
 </ServerConfig>

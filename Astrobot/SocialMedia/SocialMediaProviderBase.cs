@@ -31,7 +31,7 @@ namespace DiscordAstroBot.SocialMedia
         /// </summary>
         /// <param name="post"></param>
         /// <returns></returns>
-        public abstract string PublishPost(SocialMediaPost post);
+        public abstract Task<string> PublishPost(SocialMediaPost post);
     }
 
     /// <summary>

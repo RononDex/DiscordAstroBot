@@ -1,6 +1,8 @@
 ﻿using DiscordAstroBot.Helpers;
-using InstaSharp;
-using InstaSharp.Models;
+using DiscordAstroBot.Utilities;
+using InstaSharper;
+using InstaSharper.API.Builder;
+using InstaSharper.Classes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,10 +22,6 @@ namespace DiscordAstroBot.SocialMedia
     /// </summary>
     public class InstagramProvider : SocialMediaProviderBase
     {
-        private bool UploadCompleted { get; set; } = false;
-
-        private string UploadedPostUrl { get; set; }
-
         public override string Name => "Instagram";
 
         public InstagramProvider()
@@ -67,13 +65,20 @@ namespace DiscordAstroBot.SocialMedia
         /// </summary>
         /// <param name="post"></param>
         /// <returns></returns>
-        public override string PublishPost(SocialMediaPost post)
+        public override async Task<string> PublishPost(SocialMediaPost post)
         {
-            var uploader = new InstagramUploader(Parameters["user"], ToSecureString(Parameters["password"]));
+            var api = InstaApiBuilder.CreateBuilder()
+                .SetUser(new InstaSharper.Classes.UserSessionData() { UserName = Parameters["user"], Password = Parameters["password"] })
+                .Build();
+            
+
+            var loggedIn = await api.LoginAsync();
 
             var image = new System.Net.WebClient().DownloadData(post.ImageUrl);
             var tempFile = Path.GetTempFileName();
+            var jpgFile = Path.GetTempFileName();
             File.WriteAllBytes(tempFile, image);
+            ImageUtility.ConvertImageToJpg(tempFile, jpgFile);
 
             var userSettings = SocialMediaHelper.GetUserSocialMediaSettings(post.ServerID, post.Author);
             var instagramAuthorHandle = userSettings.InstagramUserName;
@@ -84,38 +89,13 @@ namespace DiscordAstroBot.SocialMedia
             var content = $"{post.Content}\r\n\r\nImage credit: @{instagramAuthorHandle}\r\n\r\n"
                  + $"{serverTags} {userTags}";
 
-            uploader.OnCompleteEvent += Uploader_OnCompleteEvent;
-            uploader.UploadImage(tempFile, content, false, true);
-
-            var waitStep = 100;
-            var maxWait = 120000;
-            var curWait = 0;
-
-            while (!this.UploadCompleted)
-            {
-                if (curWait > maxWait)
-                    throw new TimeoutException("The upload to instagram timed out!");
-
-                Thread.Sleep(waitStep);
-
-                curWait += waitStep;
-            }
+            var res = await api.UploadPhotoAsync(new InstaSharper.Classes.Models.InstaImage() { URI = jpgFile }, content);
 
             // Clean up the temp file
             File.Delete(tempFile);
+            File.Delete(jpgFile);
 
-            return $"https://www.instagram.com/{Parameters["user"]}/";
-        }
-
-        private void Uploader_OnCompleteEvent(object sender, EventArgs e)
-        {
-            Console.WriteLine("Image posted to Instagram, here are all the urls");
-            foreach (var image in ((UploadResponse)e).Images)
-            {
-                this.UploadedPostUrl = image.Url;
-                this.UploadCompleted = true;
-                break; // Only store first image (bot can only post 1 image at a time either way)
-            }
+            return $"https://www.instagram.com/p/{res.Value.Code}/";
         }
     }
 }

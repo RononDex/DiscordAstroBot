@@ -1,4 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<SocialMediaAccounts>
-  
+<?xml version="1.0"?>
+<SocialMediaAccounts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Server ServerID="0">
+    <User ID="0">
+      <SocialMediaPublishingEnabled>false</SocialMediaPublishingEnabled>
+    </User>
+  </Server>
 </SocialMediaAccounts>

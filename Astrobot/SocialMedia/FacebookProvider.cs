@@ -16,7 +16,7 @@ namespace DiscordAstroBot.SocialMedia
 
         public override string Name => "Facebook";
 
-        public override string PublishPost(SocialMediaPost post)
+        public override async Task<string> PublishPost(SocialMediaPost post)
         {
             return string.Empty;
         } 
