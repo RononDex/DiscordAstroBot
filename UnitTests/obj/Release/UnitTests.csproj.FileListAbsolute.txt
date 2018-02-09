@@ -71,7 +71,6 @@ C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\Discord.Net.WebS
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\Discord.Net.Core.dll
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\Discord.Net.Rest.dll
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\log4net.dll
-C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\InstaSharp.dll
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\WebDriver.dll
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\Newtonsoft.Json.dll
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\System.Collections.Immutable.dll
@@ -91,3 +90,4 @@ C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.csproj
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.dll
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.pdb
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\SocialMediaModQueue.xml
+C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\InstaSharper.dll
