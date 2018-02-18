@@ -54,6 +54,6 @@ namespace DiscordAstroBot.TimerJobs
         /// Execute the scheduled timer job
         /// </summary>
         /// <param name="guild"></param>
-        public abstract void Execute(IGuild guild);
+        public abstract Task Execute(IGuild guild);
     }
 }

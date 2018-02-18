@@ -32,7 +32,7 @@ namespace DiscordAstroBot.TimerJobs
         /// Executes the timer job
         /// </summary>
         /// <param name="guild"></param>
-        public async override void Execute(IGuild guild)
+        public async override Task Execute(IGuild guild)
         {
             try
             {

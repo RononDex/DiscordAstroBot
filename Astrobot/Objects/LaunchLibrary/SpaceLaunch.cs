@@ -128,8 +128,15 @@ namespace DiscordAstroBot.Objects.LaunchLibrary
             this.VidURL = item.vidURL;
             if (item.isoend != null)
             {
-                this.WindowEnd = DateTime.ParseExact(Convert.ToString(item.isoend), "yyyyMMdd\\THHmmss\\Z", CultureInfo.InvariantCulture);
-                this.WindowStart = DateTime.ParseExact(Convert.ToString(item.isostart), "yyyyMMdd\\THHmmss\\Z", CultureInfo.InvariantCulture);
+                try
+                {
+                    this.WindowEnd = DateTime.ParseExact(Convert.ToString(item.isoend), "yyyyMMdd\\THHmmss\\Z", CultureInfo.InvariantCulture);
+                    this.WindowStart = DateTime.ParseExact(Convert.ToString(item.isostart), "yyyyMMdd\\THHmmss\\Z", CultureInfo.InvariantCulture);
+                }
+                catch (Exception ex)
+                {
+                    Log<DiscordAstroBot>.ErrorFormat($"Got invalid date format to parse: {item.item.isoend} or {item.isostart}: {ex.Message}");
+                }
             }
 
             this.Net = DateTime.ParseExact(Convert.ToString(item.net), "MMMM d, yyyy HH:mm:ss UTC", CultureInfo.InvariantCulture);

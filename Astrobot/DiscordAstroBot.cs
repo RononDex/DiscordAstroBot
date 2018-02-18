@@ -119,8 +119,22 @@ namespace DiscordAstroBot
             DiscordClient.MessageDeleted += DiscordClient_MessageDeleted;
             DiscordClient.UserLeft += DiscordClient_UserLeft;
             DiscordClient.UserBanned += DiscordClient_UserBanned;
+            DiscordClient.ReactionAdded += DiscordClient_ReactionAdded;
 
             Log<DiscordAstroBot>.InfoFormat("Login successfull");
+        }
+
+        /// <summary>
+        /// Fires when a reaction gets added (used for social media publishing)
+        /// </summary>
+        /// <param name="arg1"></param>
+        /// <param name="arg2"></param>
+        /// <param name="arg3"></param>
+        /// <returns></returns>
+        private async Task DiscordClient_ReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel arg2, SocketReaction arg3)
+        {
+            Log<DiscordAstroBot>.Info(arg1);
+            return;
         }
 
         /// <summary>

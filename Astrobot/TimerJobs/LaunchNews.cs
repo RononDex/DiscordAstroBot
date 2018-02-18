@@ -27,7 +27,7 @@ namespace DiscordAstroBot.TimerJobs
         /// Executes the timer job
         /// </summary>
         /// <param name="guild"></param>
-        public override async void Execute(IGuild guild)
+        public override async Task Execute(IGuild guild)
         {
             // Check if news enabled and if news channel is defined on the server
             var serverCfg = Mappers.Config.ServerConfig.Config.Servers.First(x => x.ServerID == guild.Id);
