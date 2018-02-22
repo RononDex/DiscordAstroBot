@@ -35,7 +35,7 @@ namespace DiscordAstroBot.Helpers
                 driver.Manage().Window.Size = new System.Drawing.Size(1500, 1080);
 
                 // Navigate to clearoutside
-                driver.Navigate().GoToUrl($"https://clearoutside.com/forecast/{location.Lat}/{location.Long}");
+                driver.Navigate().GoToUrl($"https://clearoutside.com/forecast/{location.Lat}/{location.Long}?view=midnight");
 
                 // Wait until page is fully loaded
                 IWait<IWebDriver> wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, TimeSpan.FromSeconds(30.00));
@@ -52,7 +52,7 @@ namespace DiscordAstroBot.Helpers
                     var image = new Bitmap(stream);
 
                     // Set bounds for the crop
-                    var croppedImage = ImageUtility.CropImage(image, 165, 265, 1170, 1575);
+                    var croppedImage = ImageUtility.CropImage(image, 165, 485, 1170, 1455);
 
                     // Convert image back to byte array
                     var stream2 = new MemoryStream();
