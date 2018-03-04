@@ -52,7 +52,7 @@ namespace DiscordAstroBot.Helpers
                     var image = new Bitmap(stream);
 
                     // Set bounds for the crop
-                    var croppedImage = ImageUtility.CropImage(image, 165, 485, 1170, 1455);
+                    var croppedImage = ImageUtility.CropImage(image, 165, 405, 1170, 1650);
 
                     // Convert image back to byte array
                     var stream2 = new MemoryStream();
