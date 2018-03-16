@@ -90,7 +90,7 @@ namespace DiscordAstroBot.Commands
 
                 // Check if image size is under a certain threshold and AdvancedPlateSolve is enabled on the server, and if so, use the custom advanced platesolve marker
                 // For this purpose we use a threshold of 2 degrees
-                if (calibrationData.CalibrationData.Radius < 1
+                if (calibrationData.CalibrationData.Radius < 2
                     && Mappers.Config.ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == ((SocketGuildChannel)recievedMessage.Channel).Guild.Id).Configs.Any(x => x.Key == "AdvancedPlateSolve" && Convert.ToBoolean(x.Value)))
                 {
                     // Use the original image
