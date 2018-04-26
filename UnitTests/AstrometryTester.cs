@@ -22,7 +22,7 @@ namespace UnitTests
             // Login into Astrometry
             var sessionID = DiscordAstroBot.Helpers.AstrometryHelper.LoginIntoAstrometry(token);
             //var submissionID = "1844860";
-            var submissionID = AstrometryHelper.UploadFile("https://cdn.discordapp.com/attachments/254942175387713537/403469836300320768/IMG_0754_Large.jpg", "test.jpg", sessionID);
+            var submissionID = AstrometryHelper.UploadFile("https://cdn.discordapp.com/attachments/254942175387713537/439142401324613632/unknown.pngg", "test.jpg", sessionID);
 
             // Wait for completion (around 60s)
             //Thread.Sleep(60 * 1000);

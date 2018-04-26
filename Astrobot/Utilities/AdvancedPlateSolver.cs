@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DiscordAstroBot.Helpers;
 using DiscordAstroBot.Objects.Simbad;
@@ -78,7 +79,7 @@ namespace DiscordAstroBot.Utilities
             // Use Radius * 1.8 to make sure to catch every object even if its at the edge of a non-quadratic image
             var objects = Mappers.Simbad.SimbadQuery.QueryAround(
                 new RADECCoords() { DEC = calibrationData.DEC, RA = calibrationData.RA },
-                calibrationData.Radius * 3.0f);
+                calibrationData.Radius * 4f);
 
             var result = new List<AstronomicalObjectInfo>();
 
@@ -177,8 +178,15 @@ namespace DiscordAstroBot.Utilities
         /// <param name="objects"></param>
         private static void MarkObjectsOnImage(SKBitmap image, List<MappedAstroObject> objects, AstrometrySubmissionCalibrationData calibrationData)
         {
+            var imageMarkerFilter = @"^(NGC.*|UGC.*|2MASX.*|M .*|M\d*|HD .*|LEDA .*|PGC.*|SH2.*|B .*|ABELL.*)";
+            var matcher = new Regex(imageMarkerFilter);
+
             foreach (var obj in objects.Where(x => x.AstroObject != null))
             {
+                // Ignore filtered objects and objects with more than one spaces in the name
+                if ((!matcher.IsMatch(obj.AstroObject.Name.ToUpper()) || obj.AstroObject.Name.Trim().Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries).Length > 2))
+                    continue;
+
                 // If the object has known dimensions, add a ellipse around its
                 if (obj.AstroObject.AngularDimension != null)
                 {
@@ -193,13 +201,13 @@ namespace DiscordAstroBot.Utilities
                         +calibrationData.Orientation - obj.AstroObject.AngularDimension.Rotation,
                         image.Width / 1750);                    
 
-                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + (Math.Sqrt(2) / 2 * radius * 1.2) + image.Width*0.0002f), Convert.ToInt32(obj.Y + (Math.Sqrt(2) / 2 * radius * 1.2) + image.Width * 0.0002f), 30 + (image.Width / 180), true, obj.AstroObject.Name);
+                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + (Math.Sqrt(2) / 2 * radius * 1.2) + image.Width*0.0003f), Convert.ToInt32(obj.Y + (Math.Sqrt(2) / 2 * radius * 1.2) + image.Width * 0.0003f), 20 + (image.Width / 180), false, obj.AstroObject.Name);
                 }
                 // Per default mark objects with a crosshair + label
                 else
                 {
-                    var sizeSmallFont = 20 + (image.Width / 550);
-                    var sizeLargeFont = 30 + (image.Width / 150);
+                    var sizeSmallFont = 15 + (image.Width / 550);
+                    var sizeLargeFont = 20 + (image.Width / 150);
                     var lineWidthSmall = 0.75f + (image.Width / 3000f);
                     var lineWidthLarge = 1.25f + (image.Width / 1000f);
 
@@ -210,7 +218,7 @@ namespace DiscordAstroBot.Utilities
                     var bold = !isSmall;
 
                     ImageUtility.AddCrossMarker(image, Convert.ToInt32(obj.X), Convert.ToInt32(obj.Y), isSmall ? lineWidthSmall : lineWidthLarge);
-                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + 0.0025 * image.Width), Convert.ToInt32(obj.Y + 0.0025 * image.Height), isSmall ? sizeSmallFont : sizeLargeFont, bold, obj.AstroObject.Name);
+                    ImageUtility.AddLabel(image, Convert.ToInt32(obj.X + 0.0027 * image.Width), Convert.ToInt32(obj.Y + 0.0027 * image.Height), isSmall ? sizeSmallFont : sizeLargeFont, bold, obj.AstroObject.Name);
                 }
             }
         }
