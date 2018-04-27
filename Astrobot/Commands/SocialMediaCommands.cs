@@ -31,8 +31,8 @@ namespace DiscordAstroBot.Commands
             new CommandSynonym() { Synonym = "show (me )?my social([-\\s])?media([-\\s])?(publishing )?settings(?'ShowSocialMediaSettings')" },
             new CommandSynonym() { Synonym = "show (me )?(the )?(mod queue|sociale media queue)( list)?(?'ShowModQueueList')" },
             new CommandSynonym() { Synonym = "status for post (?'ShowPostStatus'[0-9]*)" },
-            new CommandSynonym() { Synonym = "approve post (?'ApproveSocialMediaPost'[0-9]*)" },
-            new CommandSynonym() { Synonym = "decline post (?'DeclineSocialMediaPost'[0-9]*)" }
+            new CommandSynonym() { Synonym = "approve( post)? (?'ApproveSocialMediaPost'[0-9]*)" },
+            new CommandSynonym() { Synonym = "decline( post)? (?'DeclineSocialMediaPost'[0-9]*)" }
         };
 
         /// <summary>

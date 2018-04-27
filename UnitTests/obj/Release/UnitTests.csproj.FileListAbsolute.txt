@@ -91,3 +91,7 @@ C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.dll
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.pdb
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\SocialMediaModQueue.xml
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\InstaSharper.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\SocialMediaModQueue.xml
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\TestData\testimage.jpg
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\InstaSharper.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.csproj.CopyComplete

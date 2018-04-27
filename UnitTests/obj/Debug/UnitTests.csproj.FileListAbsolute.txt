@@ -129,6 +129,9 @@ C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\SkiaSharp.xml
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.csproj.CoreCompileInputs.cache
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\config\SocialMediaModQueue.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\TestData\testimage.jpg
-C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\InstaSharp.dll
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\config\SocialMediaModQueue.xml
 C:\Users\hti\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\InstaSharper.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\InstaSharper.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Debug\UnitTests.csproj.CopyComplete
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\Facebook.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Debug\Facebook.xml

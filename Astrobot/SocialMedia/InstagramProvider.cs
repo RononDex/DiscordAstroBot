@@ -69,11 +69,11 @@ namespace DiscordAstroBot.SocialMedia
         {
             var api = InstaApiBuilder.CreateBuilder()
                 .SetUser(new InstaSharper.Classes.UserSessionData() { UserName = Parameters["user"], Password = Parameters["password"] })
-                .Build();
-            
+                .Build();            
 
             var loggedIn = await api.LoginAsync();
 
+            var user = this.Parameters["user"];
             var image = new System.Net.WebClient().DownloadData(post.ImageUrl);
             var tempFile = Path.GetTempFileName();
             var jpgFile = Path.GetTempFileName();
@@ -95,7 +95,12 @@ namespace DiscordAstroBot.SocialMedia
             File.Delete(tempFile);
             File.Delete(jpgFile);
 
-            return $"https://www.instagram.com/p/{res.Value.Code}/";
+            if (res.Succeeded)
+                return $"https://www.instagram.com/p/{res.Value.Code}/";
+            else
+            {
+                throw new Exception($"Failed to upload to instagram. Info: {res.Info}, Value: {res.Value}");
+            }
         }
     }
 }

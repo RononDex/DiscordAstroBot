@@ -26,6 +26,21 @@ namespace UnitTests
             postUrl.Wait();
             var url = postUrl.Result;
         }
+
+        [TestMethod]
+        public void TestFacebookProvider()
+        {
+            DiscordAstroBot.Mappers.Config.ServerConfig.LoadConfig();
+            DiscordAstroBot.Mappers.Config.ServerCommands.LoadConfig();
+            DiscordAstroBot.Mappers.Config.SocialMediaConfig.LoadConfig();
+            DiscordAstroBot.Mappers.Config.SocialMediaModQueue.LoadConfig();
+
+            var facebookProvider = new FacebookProvider();
+
+            var postUrl = facebookProvider.PublishPost(new SocialMediaPost() { Content = "asdfasdfasdf", ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/PM5544_with_non-PAL_signals.png/384px-PM5544_with_non-PAL_signals.png" });
+            postUrl.Wait();
+            var url = postUrl.Result;
+        }
     }
 }
  

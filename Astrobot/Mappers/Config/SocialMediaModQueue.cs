@@ -263,8 +263,15 @@ namespace DiscordAstroBot.Mappers.Config
 
             foreach (var provider in DiscordAstroBot.SocialMediaProviders)
             {
-                var url = provider.PublishPost(post);
-                socialMediaLinks += $"{provider.Name}:  {url}\r\n";
+                try
+                {
+                    var url = provider.PublishPost(post);
+                    socialMediaLinks += $"{provider.Name}:  {url.Result}\r\n";
+                }
+                catch (Exception ex)
+                {
+                    await recievedMessage.Channel.SendMessageAsync($"Error in {provider.Name}: {ex.Message}");
+                }
             }
 
             queueEntry.Status = SocialMediaModQueueStatus.PUBLISHED;
