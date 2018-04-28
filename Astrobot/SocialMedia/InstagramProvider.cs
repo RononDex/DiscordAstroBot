@@ -86,8 +86,14 @@ namespace DiscordAstroBot.SocialMedia
             var serverTags = string.Join(" ", serverSettings.Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingInstagramHashtags").Value?.Split(';'));
             var userTags = userSettings.InstagramHashtags;
 
-            var content = $"{post.Content}\r\n\r\nImage credit: @{instagramAuthorHandle}\r\n\r\n"
-                 + $"{serverTags} {userTags}";
+            var content = "";
+
+            if (!string.IsNullOrEmpty(instagramAuthorHandle))
+                content = $"{post.Content}\r\n\r\nImage credit: @{instagramAuthorHandle}\r\n\r\n\r\n"
+                     + $"{serverTags} {userTags}";
+            else
+                content = $"{post.Content}\r\n\r\n"
+                     + $"{serverTags} {userTags}";
 
             var res = await api.UploadPhotoAsync(new InstaSharper.Classes.Models.InstaImage() { URI = jpgFile }, content);
 
