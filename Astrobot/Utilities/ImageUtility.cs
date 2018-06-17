@@ -4,7 +4,9 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,6 +52,22 @@ namespace DiscordAstroBot.Utilities
             //dispose the Graphics object
             g.Dispose();
             return newBitmap;
+        }
+
+        /// <summary>
+        /// Checks wether the url contains an image
+        /// </summary>
+        /// <param name="URL"></param>
+        /// <returns></returns>
+        public static bool IsImageUrl(string URL)
+        {
+            var req = HttpWebRequest.Create(URL);
+            req.Method = "HEAD";
+            using (var resp = req.GetResponse())
+            {
+                return resp.ContentType.ToLower(CultureInfo.InvariantCulture)
+                           .StartsWith("image/");
+            }
         }
 
         public static void ConvertImageToJpg(string filePath, string savePath)

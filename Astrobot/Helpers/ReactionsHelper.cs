@@ -173,6 +173,7 @@ namespace DiscordAstroBot.Helpers
             { new string[] { @"are you god(\?)?" },                                             new string[] { "Yes, I am known to all kinds of cultures in human history as \"god\"" } },
             { new string[] { @"thank you", "thanks", "^thx" },                                  new string[] { "You are welcome!" } },
             { new string[] { "you are the best", "you're the best"},                            new string[] { "Aww... thanks!" } },
+            { new string[] { @"^no u", @"^no you" },                                            new string[] { "no u", "no u!" } },
             { new string[] { "Unknown"},                                                        new string[] { "I don't know how to respond to that", "My programming does not tell me how to react to that", "I am not allowed to answer that", "My master didn't teach me yet how to answer to that" } }
         };
 

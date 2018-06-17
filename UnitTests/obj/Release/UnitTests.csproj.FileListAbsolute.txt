@@ -30,7 +30,6 @@ C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\log4net.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\WebDriver.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\Newtonsoft.Json.xml
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\System.Interactive.Async.xml
-C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.csprojResolveAssemblyReference.cache
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.csproj.CoreCompileInputs.cache
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.pdb
@@ -95,3 +94,6 @@ C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\config\SocialM
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\TestData\testimage.jpg
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\InstaSharper.dll
 C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.csproj.CopyComplete
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\Facebook.dll
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\bin\Release\Facebook.xml
+C:\Users\tinoh\Source\Repos\DiscordAstroBot\UnitTests\obj\Release\UnitTests.csprojAssemblyReference.cache
