@@ -165,24 +165,42 @@ namespace DiscordAstroBot.Commands
                 // Check if author has social media publishing activated
                 var serverId = ((SocketTextChannel)recievedMessage.Channel).Guild.Id;
                 var settings = Helpers.SocialMediaHelper.GetUserSocialMediaSettings(serverId, recievedMessage.Author.Id);
+
+                // Resolve the moderation channel
+                var moderationChannelName = Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingModerationChannel")?.Value;
+                var channel = await Utilities.DiscordUtility.ResolveChannel(((SocketGuildChannel)recievedMessage.Channel).Guild, moderationChannelName);
+
+                if (channel == null)
+                {
+                    Log<DiscordAstroBot>.Warn($"Invalid SocialeMedia moderation channel configured on server {((SocketTextChannel)recievedMessage.Channel).Guild.Name}");
+                    return;
+                }
+
                 if (settings.SocialMediaPublishingEnabled && recievedMessage.Attachments.Count > 0)
                 {
-                    // Resolve the moderation channel
-                    var moderationChannelName = Mappers.Config.ServerConfig.GetServerSetings(serverId).Configs.FirstOrDefault(x => x.Key == "SocialMediaPublishingModerationChannel")?.Value;
-                    var channel = await Utilities.DiscordUtility.ResolveChannel(((SocketGuildChannel)recievedMessage.Channel).Guild, moderationChannelName);
-
-                    if (channel == null)
-                    {
-                        Log<DiscordAstroBot>.Warn($"Invalid SocialeMedia moderation channel configured on server {((SocketTextChannel)recievedMessage.Channel).Guild.Name}");
-                        return;
-                    }
-
                     await Mappers.Config.SocialMediaModQueue.CreateNewModQueueEntry(serverId,
                         recievedMessage.Id,
                         recievedMessage.Author,
                         recievedMessage.Attachments.First().Url,
                         recievedMessage.Content,
                         channel);
+                }
+                else
+                {
+                    // Search for an URL that contains an image
+                    var urlRegex = @"/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/";
+
+                    var regex = new Regex(urlRegex, RegexOptions.IgnoreCase);
+                    if (regex.IsMatch(recievedMessage.Content))
+                    {
+                        var matchedUrl = regex.Match(recievedMessage.Content);
+                        await Mappers.Config.SocialMediaModQueue.CreateNewModQueueEntry(serverId,
+                        recievedMessage.Id,
+                        recievedMessage.Author,
+                        matchedUrl.Value,
+                        recievedMessage.Content,
+                        channel);
+                    }
                 }
             }
             catch (Exception ex)
