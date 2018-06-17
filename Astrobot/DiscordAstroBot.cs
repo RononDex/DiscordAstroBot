@@ -450,7 +450,6 @@ namespace DiscordAstroBot
                         {
                             Task.Run(() =>
                             {
-                                Log<DiscordAstroBot>.Debug("1");
                                 SocialMediaCommands.HandleNewSocialMediaPost(recievedMessage);
                             });
                             return Task.CompletedTask;

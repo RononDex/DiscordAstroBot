@@ -178,7 +178,7 @@ namespace DiscordAstroBot.Utilities
         /// <param name="objects"></param>
         private static void MarkObjectsOnImage(SKBitmap image, List<MappedAstroObject> objects, AstrometrySubmissionCalibrationData calibrationData)
         {
-            var imageMarkerFilter = @"^(NGC.*|UGC.*|2MASX.*|M .*|M\d*|HD .*|LEDA .*|PGC.*|SH2.*|B .*|ABELL.*)";
+            var imageMarkerFilter = @"^(NGC.*|UGC.*|2MASX.*|M .*|M  .*|M\d*|HD .*|LEDA .*|PGC.*|SH2.*|B .*|ABELL.*)";
             var matcher = new Regex(imageMarkerFilter);
 
             foreach (var obj in objects.Where(x => x.AstroObject != null))

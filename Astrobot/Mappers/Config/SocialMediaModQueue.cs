@@ -271,6 +271,7 @@ namespace DiscordAstroBot.Mappers.Config
                 catch (Exception ex)
                 {
                     await recievedMessage.Channel.SendMessageAsync($"Error in {provider.Name}: {ex.Message}");
+                    Log<DiscordAstroBot>.Error($"Error in {provider.Name}: {ex.Message}");
                 }
             }
 
