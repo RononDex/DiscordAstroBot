@@ -281,11 +281,27 @@ namespace DiscordAstroBot.Mappers.Config
             await recievedMessage.Channel.SendMessageAsync($"The post has been **successfully** published to social media:\r\n{socialMediaLinks}");
 
             // Notify the author of the post
-            var user = (recievedMessage.Channel as SocketGuildChannel).Guild.Users.FirstOrDefault( x => x.Id == queueEntry.Author);
+            var user = (recievedMessage.Channel as SocketGuildChannel).Guild.Users.FirstOrDefault(x => x.Id == queueEntry.Author);
 
             // The user can be NULL if user left the server for example
             if (user != null)
                 await user.SendMessageAsync($"Your post **{entryId}** has been posted to the social media accounts of server **{(recievedMessage.Channel as ITextChannel).Guild.Name}**:\r\n{socialMediaLinks}");
+
+            // If social media feed is enabled
+            if (ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == ((SocketGuildChannel)recievedMessage.Channel).Guild.Id).Configs.Any(x => x.Key == "SocialMediaFeedEnabled" && Convert.ToBoolean(x.Value)))
+            {
+                // Find the configured channel
+                var channelName = ServerConfig.Config.Servers.FirstOrDefault(x => x.ServerID == ((SocketGuildChannel)recievedMessage.Channel).Guild.Id).Configs.FirstOrDefault(x => x.Key == "SocialMediaFeedChannel")?.Value;
+                var channel = await Utilities.DiscordUtility.ResolveChannel(((SocketGuildChannel)recievedMessage.Channel).Guild, channelName);
+
+                if (channel == null)
+                {
+                    Utilities.DiscordUtility.LogToDiscord("ERROR: Unable to write to the social media feed, configured channel not found", ((SocketGuildChannel)recievedMessage.Channel).Guild);
+                    return;
+                }
+
+                await channel.SendMessageAsync($"New social media post:\r\n:{socialMediaLinks}");
+            }
         }
     }
 }
